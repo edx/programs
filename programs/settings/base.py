@@ -35,6 +35,7 @@ THIRD_PARTY_APPS = (
 PROJECT_APPS = (
     'programs.apps.core',
     'programs.apps.api',
+    'programs.apps.programs',
 )
 
 INSTALLED_APPS += THIRD_PARTY_APPS
