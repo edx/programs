@@ -91,6 +91,13 @@ LOCALE_PATHS = (
     root('conf', 'locale'),
 )
 
+# DRF settings
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'programs.apps.api.authentication.JwtAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    )
+}
 
 # MEDIA CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#media-root
@@ -160,6 +167,42 @@ AUTHENTICATION_BACKENDS = (
 ENABLE_AUTO_AUTH = False
 AUTO_AUTH_USERNAME_PREFIX = 'auto_auth_'
 
+
+OAUTH2_PROVIDER_URL = None
+
+# Set to true if using SSL and running behind a proxy
+SOCIAL_AUTH_REDIRECT_IS_HTTPS = False
+
+# https://github.com/omab/python-social-auth/blob/master/docs/configuration/django.rst#django-admin
+SOCIAL_AUTH_ADMIN_USER_SEARCH_FIELDS = ['username', 'email']
+
+SOCIAL_AUTH_PIPELINE = (
+    'social.pipeline.social_auth.social_details',
+    'social.pipeline.social_auth.social_uid',
+    'social.pipeline.social_auth.auth_allowed',
+    'social.pipeline.social_auth.social_user',
+
+    # By default python-social-auth will simply create a new user/username if the username
+    # from the provider conflicts with an existing username in this system. This custom pipeline function
+    # loads existing users instead of creating new ones.
+    'auth_backends.pipeline.get_user_if_exists',
+    'social.pipeline.user.get_username',
+    'social.pipeline.user.create_user',
+    'social.pipeline.social_auth.associate_user',
+    'social.pipeline.social_auth.load_extra_data',
+    'social.pipeline.user.user_details',
+)
+
+# Fields passed to the custom user model when creating a new user
+SOCIAL_AUTH_USER_FIELDS = ['username', 'email', 'full_name']
+
+# Always raise auth exceptions so that they are properly logged. Otherwise, the PSA middleware will redirect to an
+# auth error page and attempt to display the error message to the user (via Django's message framework). We do not
+# want the uer to see the message; but, we do want our downstream exception handlers to log the message.
+SOCIAL_AUTH_RAISE_EXCEPTIONS = True
+
+
+
 # Set these to the correct values for your OAuth2/OpenID Connect provider (e.g., devstack)
 SOCIAL_AUTH_EDX_OIDC_KEY = 'replace-me'
 SOCIAL_AUTH_EDX_OIDC_SECRET = 'replace-me'
@@ -169,8 +212,16 @@ SOCIAL_AUTH_EDX_OIDC_ID_TOKEN_DECRYPTION_KEY = SOCIAL_AUTH_EDX_OIDC_SECRET
 # Request the user's permissions in the ID token
 EXTRA_SCOPE = ['permissions']
 
-# TODO Set this to another (non-staff, ideally) path.
-LOGIN_REDIRECT_URL = '/admin/'
+LOGIN_REDIRECT_URL = '/api/v1/programs/'
+
+JWT_AUTH = {
+    'JWT_SECRET_KEY': None,
+    'JWT_ALGORITHM': 'HS256',
+    'JWT_VERIFY_EXPIRATION': True,
+    'JWT_ISSUER': None,
+    'JWT_PAYLOAD_GET_USERNAME_HANDLER': lambda d: d.get('preferred_username'),
+    'JWT_AUDIENCE': None,
+}
 # END AUTHENTICATION CONFIGURATION
 
 
