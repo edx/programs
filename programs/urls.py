@@ -38,6 +38,7 @@ urlpatterns = [
     url(r'^health/$', core_views.health, name='health'),
     url(r'^login/$', login, name='login'),
     url(r'^logout/$', logout, name='logout'),
+    url(r'^docs/', include('rest_framework_swagger.urls')),
     url('', include('social.apps.django_app.urls', namespace='social')),
 ]
 

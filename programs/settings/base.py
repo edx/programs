@@ -30,6 +30,7 @@ THIRD_PARTY_APPS = (
     'rest_framework',
     'social.apps.django_app.default',
     'waffle',
+    'rest_framework_swagger',
 )
 
 PROJECT_APPS = (
