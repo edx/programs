@@ -2,7 +2,6 @@
 Programs API views (v1).
 """
 from rest_framework import mixins, viewsets
-from rest_framework.permissions import DjangoModelPermissions, IsAuthenticated
 
 from programs.apps.programs.constants import ProgramStatus
 from programs.apps.programs.models import Program
@@ -44,6 +43,5 @@ class ProgramsViewSet(mixins.CreateModelMixin, mixins.ListModelMixin, viewsets.G
         * modified: The date/time this Program was last modified.
 
     """
-    permission_classes = (IsAuthenticated, DjangoModelPermissions)
     queryset = Program.objects.exclude(status=ProgramStatus.DELETED)
     serializer_class = ProgramSerializer
