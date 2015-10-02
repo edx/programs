@@ -10,12 +10,6 @@ class ProgramCategory(object):
     XSERIES = "xseries"
 
 
-class CertificateType(object):
-    """Allowed values for Program.certificate_type"""
-
-    VERIFIED = "verified"
-
-
 class ProgramStatus(object):
     """Allowed values for Program.status"""
 

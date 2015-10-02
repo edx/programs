@@ -4,7 +4,7 @@ Factories for tests of Programs.
 import factory
 
 from programs.apps.programs.models import Program
-from programs.apps.programs.constants import CertificateType, ProgramCategory, ProgramStatus
+from programs.apps.programs.constants import ProgramCategory, ProgramStatus
 
 
 class ProgramFactory(factory.django.DjangoModelFactory):  # pylint: disable=missing-docstring
@@ -14,5 +14,4 @@ class ProgramFactory(factory.django.DjangoModelFactory):  # pylint: disable=miss
     name = factory.Sequence(lambda n: 'test-program-{}'.format(n))  # pylint: disable=unnecessary-lambda
     description = "test-description"
     category = ProgramCategory.XSERIES
-    certificate_type = CertificateType.VERIFIED
     status = ProgramStatus.UNPUBLISHED

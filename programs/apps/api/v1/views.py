@@ -39,7 +39,6 @@ class ProgramsViewSet(mixins.CreateModelMixin, mixins.ListModelMixin, viewsets.G
         * name: The user-facing display name for this Program.
         * description: A full-length description of the Program.
         * category: The category / type of Program.  Right now the only value allowed is 'xseries'.
-        * certificate_type: Optional certification criteria for course runs associated with this Program.
         * status: The lifecycle status of this Program.  Right now the only value allowed is 'unpublished'.
         * created: The date/time this Program was created.
         * modified: The date/time this Program was last modified.

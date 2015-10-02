@@ -10,14 +10,13 @@ from mock import ANY
 
 from programs.apps.api.v1.tests.mixins import JwtMixin
 from programs.apps.core.tests.factories import UserFactory
-from programs.apps.programs.constants import CertificateType, ProgramCategory, ProgramStatus
+from programs.apps.programs.constants import ProgramCategory, ProgramStatus
 from programs.apps.programs.tests.factories import ProgramFactory
 
 
 USERNAME = 'preferred_username'
-POST_FIELDS = ("name", "description", "category", "certificate_type", "status")
+POST_FIELDS = ("name", "description", "category", "status")
 CATEGORIES = (ProgramCategory.XSERIES, )
-CERT_TYPES = (CertificateType.VERIFIED, )
 STATUSES = (ProgramStatus.UNPUBLISHED, ProgramStatus.ACTIVE, ProgramStatus.RETIRED, ProgramStatus.DELETED)
 
 
@@ -86,7 +85,6 @@ class ProgramsViewTests(JwtMixin, TestCase):
                 "name": data["name"],
                 "description": data["description"],
                 "category": data["category"],
-                "certificate_type": data["certificate_type"],
                 "status": data["status"],
                 "id": ANY,
                 "created": ANY,
@@ -101,7 +99,6 @@ class ProgramsViewTests(JwtMixin, TestCase):
         """
         defaults = {
             "description": None,
-            "certificate_type": None,
             "status": ProgramStatus.UNPUBLISHED,
         }
 
@@ -130,16 +127,6 @@ class ProgramsViewTests(JwtMixin, TestCase):
         self.assertEqual(response.status_code, 400)
         content = json.loads(response.content)
         self.assertIn("not a valid choice", content["status"][0])
-
-    def test_create_with_invalid_certificate_type(self):
-        """
-        Ensure that it is not allowed to create a Program with an unrecognized certificate type
-        """
-        data = self._build_post_data(certificate_type="unrecognized-type")
-        response = self._make_request(method='post', data=data, admin=True)
-        self.assertEqual(response.status_code, 400)
-        content = json.loads(response.content)
-        self.assertIn("not a valid choice", content["certificate_type"][0])
 
     @ddt.data(None, "", "unrecognized")
     def test_create_with_invalid_category(self, category):

@@ -18,7 +18,7 @@ class ProgramSerializer(serializers.ModelSerializer):
 
     class Meta(object):  # pylint: disable=missing-docstring
         model = models.Program
-        fields = ('id', 'name', 'description', 'category', 'certificate_type', 'status', 'created', 'modified')
+        fields = ('id', 'name', 'description', 'category', 'status', 'created', 'modified')
         read_only_fields = ('id', 'created', 'modified')
 
     def validate_status(self, status):

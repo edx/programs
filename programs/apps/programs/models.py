@@ -39,14 +39,6 @@ class Program(TimeStampedModel):
         choices=_choices(constants.ProgramCategory.XSERIES),
     )
 
-    certificate_type = models.CharField(
-        help_text=_('Optional certification criteria for course runs associated with this Program.'),
-        max_length=32,
-        choices=[(None, _("None"))] + _choices(constants.CertificateType.VERIFIED),
-        null=True,
-        blank=True,
-    )
-
     status = models.CharField(
         help_text=_('The lifecycle status of this Program.'),
         max_length=16,
