@@ -1,4 +1,5 @@
 .DEFAULT_GOAL := test
+NODE_BIN=./node_modules/.bin
 
 .PHONY: clean compile_translations dummy_translations extract_translations fake_translations help html_coverage \
 	migrate pull_translations push_translations quality requirements test update_translations validate
@@ -17,16 +18,23 @@ help:
 	@echo "  push_translations          push source translation files (.po) from Transifex"
 	@echo "  quality                    run PEP8 and Pylint"
 	@echo "  requirements               install requirements for local development"
+	@echo "  requirements.js            install JavaScript requirements for local development"
+	@echo "  static                     build and compress static assets"
 	@echo "  test                       run tests and generate coverage report"
 	@echo "  validate                   run tests and quality checks"
+	@echo "  validate_js                run JavaScript unit tests and linting"
 	@echo ""
 
 clean:
 	find . -name '*.pyc' -delete
 	coverage erase
-	rm -rf assets
+	rm -rf assets programs/static/build coverage htmlcov
 
-requirements:
+requirements.js:
+	npm install
+	$(NODE_BIN)/bower install
+
+requirements: requirements.js
 	pip install -qr requirements/local.txt --exists-action w
 
 test: clean
@@ -37,7 +45,18 @@ quality:
 	pep8 --config=.pep8 programs *.py
 	pylint --rcfile=pylintrc programs *.py
 
-validate: test quality
+static:
+	$(NODE_BIN)/r.js -o build.js
+	python manage.py collectstatic --noinput -v0
+	python manage.py compress -v0
+
+validate_js:
+	rm -rf coverage
+	$(NODE_BIN)/gulp test
+	$(NODE_BIN)/gulp lint
+	$(NODE_BIN)/gulp jscs
+
+validate: test quality validate_js
 
 migrate:
 	python manage.py migrate
