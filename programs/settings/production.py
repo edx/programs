@@ -10,6 +10,15 @@ TEMPLATE_DEBUG = DEBUG
 
 ALLOWED_HOSTS = ['*']
 
+# Enable offline compression of CSS/JS
+COMPRESS_ENABLED = True
+COMPRESS_OFFLINE = True
+
+# Minify CSS
+COMPRESS_CSS_FILTERS += [
+    'compressor.filters.cssmin.CSSMinFilter',
+]
+
 CONFIG_FILE = get_env_setting('PROGRAMS_CFG')
 
 with open(CONFIG_FILE) as f:

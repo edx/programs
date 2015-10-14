@@ -31,6 +31,7 @@ THIRD_PARTY_APPS = (
     'social.apps.django_app.default',
     'waffle',
     'rest_framework_swagger',
+    'compressor',
 )
 
 PROJECT_APPS = (
@@ -121,8 +122,22 @@ STATIC_URL = '/static/'
 
 # See: https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
 STATICFILES_DIRS = (
+    root('static', 'build'),  # Check the r.js output directory first
     root('static'),
 )
+
+# See: https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#staticfiles-finders
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'compressor.finders.CompressorFinder',
+)
+
+COMPRESS_PRECOMPILERS = (
+    ('text/x-scss', 'django_libsass.SassCompiler'),
+)
+COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssAbsoluteFilter']
+# END STATIC FILE CONFIGURATION
 
 # TEMPLATE CONFIGURATION
 # See: https://docs.djangoproject.com/en/1.8/ref/settings/#templates
@@ -130,6 +145,9 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'APP_DIRS': True,
+        'DIRS': (
+            root('templates'),
+        ),
         'OPTIONS': {
             'context_processors': (
                 'django.contrib.auth.context_processors.auth',
@@ -170,7 +188,6 @@ AUTHENTICATION_BACKENDS = (
 
 ENABLE_AUTO_AUTH = False
 AUTO_AUTH_USERNAME_PREFIX = 'auto_auth_'
-
 
 OAUTH2_PROVIDER_URL = None
 
