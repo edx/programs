@@ -43,3 +43,13 @@ JWT_AUTH.update({
     'JWT_AUDIENCE': SOCIAL_AUTH_EDX_OIDC_KEY,
 })
 # END AUTHENTICATION
+
+
+# Enable offline compression of CSS/JS
+COMPRESS_ENABLED = True
+COMPRESS_OFFLINE = True
+
+# Minify CSS
+COMPRESS_CSS_FILTERS += [
+    'compressor.filters.cssmin.CSSMinFilter',
+]
