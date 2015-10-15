@@ -66,6 +66,7 @@ report
 venv
 acceptance_tests.*.log
 acceptance_tests.*.png
+coverage/
 
 # Override config files
 override.cfg
@@ -83,3 +84,5 @@ private.py
 *.trace
 
 docs/_build/
+node_modules/
+programs/static/bower_components/

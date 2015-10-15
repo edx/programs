@@ -1,5 +1,7 @@
 django>=1.8.4
+django_compressor==1.5
 django-extensions==1.5.5
+django-libsass==0.4
 django-waffle==0.10.1
 djangorestframework==3.2.3
 djangorestframework-jwt==1.7.2
