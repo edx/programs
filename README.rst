@@ -2,13 +2,13 @@ Part of `edX code`__.
 
 __ http://code.edx.org/
 
-Programs  |Travis|_ |Coveralls|_
-=====================================================
+Programs  |Travis|_ |Codecov|_
+==============================
 .. |Travis| image:: https://travis-ci.org/edx/programs.svg?branch=master
 .. _Travis: https://travis-ci.org/edx/programs
 
-.. |Coveralls| image:: https://coveralls.io/repos/edx/programs/badge.svg?branch=master
-.. _Coveralls: https://coveralls.io/r/edx/programs?branch=master
+.. |Codecov| image:: http://codecov.io/github/edx/programs/coverage.svg?branch=master
+.. _Codecov: http://codecov.io/github/edx/programs?branch=master
 
 The ``README.rst`` file should start with a brief description of the repository,
 which sets it in the context of other repositories under the ``edx``
