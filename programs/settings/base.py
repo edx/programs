@@ -100,8 +100,9 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
-        'rest_framework.permissions.DjangoModelPermissions',
     ),
+    'DEFAULT_PAGINATION_CLASS': 'programs.apps.api.pagination.DefaultPagination',
+    'PAGE_SIZE': 20,
 }
 
 # MEDIA CONFIGURATION
@@ -212,6 +213,7 @@ SOCIAL_AUTH_PIPELINE = (
     'social.pipeline.social_auth.associate_user',
     'social.pipeline.social_auth.load_extra_data',
     'social.pipeline.user.user_details',
+    'programs.apps.api.authentication.pipeline_set_user_roles',
 )
 
 # Fields passed to the custom user model when creating a new user

@@ -4,7 +4,11 @@ Mixins for Programs API tests.
 from time import time
 
 from django.conf import settings
+from django.contrib.auth.models import Group
 import jwt
+from rest_framework.test import APIClient
+
+from programs.apps.core.tests.factories import UserFactory
 
 
 JWT_AUTH = 'JWT_AUTH'
@@ -44,3 +48,23 @@ class JwtMixin(object):
             "given_name": "",
             "family_name": "",
         })
+
+
+class AuthClientMixin(object):
+    """
+    Mixin useful for getting APIClient objects in tests.
+    """
+
+    def get_authenticated_client(self, role_name):
+        """
+        Helper for concisely obtaining a `rest_framework.test.APIClient` instance,
+        authenticated with a user having some specific role.
+        """
+        # create a user with the specified role
+        user = UserFactory.create()
+        user.groups.add(Group.objects.get(name=role_name))  # pylint: disable=no-member
+
+        # create an APIClient and force auth
+        client = APIClient()
+        client.force_authenticate(user)
+        return client
