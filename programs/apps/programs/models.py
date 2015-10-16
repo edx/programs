@@ -30,7 +30,7 @@ class Program(TimeStampedModel):
 
     subtitle = models.CharField(
         help_text=_('A brief, descriptive subtitle for the Program.'),
-        max_length=256,
+        max_length=255,
         null=True,
         blank=True,
     )
@@ -43,7 +43,7 @@ class Program(TimeStampedModel):
 
     status = models.CharField(
         help_text=_('The lifecycle status of this Program.'),
-        max_length=16,
+        max_length=24,
         choices=_choices(
             constants.ProgramStatus.UNPUBLISHED,
             constants.ProgramStatus.ACTIVE,
@@ -174,7 +174,7 @@ class ProgramCourseRunMode(TimeStampedModel):
     )
     course_key = models.CharField(
         help_text=_("A string referencing the course key identifying this run / mode in the target LMS."),
-        max_length=256,
+        max_length=255,
     )
     mode_slug = models.CharField(
         help_text=_("The mode_slug value which uniquely identifies the mode in the target LMS."),
