@@ -1,0 +1,6 @@
+<h1>Programs</h1>
+<ul>
+    <% programs.each( function( program ) { %>
+        <li><%- program.get('name') %></li>
+    <% }) %>
+</ul>
