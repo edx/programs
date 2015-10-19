@@ -19,16 +19,23 @@ from django.conf import settings
 from django.conf.urls import include, url
 from django.contrib import admin
 from django.core.urlresolvers import reverse_lazy
-from django.views.generic import RedirectView
+from django.views.generic import RedirectView, TemplateView
 
 from programs.apps.core import views as core_views
 
+
 admin.autodiscover()
+
+js_info_dict = {
+    'packages': ('apps.programs',),
+}
 
 # Always login via edX OpenID Connect
 login = RedirectView.as_view(url=reverse_lazy('social:begin', args=['edx-oidc']), permanent=False, query_string=True)
 
 urlpatterns = [
+    url(r'^i18n/', include('django.conf.urls.i18n')),
+    url(r'^jsi18n/$', 'django.views.i18n.javascript_catalog', js_info_dict),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^api/', include('programs.apps.api.urls', namespace='api')),
     url(r'^auto_auth/$', core_views.AutoAuth.as_view(), name='auto_auth'),
@@ -39,6 +46,16 @@ urlpatterns = [
     url('', include('social.apps.django_app.urls', namespace='social')),
 ]
 
-if settings.DEBUG and os.environ.get('ENABLE_DJANGO_TOOLBAR', False):  # pragma: no cover
-    import debug_toolbar  # pylint: disable=import-error
-    urlpatterns.append(url(r'^__debug__/', include(debug_toolbar.urls)))
+if settings.DEBUG:  # pragma: no cover
+    # View displaying a page which loads the Programs administration app.
+    author_view = TemplateView.as_view(template_name='author.html')
+
+    urlpatterns += [
+        url(r'^author/$', author_view, name='author'),
+    ]
+
+    if os.environ.get('ENABLE_DJANGO_TOOLBAR', False):
+        import debug_toolbar  # pylint: disable=import-error
+        urlpatterns.append(
+            url(r'^__debug__/', include(debug_toolbar.urls))
+        )
