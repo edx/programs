@@ -60,6 +60,9 @@ class Program(TimeStampedModel):
     class Meta(object):  # pylint: disable=missing-docstring
         index_together = ('status', 'category')
 
+    def __unicode__(self):
+        return unicode(self.name)
+
 
 class Organization(TimeStampedModel):
     """
@@ -80,6 +83,9 @@ class Organization(TimeStampedModel):
         max_length=128,
     )
     programs = models.ManyToManyField(Program, related_name='organizations', through='ProgramOrganization')
+
+    def __unicode__(self):
+        return unicode(self.display_name)
 
 
 class ProgramOrganization(TimeStampedModel):
@@ -131,6 +137,9 @@ class CourseCode(TimeStampedModel):
     class Meta(object):  # pylint: disable=missing-docstring
         unique_together = ('organization', 'key')
 
+    def __unicode__(self):
+        return unicode(self.display_name)
+
 
 class ProgramCourseCode(TimeStampedModel):
     """
@@ -141,8 +150,11 @@ class ProgramCourseCode(TimeStampedModel):
     position = models.IntegerField()
 
     class Meta(object):  # pylint: disable=missing-docstring
-        unique_together = ("program", "course_code", "position")
+        unique_together = ('program', 'position')
         ordering = ['position']
+
+    def __unicode__(self):
+        return unicode(self.course_code)
 
     def save(self, *a, **kw):
         """
@@ -170,7 +182,8 @@ class ProgramCourseRunMode(TimeStampedModel):
     lms_url = models.CharField(
         help_text=_("The URL of the LMS where this course run / mode is being offered."),
         max_length=1024,
-        null=True,  # this field won't be used initially.
+        null=True,
+        blank=True,
     )
     course_key = models.CharField(
         help_text=_("A string referencing the course key identifying this run / mode in the target LMS."),
