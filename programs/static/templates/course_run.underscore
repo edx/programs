@@ -1,0 +1,5 @@
+<fieldset>
+    <h4>Run <%- course_key %></h4>
+    <button class="js-remove-run">delete</button>
+    <p>Start Date: <%- start_date %></p>
+</fieldset>

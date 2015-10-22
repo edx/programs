@@ -1,6 +1,10 @@
-<h1>Programs</h1>
-<ul>
-    <% programs.each( function( program ) { %>
-        <li><%- program.get('name') %></li>
+<h3>Program List</h3>
+<ul class="program-list">
+    <% programs.each( function( programModel ) {
+        var program = programModel.toJSON(); %>
+        <li class="program">
+            <a href="program/<%- program.id %>" class="js-app-click"><%- program.name %></a>
+            <p><%- program.status %></p>
+            <p><%- program.category %> Program - <%- program.course_codes.length %> Courses - <%- program.id %></p>
     <% }) %>
 </ul>

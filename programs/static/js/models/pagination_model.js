@@ -20,22 +20,31 @@ define([
                     headers: this.headers,
                     contentType: 'application/json; charset=utf-8',
                     context: this,
-                    success: function( data ) {
-                        var programsCollection = new ProgramsCollection();
-                        programsCollection.set(data.results);
-                        data.results = programsCollection;
-
-                        this.set( data );
-                        this.trigger( 'sync', this );
-                    },
+                    // NB: setting context fails in tests
+                    success: _.bind( this.setData, this ),
                     error: function( jqXHR ) {
                         console.log( 'error: ', jqXHR );
                     }
                 });
             },
 
+            setData: function( data ) {
+                this.set( data );
+                this.setResults( data.results );
+            },
+
             setHeaders: function() {
                 this.headers = {};
+            },
+
+            setResults: function( results ) {
+                var programsCollection = new ProgramsCollection();
+
+                programsCollection.set( results );
+                this.set({
+                    results: programsCollection
+                });
+                this.trigger( 'sync', this );
             }
         });
     }

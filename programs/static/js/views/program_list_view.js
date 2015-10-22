@@ -2,10 +2,9 @@ define([
         'backbone',
         'jquery',
         'underscore',
-        'js/models/pagination_model',
         'text!templates/program_list.underscore'
     ],
-    function ( Backbone, $, _, ProgramsModel, ListTpl ) {
+    function ( Backbone, $, _, ListTpl ) {
         'use strict';
 
         return Backbone.View.extend({
@@ -14,9 +13,7 @@ define([
             tpl: _.template( ListTpl ),
 
             initialize: function() {
-                this.model = new ProgramsModel();
-                this.model.on( 'sync', this.render, this );
-                this.model.getList();
+                this.render();
             },
 
             render: function() {
