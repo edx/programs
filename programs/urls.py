@@ -51,7 +51,8 @@ if settings.DEBUG:  # pragma: no cover
     author_view = TemplateView.as_view(template_name='author.html')
 
     urlpatterns += [
-        url(r'^author/$', author_view, name='author'),
+        # Drops into the Programs authoring app, which handles its own routing.
+        url(r'^author/*', author_view, name='author'),
     ]
 
     if os.environ.get('ENABLE_DJANGO_TOOLBAR', False):
