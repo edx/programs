@@ -69,7 +69,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('created', django_extensions.db.fields.CreationDateTimeField(default=django.utils.timezone.now, verbose_name='created', editable=False, blank=True)),
                 ('modified', django_extensions.db.fields.ModificationDateTimeField(default=django.utils.timezone.now, verbose_name='modified', editable=False, blank=True)),
-                ('lms_url', models.CharField(help_text='The URL of the LMS where this course run / mode is being offered.', max_length=1024, null=True)),
+                ('lms_url', models.CharField(help_text='The URL of the LMS where this course run / mode is being offered.', max_length=1024, null=True, blank=True)),
                 ('course_key', models.CharField(help_text='A string referencing the course key identifying this run / mode in the target LMS.', max_length=255)),
                 ('mode_slug', models.CharField(help_text='The mode_slug value which uniquely identifies the mode in the target LMS.', max_length=64)),
                 ('sku', models.CharField(help_text='The sku associated with this run/mode in the ecommerce system working with the target LMS.', max_length=255, null=True, blank=True)),
@@ -116,7 +116,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterUniqueTogether(
             name='programcoursecode',
-            unique_together=set([('program', 'course_code', 'position')]),
+            unique_together=set([('program', 'position')]),
         ),
         migrations.AlterUniqueTogether(
             name='coursecode',
