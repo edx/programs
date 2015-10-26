@@ -57,6 +57,28 @@ class Program(TimeStampedModel):
         blank=True,
     )
 
+    marketing_slug = models.CharField(
+        help_text=_('Slug used to generate links to the marketing site'),
+        unique=True,
+        null=True,
+        blank=True,
+        max_length=255
+    )
+
+    def save(self, *a, **kw):
+        """Validate that the marketing slug is not null if program category is
+        xseries and program status is active.
+        """
+        # Checks if the program category is xseries and program status is active.
+        if self.category == constants.ProgramCategory.XSERIES and self.status == constants.ProgramStatus.ACTIVE:
+            # Validate that marketing slug is not null.
+            if not self.marketing_slug:
+                raise ValidationError(
+                    _("Active XSeries Programs must have a valid marketing slug.")
+                )
+
+        return super(Program, self).save(*a, **kw)
+
     class Meta(object):  # pylint: disable=missing-docstring
         index_together = ('status', 'category')
 

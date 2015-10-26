@@ -5,7 +5,73 @@ from django.core.exceptions import ValidationError
 from django.test import TestCase
 
 from programs.apps.programs import models
+from programs.apps.programs.constants import ProgramStatus, ProgramCategory
+from programs.apps.programs.models import Program
 from programs.apps.programs.tests import factories
+
+
+class TestProgram(TestCase):
+    """
+    Test for Program model
+    """
+
+    def serialize_program(self, program):
+        """Serialize the the data for the program provided"""
+        return {
+            'name': program.name,
+            'subtitle': program.subtitle,
+            'category': program.category,
+            'status': program.status,
+            'marketing_slug': program.marketing_slug
+        }
+
+    def test_empty_marketing_slug(self):
+        """
+        Ensure that the program could be saved without marketing slug
+        if program category is not xseries or status is UNPUBLISHED. Also
+        verify that marketing slug is required in other case.
+        """
+
+        with self.assertRaises(ValidationError) as context:
+            Program.objects.create(
+                name='test-program',
+                subtitle="test-subtitle",
+                category=ProgramCategory.XSERIES,
+                status=ProgramStatus.ACTIVE,
+            )
+
+        self.assertEqual(
+            "Active XSeries Programs must have a valid marketing slug.",
+            context.exception.message
+        )
+
+        program = {
+            'name': 'test-program',
+            'subtitle': 'test-subtitle',
+            'category': ProgramCategory.XSERIES,
+            'status': ProgramStatus.UNPUBLISHED,
+            'marketing_slug': None
+
+        }
+        Program.objects.create(**program)
+
+        programs = Program.objects.all()
+        self.assertEqual(len(programs), 1)
+        self.assertEqual(self.serialize_program(programs.first()), program)
+
+        program = {
+            'name': 'test-program-2',
+            'subtitle': 'test-subtitle-2',
+            'category': ProgramCategory.XSERIES,
+            'status': ProgramStatus.ACTIVE,
+            'marketing_slug': 'test-slug'
+
+        }
+        Program.objects.create(**program)
+
+        programs = Program.objects.all()
+        self.assertEqual(len(programs), 2)
+        self.assertEqual(self.serialize_program(programs[1]), program)
 
 
 class TestProgramOrganization(TestCase):

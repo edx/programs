@@ -58,7 +58,8 @@ class ProgramSerializer(serializers.ModelSerializer):
     class Meta(object):  # pylint: disable=missing-docstring
         model = models.Program
         fields = (
-            'id', 'name', 'subtitle', 'category', 'status', 'organizations', 'course_codes', 'created', 'modified'
+            'id', 'name', 'subtitle', 'category', 'status', 'marketing_slug', 'organizations', 'course_codes',
+            'created', 'modified'
         )
         read_only_fields = ('id', 'created', 'modified')
 
