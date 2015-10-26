@@ -5,7 +5,8 @@ define([
         'js/models/pagination_model',
         'js/models/program_model',
         'js/views/course_run_view',
-        'text!templates/course_details.underscore'
+        'text!templates/course_details.underscore',
+        'gettext'
     ],
     function( Backbone, $, _, ProgramsModel, ProgramModel,
               CourseRunView, ListTpl ) {

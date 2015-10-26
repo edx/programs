@@ -1,9 +1,10 @@
 define([
         'backbone',
+        'js/views/program_creator_view',
         'js/views/program_details_view',
         'js/views/program_list_view'
     ],
-    function( Backbone, ProgramDetailsView, ProgramListView ) {
+    function( Backbone, ProgramCreatorView, ProgramDetailsView, ProgramListView ) {
         'use strict';
 
         return Backbone.Router.extend({
@@ -11,6 +12,7 @@ define([
 
             routes: {
                 '': 'programList',
+                'program/new': 'programCreator',
                 'program/:id': 'programDetails'
             },
 
@@ -18,17 +20,28 @@ define([
                 this.model = options.model;
             },
 
-            // TODO: prevent zombie views
-            programList: function() {
-                this.programList = new ProgramListView({
-                    model: this.model
+            programCreator: function() {
+                if ( this.programCreatorView ) {
+                    this.programCreatorView.destroy();
+                }
+
+                this.programCreatorView = new ProgramCreatorView({
+                    programsModel: this.model
                 });
+            },
+
+            programList: function() {
+                if ( !this.programListView ) {
+                    this.programListView = new ProgramListView({
+                        model: this.model
+                    });
+                }
             },
 
             programDetails: function( id ) {
                 var programModel = this.model.get('results').get(id);
 
-                this.programDetails = new ProgramDetailsView({
+                this.programDetailsView = new ProgramDetailsView({
                     model: programModel
                 });
             },
@@ -37,7 +50,12 @@ define([
              * Starts the router.
              */
             start: function () {
-                Backbone.history.start({pushState: true, root: this.root});
+                if ( !Backbone.history.started ) {
+                    Backbone.history.start({
+                        pushState: true,
+                        root: this.root
+                    });
+                }
                 return this;
             }
         });

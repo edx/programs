@@ -1,10 +1,11 @@
-<h3>Program List</h3>
+<h3><%= gettext('Program List') %></h3>
 <ul class="program-list">
     <% programs.each( function( programModel ) {
         var program = programModel.toJSON(); %>
         <li class="program">
             <a href="program/<%- program.id %>" class="js-app-click"><%- program.name %></a>
             <p><%- program.status %></p>
-            <p><%- program.category %> Program - <%- program.course_codes.length %> Courses - <%- program.id %></p>
+            <p><%- program.category %> <%= gettext('Program') %> - <%- program.course_codes.length %> <%= gettext('Courses') %> - <%- program.id %></p>
     <% }) %>
 </ul>
+<a href="author/program/new"><%= gettext('Create new Program') %></a>

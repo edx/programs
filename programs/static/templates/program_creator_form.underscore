@@ -1,0 +1,36 @@
+<h3><%= gettext('Create a New Program') %></h3>
+<form>
+    <div>
+        <label for="program-type-select"><%= gettext('Program type') %></label>
+        <select id="program-type-select" class="program-type" disabled>
+            <option value="xseries"><%= gettext('XSeries') %></option>
+        </select>
+    </div>
+
+    <div>
+        <label for="program-org"><%= gettext('Organization') %></label>
+        <select id="program-org" class="program-org">
+            <option value="false"><%= gettext('Select an organization') %></option>
+          <% _.each( orgs, function( org ) { %>
+            <option value="<%- org.key %>"><%- org.display_name %></option>
+          <% }); %>
+        </select>
+    </div>
+
+    <div>
+        <label for="program-name"><%= gettext('Name') %></label>
+        <input id="program-name" class="program-name" aria-describedby="program-name-desc" required>
+        <span id="program-name-desc"><%= gettext('The public display name of the program.') %></span>
+    </div>
+
+    <div>
+        <label for="program-subtitle"><%= gettext('Subtitle') %></label>
+        <input id="program-subtitle" class="program-subtitle" maxlength="140" aria-describedby="program-subtitle-desc" required>
+        <span id="program-subtitle-desc"><%= gettext('A short description of the program, including concepts covered and expected outcomes (140 character limit).') %></span>
+    </div>
+
+    <div>
+        <button class="js-create-program"><%= gettext('Create') %></button>
+        <button class="js-abort-view"><%= gettext('Cancel') %></button>
+    </div>
+</form>

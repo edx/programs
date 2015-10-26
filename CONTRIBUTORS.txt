@@ -1,3 +1,4 @@
 Jim Abramson <jsa@edx.org>
 Clinton Blackburn <cblackburn@edx.org>
+Alasdair Swan <aswan@edx.org>
 Renzo Lucioni <renzo@edx.org>

@@ -1,12 +1,12 @@
 define([
         'jquery',
         'js/models/pagination_model',
-        'js/views/program_list_view'
+        'js/views/program_creator_view'
     ],
-    function( $, ProgramsModel, ProgramListView ) {
+    function( $, ProgramsModel, ProgramCreatorView ) {
         'use strict';
 
-        describe('ProgramListView', function () {
+        describe('ProgramCreatorView', function () {
             var view = {},
                 model = {},
                 listData = {
@@ -68,6 +68,26 @@ define([
                             subtitle: 'test-subtitle'
                         }
                     ]
+                },
+                organizations = {
+                    count: 1,
+                    previous: null,
+                    'num_pages': 1,
+                    results:[{
+                        'display_name': 'test-org-display_name',
+                        'key': 'test-org-key'
+                    }],
+                    next: null
+                },
+                sampleInput = {
+                    organization: 'test-org-key',
+                    name: 'Test Course Name',
+                    subtitle: 'Test Course Subtitle'
+                },
+                completeForm = function( data ) {
+                    view.$el.find('#program-name').val( data.name );
+                    view.$el.find('#program-subtitle').val( data.subtitle );
+                    view.$el.find('#program-org').val( data.organization );
                 };
 
             beforeEach( function() {
@@ -76,19 +96,26 @@ define([
 
                 jasmine.clock().install();
 
+                spyOn( ProgramsModel.prototype, 'getList' );
+
                 model = new ProgramsModel();
                 model.set( listData );
                 model.setResults( listData.results );
 
-                view = new ProgramListView({
-                    model: model
+                spyOn( ProgramCreatorView.prototype, 'saveSuccess' ).and.callThrough();
+                spyOn( ProgramCreatorView.prototype, 'saveError' ).and.callThrough();
+
+                view = new ProgramCreatorView({
+                    programsModel: model
                 });
+
+                view.organizations.set( organizations );
+                view.render();
 
             });
 
             afterEach( function() {
-                view.undelegateEvents();
-                view.remove();
+                view.destroy();
 
                 jasmine.clock().uninstall();
             });
@@ -97,37 +124,62 @@ define([
                 expect( view ).toBeDefined();
             });
 
-            it( 'should render a list of 4 programs', function () {
-                var $ul = view.$el.find('.program-list');
+            it ( 'should get the form data', function() {
+                var formData = {};
 
-                expect( $ul.find('li').length ).toEqual( listData.count );
+                completeForm( sampleInput );
+                formData = view.getData();
+
+                expect( formData.name ).toEqual( sampleInput.name );
+                expect( formData.subtitle ).toEqual( sampleInput.subtitle );
+                expect( formData.organization[0].key ).toEqual( sampleInput.organization );
             });
 
-            it( 'should hit the API via the pagination model: error', function() {
+            it( 'should submit the form when the user clicks submit', function() {
+                completeForm( sampleInput );
+
                 spyOn( $, 'ajax' ).and.callFake( function( event ) {
-                    event.error( 'Error', view );
+                    event.success();
                 });
 
-                view.model.getList();
+                view.$el.find('.js-create-program').click();
 
-                // $.ajax should have been called
-                expect($.ajax).toHaveBeenCalled();
+                expect( $.ajax ).toHaveBeenCalled();
+                expect( view.saveSuccess ).toHaveBeenCalled();
+                expect( view.saveError ).not.toHaveBeenCalled();
+                expect( view.programsModel.getList ).toHaveBeenCalled();
             });
 
-            it( 'should hit the API via the pagniation model: success', function() {
+            it( 'should run the saveError when model save failures occur', function() {
                 spyOn( $, 'ajax' ).and.callFake( function( event ) {
-                    event.success( listData );
+                    event.error();
                 });
 
-                view.model.getList();
+                view.$el.find('.js-create-program').click();
 
-                // $.ajax should have been called
-                expect($.ajax).toHaveBeenCalled();
+                expect( $.ajax ).toHaveBeenCalled();
+                expect( view.saveSuccess ).not.toHaveBeenCalled();
+                expect( view.saveError ).toHaveBeenCalled();
             });
 
-            it( 'should destroy the view when the destroy function is called', function() {
+            it( 'should set the model with form data when submitted', function() {
+                completeForm( sampleInput );
+
+                spyOn( $, 'ajax' ).and.callFake( function( event ) {
+                    event.success();
+                });
+
+                view.$el.find('.js-create-program').click();
+
+                expect( view.model.get('name') ).toEqual( sampleInput.name );
+                expect( view.model.get('subtitle') ).toEqual( sampleInput.subtitle );
+                expect( view.model.get('organization')[0].key ).toEqual( sampleInput.organization );
+            });
+
+            it( 'should abort the view when the cancel button is clicked', function() {
+                completeForm( sampleInput );
                 expect( view.$parentEl.html().length ).toBeGreaterThan( 0 );
-                view.destroy();
+                view.$el.find('.js-abort-view').click();
                 expect( view.$parentEl.html().length ).toEqual( 0 );
             });
         });

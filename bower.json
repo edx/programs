@@ -12,6 +12,7 @@
   "dependencies": {
     "backbone": "~1.2.1",
     "jquery": "~2.1.4",
+    "jquery-cookie": "~1.4.1",
     "requirejs": "~2.1.15",
     "underscore": "~1.8.2",
     "text": "~2.0.14"

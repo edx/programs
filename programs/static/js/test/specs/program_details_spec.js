@@ -61,7 +61,6 @@ define([
                 view = new ProgramDetailsView({
                     model: model
                 });
-
             });
 
             afterEach( function() {

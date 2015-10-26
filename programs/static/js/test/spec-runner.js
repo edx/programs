@@ -6,16 +6,6 @@
 var specs = [],
     config = {};
 
-// the E-Commerce application loads gettext identity library via django, thus
-// components reference gettext globally so a shim is added here to reflect
-// the text so tests can be run if modules reference gettext
-if (!window.gettext) {
-    window.gettext = function (text) {
-        'use strict';
-        return text;
-    };
-}
-
 // you can automatically get the test files using karma's configs
 for (var file in window.__karma__.files) {
     if (/js\/test\/specs\/.*spec\.js$/.test(file)) {
