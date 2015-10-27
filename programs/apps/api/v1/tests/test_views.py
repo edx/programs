@@ -151,6 +151,7 @@ class ProgramsViewTests(JwtMixin, TestCase):
                 u"id": ANY,
                 u"created": ANY,
                 u"modified": ANY,
+                u'marketing_slug': None,
             }
         )
 
@@ -176,6 +177,7 @@ class ProgramsViewTests(JwtMixin, TestCase):
                     u"id": program.id,
                     u"created": program.created.strftime(DRF_DATE_FORMAT),
                     u"modified": program.modified.strftime(DRF_DATE_FORMAT),
+                    u'marketing_slug': program.marketing_slug,
                 }
             )
 
@@ -202,6 +204,7 @@ class ProgramsViewTests(JwtMixin, TestCase):
                     u"id": program.id,
                     u"created": program.created.strftime(DRF_DATE_FORMAT),
                     u"modified": program.modified.strftime(DRF_DATE_FORMAT),
+                    u'marketing_slug': program.marketing_slug,
                 }
             )
 
@@ -248,6 +251,7 @@ class ProgramsViewTests(JwtMixin, TestCase):
                 u"id": program.id,
                 u"created": program.created.strftime(DRF_DATE_FORMAT),
                 u"modified": program.modified.strftime(DRF_DATE_FORMAT),
+                u'marketing_slug': program.marketing_slug,
             }
         )
 

@@ -37,6 +37,7 @@ class ProgramFactory(factory.django.DjangoModelFactory):
     subtitle = "test-subtitle"
     category = ProgramCategory.XSERIES
     status = ProgramStatus.UNPUBLISHED
+    marketing_slug = factory.Sequence(lambda n: 'test-slug-{}'.format(n))
 
 
 class ProgramOrganizationFactory(factory.django.DjangoModelFactory):
