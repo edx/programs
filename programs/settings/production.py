@@ -37,3 +37,9 @@ DB_OVERRIDES = dict(
 
 for override, value in DB_OVERRIDES.iteritems():
     DATABASES['default'][override] = value
+
+JWT_AUTH.update({
+    'JWT_SECRET_KEY': SOCIAL_AUTH_EDX_OIDC_SECRET,
+    'JWT_ISSUER': SOCIAL_AUTH_EDX_OIDC_URL_ROOT,
+    'JWT_AUDIENCE': SOCIAL_AUTH_EDX_OIDC_KEY,
+})
