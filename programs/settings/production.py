@@ -2,7 +2,7 @@ from os import environ
 import yaml
 
 from programs.settings.base import *
-from programs.settings.utils import get_env_setting
+from programs.settings.utils import get_env_setting, get_logger_config
 
 
 DEBUG = False
@@ -19,12 +19,12 @@ COMPRESS_CSS_FILTERS += [
     'compressor.filters.cssmin.CSSMinFilter',
 ]
 
-CONFIG_FILE = get_env_setting('PROGRAMS_CFG')
+LOGGING = get_logger_config()
 
+CONFIG_FILE = get_env_setting('PROGRAMS_CFG')
 with open(CONFIG_FILE) as f:
     config_from_yaml = yaml.load(f)
-
-vars().update(config_from_yaml)
+    vars().update(config_from_yaml)
 
 DB_OVERRIDES = dict(
     PASSWORD=environ.get('DB_MIGRATION_PASS', DATABASES['default']['PASSWORD']),
