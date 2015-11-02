@@ -1,0 +1,4 @@
+<h2><%- name %></h2>
+<p><%- subtitle %></p>
+<div class="js-course-list"></div>
+<button class="js-add-course">+ Add a course</button>

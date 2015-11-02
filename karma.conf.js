@@ -10,7 +10,7 @@ module.exports = function(config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['jasmine', 'requirejs', 'sinon'],
+    frameworks: ['jasmine-jquery', 'jasmine', 'requirejs', 'sinon'],
 
 
     // list of files / patterns to load in the browser
@@ -18,6 +18,7 @@ module.exports = function(config) {
       {pattern: 'programs/static/vendor/**/*.js', included: false},
       {pattern: 'programs/static/bower_components/**/*.js', included: false},
       {pattern: 'programs/static/js/**/*.js', included: false},
+      {pattern: 'programs/static/templates/**/*.underscore', included: false},
       {pattern: 'programs/static/templates/**/*.html', included: false},
       'programs/static/js/config.js',
       'programs/static/js/test/spec-runner.js'
@@ -35,6 +36,7 @@ module.exports = function(config) {
     // enabled plugins
     plugins:[
        'karma-jasmine',
+       'karma-jasmine-jquery',
        'karma-requirejs',
        'karma-firefox-launcher',
        'karma-coverage',

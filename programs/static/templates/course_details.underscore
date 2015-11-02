@@ -1,0 +1,18 @@
+<fieldset>
+<% if ( display_name ) {  %>
+    <h3><%- display_name %></h3>
+    <button class="js-remove-course">delete</button>
+    <p><%- organization.display_name %> / <%- key %>
+    <div class="js-course-runs"></div>
+  <% if ( run_modes.length > -1 ) { %>
+    <button class="js-add-course-run">+ Add another course run</button>
+  <% } %>
+<% } else { %>
+    <select class="js-course-select">
+        <option>Select a course</option>
+        <% _.each( courseList, function( course ) { %>
+            <option value="<%- course.id %>"><%- course.name %></option>
+        <% }); %>
+    </select>
+<% } %>
+</fieldset>
