@@ -3,14 +3,16 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Programs
-===============================
-Bundled courses.
+edX Programs Service
+====================
+
+These are the developer docs for the edX Programs Service.
 
 .. toctree::
    :maxdepth: 2
 
    getting_started
+   programs
    testing
    features
    internationalization
