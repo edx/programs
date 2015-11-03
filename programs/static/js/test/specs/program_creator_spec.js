@@ -88,6 +88,23 @@ define([
                     view.$el.find('#program-name').val( data.name );
                     view.$el.find('#program-subtitle').val( data.subtitle );
                     view.$el.find('#program-org').val( data.organization );
+
+                    if ( data.category ) {
+                        view.$el.find('#program-type').val( data.category );
+                    }
+                },
+                verifyValidation = function ( data, invalidAttr ) {
+                    var $invalidElement;
+
+                    completeForm( data );
+
+                    view.$el.find('.js-create-program').click();
+
+                    $invalidElement = view.$el.find( '[name="' + invalidAttr + '"]' );
+
+                    expect( view.model.save ).not.toHaveBeenCalled();
+                    expect( $invalidElement.hasClass('invalid') ).toBe( true );
+                    expect( $invalidElement.attr('data-error') ).toBeDefined();
                 };
 
             beforeEach( function() {
@@ -155,6 +172,9 @@ define([
                     event.error();
                 });
 
+                // Fill out the form with valid data so that form model validation doesn't
+                // prevent the model from being saved.
+                completeForm( sampleInput );
                 view.$el.find('.js-create-program').click();
 
                 expect( $.ajax ).toHaveBeenCalled();
@@ -162,7 +182,7 @@ define([
                 expect( view.saveError ).toHaveBeenCalled();
             });
 
-            it( 'should set the model with form data when submitted', function() {
+            it( 'should set the model when valid form data is submitted', function() {
                 completeForm( sampleInput );
 
                 spyOn( $, 'ajax' ).and.callFake( function( event ) {
@@ -174,6 +194,50 @@ define([
                 expect( view.model.get('name') ).toEqual( sampleInput.name );
                 expect( view.model.get('subtitle') ).toEqual( sampleInput.subtitle );
                 expect( view.model.get('organization')[0].key ).toEqual( sampleInput.organization );
+            });
+
+            it( 'should not set the model when an invalid program name is submitted', function() {
+                var invalidInput = $.extend({}, sampleInput);
+
+                spyOn( view.model, 'save' );
+
+                // No name provided.
+                invalidInput.name = '';
+                verifyValidation( invalidInput, 'name' );
+
+                // Name is too long.
+                invalidInput.name = 'x'.repeat(100);
+                verifyValidation( invalidInput, 'name' );
+            });
+
+            it( 'should not set the model when an invalid program subtitle is submitted', function() {
+                var invalidInput = $.extend({}, sampleInput);
+
+                spyOn( view.model, 'save' );
+
+                // Subtitle is too long.
+                invalidInput.subtitle = 'x'.repeat(300);
+                verifyValidation( invalidInput, 'subtitle' );
+            });
+
+            it( 'should not set the model when an invalid category is submitted', function() {
+                var invalidInput = $.extend({}, sampleInput);
+
+                spyOn( view.model, 'save' );
+
+                // Category other than 'xseries' selected.
+                invalidInput.category = 'yseries';
+                verifyValidation( invalidInput, 'category' );
+            });
+
+            it( 'should not set the model when an invalid organization key is submitted', function() {
+                var invalidInput = $.extend({}, sampleInput);
+
+                spyOn( view.model, 'save' );
+
+                // No organization selected.
+                invalidInput.organization = 'false';
+                verifyValidation( invalidInput, 'organization' );
             });
 
             it( 'should abort the view when the cancel button is clicked', function() {
