@@ -1,12 +1,14 @@
 """
 Tests for Programs API views (v1).
 """
+import datetime
 import json
 
 import ddt
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from mock import ANY
+import pytz
 
 from programs.apps.api.v1.tests.mixins import AuthClientMixin, JwtMixin
 from programs.apps.core.constants import Role
@@ -18,6 +20,7 @@ from programs.apps.programs.tests.factories import (
     ProgramCourseCodeFactory,
     ProgramFactory,
     ProgramOrganizationFactory,
+    ProgramCourseRunModeFactory,
 )
 
 
@@ -243,6 +246,10 @@ class ProgramsViewTests(JwtMixin, TestCase):
         """
         Ensure that nested serializers are working in program detail views.
         """
+        start_date = datetime.datetime.now(tz=pytz.UTC)
+        course_key = "edX/DemoX/Demo_Course"
+        run_key = "Demo_Course"
+
         org = OrganizationFactory.create(key="test-org-key", display_name="test-org-display_name")
         program = ProgramFactory.create()
         ProgramOrganizationFactory.create(program=program, organization=org)
@@ -251,7 +258,14 @@ class ProgramsViewTests(JwtMixin, TestCase):
             display_name="test-course-display_name",
             organization=org,
         )
-        ProgramCourseCodeFactory.create(program=program, course_code=course_code)
+
+        program_course_code = ProgramCourseCodeFactory.create(program=program, course_code=course_code)
+
+        ProgramCourseRunModeFactory.create(
+            course_key=course_key,
+            program_course_code=program_course_code,
+            start_date=start_date
+        )
 
         response = self._make_request(program_id=program.id, admin=True)
         self.assertEqual(response.status_code, 200)
@@ -276,7 +290,15 @@ class ProgramsViewTests(JwtMixin, TestCase):
                             u"key": "test-org-key",
                             u"display_name": "test-org-display_name",
                         },
-                        u"run_modes": [],
+                        u"run_modes": [
+                            {
+                                u"course_key": course_key,
+                                u"run_key": run_key,
+                                u"mode_slug": "verified",
+                                u"sku": '',
+                                u"start_date": start_date.strftime(DRF_DATE_FORMAT)
+                            }
+                        ],
                     }
                 ],
                 u"id": program.id,

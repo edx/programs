@@ -57,3 +57,5 @@ class ProgramCourseRunModeFactory(factory.django.DjangoModelFactory):
         model = models.ProgramCourseRunMode
 
     id = factory.Sequence(lambda n: n)
+    mode_slug = "verified"
+    sku = ''

@@ -1,5 +1,8 @@
 """Admin for programs models."""
+from django import forms
 from django.contrib import admin
+from opaque_keys import InvalidKeyError
+from opaque_keys.edx.keys import CourseKey
 
 from programs.apps.programs import models
 
@@ -59,12 +62,36 @@ class ProgramCourseCodeAdmin(admin.ModelAdmin):
     raw_id_fields = ('program', 'course_code')
 
 
+class ProgramCourseRunModeForm(forms.ModelForm):
+    """Model form for ProgramCourseCode model. Adding custom validation for
+    course key format at form level.
+    """
+    def clean_course_key(self):
+        """Clean the course key to make sure format is valid."""
+        course_key = self.cleaned_data['course_key']
+        try:
+            CourseKey.from_string(course_key)
+        except InvalidKeyError:
+            raise forms.ValidationError('Invalid CourseKey {course_key}!'.format(
+                course_key=course_key
+            ))
+
+        return course_key
+
+    class Meta(object):  # pylint: disable=missing-docstring
+        model = models.ProgramCourseRunMode
+        fields = ('program_course_code', 'course_key', 'mode_slug', 'sku', 'lms_url', 'start_date', 'run_key')
+
+
 class ProgramCourseRunModeAdmin(admin.ModelAdmin):
     """Admin for the ProgramCourseRunMode model."""
+    form = ProgramCourseRunModeForm
+
     list_display = ('program_course_code', 'course_key')
     search_fields = ('course_key', 'sku')
-    fields = ('program_course_code', 'course_key', 'mode_slug', 'sku', 'lms_url')
+    fields = ('program_course_code', 'course_key', 'mode_slug', 'sku', 'lms_url', 'start_date', 'run_key')
     raw_id_fields = ('program_course_code',)
+    readonly_fields = ('run_key',)
 
 
 admin.site.register(models.Program, ProgramAdmin)
