@@ -29,7 +29,7 @@ define([
             },
 
             setData: function( data ) {
-                this.set( data );
+                this.set( data, { silent: true } );
                 this.setResults( data.results );
             },
 
@@ -41,9 +41,7 @@ define([
                 var programsCollection = new ProgramsCollection();
 
                 programsCollection.set( results );
-                this.set({
-                    results: programsCollection
-                });
+                this.set( { results: programsCollection }, { silent: true });
                 this.trigger( 'sync', this );
             }
         });

@@ -16,7 +16,7 @@
 
                 initialize: function() {
                     this.model = new ProgramsModel();
-                    this.model.on( 'sync', this.start, this );
+                    this.model.once( 'sync', this.start, this );
                     this.model.getList();
                 },
 
@@ -60,6 +60,9 @@
                         model: this.model
                     });
                     this.app.start();
+
+                    // Listen for additions/deletions from results
+                    this.model.on( 'change:results', this.model.fetch, this );
                 }
             });
 

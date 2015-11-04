@@ -15,7 +15,8 @@ var gulp = require('gulp'),
             'build.js',
             'gulpfile.js',
             'programs/static/js/**/*.js',
-            'programs/static/js/test/**/*.js'
+            'programs/static/js/test/**/*.js',
+            '!programs/bower_components/**/*.js'
         ],
         karamaConf: 'karma.conf.js'
     };
