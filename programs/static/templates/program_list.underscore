@@ -1,11 +1,16 @@
-<h3><%= gettext('Program List') %></h3>
-<ul class="program-list">
-    <% programs.each( function( programModel ) {
-        var program = programModel.toJSON(); %>
-        <li class="program">
-            <a href="program/<%- program.id %>" class="js-app-click"><%- program.name %></a>
-            <p><%- program.status %></p>
-            <p><%- program.category %> <%= gettext('Program') %> - <%- program.course_codes.length %> <%= gettext('Courses') %> - <%- program.id %></p>
-    <% }) %>
-</ul>
-<a href="author/program/new"><%= gettext('Create new Program') %></a>
+<% if ( programs.length ) { %>
+    <h3><%= gettext('Program List') %></h3>
+    <ul class="program-list">
+        <% programs.each( function( programModel ) {
+            var program = programModel.toJSON(); %>
+            <li class="program">
+                <a href="program/<%- program.id %>" class="js-app-click"><%- program.name %></a>
+                <p><%- program.status %></p>
+                <p><%- program.category %> <%= gettext('Program') %> - <%- program.course_codes.length %> <%= gettext('Courses') %> - <%- program.id %></p>
+        <% }) %>
+    </ul>
+<% } else { %>
+    <p><%= gettext( 'You haven\'t created any programs yet.') %></p>
+    <p><%= gettext( 'Programs are groups of courses that provide cumulative knowledge of a subject.') %></p>
+    <a href="/author/program/new" class="create-program-link">+ <%= gettext('Create your first program') %></a>
+<% } %>

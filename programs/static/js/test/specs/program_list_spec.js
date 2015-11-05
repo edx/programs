@@ -6,7 +6,7 @@ define([
     function( $, ProgramsModel, ProgramListView ) {
         'use strict';
 
-        describe('ProgramListView', function () {
+        describe('ProgramListView', function() {
             var view = {},
                 model = {},
                 listData = {
@@ -83,7 +83,6 @@ define([
                 view = new ProgramListView({
                     model: model
                 });
-
             });
 
             afterEach( function() {
@@ -93,14 +92,21 @@ define([
                 jasmine.clock().uninstall();
             });
 
-            it( 'should exist', function () {
+            it( 'should exist', function() {
                 expect( view ).toBeDefined();
             });
 
-            it( 'should render a list of 4 programs', function () {
+            it( 'should render a list of 4 programs', function() {
                 var $ul = view.$el.find('.program-list');
 
                 expect( $ul.find('li').length ).toEqual( listData.count );
+            });
+
+            it( 'should render a button to create a new program if the programs list is empty', function() {
+                expect( view.$el.find('.create-program-link') ).not.toBeInDOM();
+                view.model.setResults( [] );
+                view.render();
+                expect( view.$el.find('.create-program-link') ).toBeInDOM();
             });
 
             it( 'should hit the API via the pagination model: error', function() {

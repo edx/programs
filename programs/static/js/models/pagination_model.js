@@ -41,7 +41,7 @@ define([
                 var programsCollection = new ProgramsCollection();
 
                 programsCollection.set( results );
-                this.set( { results: programsCollection }, { silent: true });
+                this.set( { results: programsCollection }, { silent: true } );
                 this.trigger( 'sync', this );
             }
         });
