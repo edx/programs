@@ -30,6 +30,14 @@
     </div>
 
     <div>
+        <label for="program-marketing-slug"><%= gettext('Marketing Slug') %></label>
+        <input id="program-marketing-slug" class="program-marketing-slug" name="marketing_slug" aria-describedby="program-marketing-slug-desc">
+        <span id="program-marketing-slug-desc">
+            <%= gettext('Slug used to generate links to the marketing site.') %>
+        </span>
+    </div>
+
+    <div>
         <button class="js-create-program"><%= gettext('Create') %></button>
         <button class="js-abort-view"><%= gettext('Cancel') %></button>
     </div>

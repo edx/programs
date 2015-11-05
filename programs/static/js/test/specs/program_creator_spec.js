@@ -82,7 +82,8 @@ define([
                 sampleInput = {
                     organization: 'test-org-key',
                     name: 'Test Course Name',
-                    subtitle: 'Test Course Subtitle'
+                    subtitle: 'Test Course Subtitle',
+                    marketing_slug: 'test-management'
                 },
                 completeForm = function( data ) {
                     view.$el.find('#program-name').val( data.name );
@@ -91,6 +92,10 @@ define([
 
                     if ( data.category ) {
                         view.$el.find('#program-type').val( data.category );
+                    }
+
+                    if ( data.marketing_slug ) {
+                        view.$el.find('#program-marketing-slug').val( data.marketing_slug );
                     }
                 },
                 verifyValidation = function ( data, invalidAttr ) {
@@ -128,7 +133,6 @@ define([
 
                 view.organizations.set( organizations );
                 view.render();
-
             });
 
             afterEach( function() {
@@ -194,6 +198,7 @@ define([
                 expect( view.model.get('name') ).toEqual( sampleInput.name );
                 expect( view.model.get('subtitle') ).toEqual( sampleInput.subtitle );
                 expect( view.model.get('organization')[0].key ).toEqual( sampleInput.organization );
+                expect( view.model.get('marketing_slug') ).toEqual( sampleInput.marketing_slug );
             });
 
             it( 'should not set the model when an invalid program name is submitted', function() {
@@ -238,6 +243,16 @@ define([
                 // No organization selected.
                 invalidInput.organization = 'false';
                 verifyValidation( invalidInput, 'organization' );
+            });
+
+            it( 'should not set the model when an invalid marketing slug is submitted', function() {
+                var invalidInput = $.extend({}, sampleInput);
+
+                spyOn( view.model, 'save' );
+
+                // Marketing slug is too long.
+                invalidInput.marketing_slug = 'x'.repeat(256);
+                verifyValidation( invalidInput, 'marketing_slug' );
             });
 
             it( 'should abort the view when the cancel button is clicked', function() {

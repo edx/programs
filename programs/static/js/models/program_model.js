@@ -25,7 +25,11 @@ define([
                     // XSeries is currently the only valid Program type.
                     oneOf: ['xseries']
                 },
-                organization: 'validateOrganization'
+                organization: 'validateOrganization',
+                marketing_slug: {
+                    // The underlying Django model does not require a marketing_slug.
+                    maxLength: 255
+                }
             },
 
             validateOrganization: function(orgArray) {
