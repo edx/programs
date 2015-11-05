@@ -20,15 +20,13 @@ define([
             },
 
             render: function() {
-                if ( this.model.get('count') > 0 ) {
-                    this.$el.html(
-                        this.tpl( {
-                            programs: this.model.get('results')
-                        })
-                    );
+                this.$el.html(
+                    this.tpl( {
+                        programs: this.model.get('results')
+                    })
+                );
 
-                    this.$parentEl.html( this.$el );
-                }
+                this.$parentEl.html( this.$el );
             },
 
             destroy: function() {
