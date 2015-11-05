@@ -4,7 +4,7 @@
         { key: course_key },
         true
     ) %></span>
-    <button class="js-remove-run btn delete right">
+    <button class="js-remove-run btn btn-delete right">
         <span class="icon-fallback icon-fallback-text">
             <span class="icon icon-trash-o" aria-hidden="true"></span>
             <span class="text"><%= interpolate(

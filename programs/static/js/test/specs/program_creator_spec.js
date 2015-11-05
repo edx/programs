@@ -108,7 +108,7 @@ define([
                     $invalidElement = view.$el.find( '[name="' + invalidAttr + '"]' );
 
                     expect( view.model.save ).not.toHaveBeenCalled();
-                    expect( $invalidElement.hasClass('invalid') ).toBe( true );
+                    expect( $invalidElement.hasClass( 'has-error' ) ).toBe( true );
                     expect( $invalidElement.attr('data-error') ).toBeDefined();
                 };
 
