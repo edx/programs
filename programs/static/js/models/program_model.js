@@ -9,6 +9,38 @@ define([
         return Backbone.Model.extend({
             url: '/api/v1/programs/',
 
+            // Backbone.Validation rules.
+            // See: http://thedersen.com/projects/backbone-validation/#configure-validation-rules-on-the-model.
+            validation: {
+                name: {
+                    required: true,
+                    maxLength: 64
+                },
+                subtitle: {
+                    // The underlying Django model does not require a subtitle.
+                    maxLength: 255
+                },
+                category: {
+                    required: true,
+                    // XSeries is currently the only valid Program type.
+                    oneOf: ['xseries']
+                },
+                organization: 'validateOrganization'
+            },
+
+            validateOrganization: function(orgArray) {
+                // The array passed to this method contains a single object representing
+                // the selected organization; the object contains the organization's key.
+                // In the future, multiple organizations might be associated with a program.
+                var i;
+
+                for (i = 0; i < orgArray.length; i++) {
+                    if ( orgArray[i].key === 'false' ) {
+                        return gettext('Please select a valid organization.');
+                    }
+                }
+            },
+
             save: function() {
                 var method = '',
                     options = _.extend({validate: true, parse: true}, {

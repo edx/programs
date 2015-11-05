@@ -1,15 +1,15 @@
 <h3><%= gettext('Create a New Program') %></h3>
 <form>
     <div>
-        <label for="program-type-select"><%= gettext('Program type') %></label>
-        <select id="program-type-select" class="program-type" disabled>
+        <label for="program-type"><%= gettext('Program type') %></label>
+        <select id="program-type" class="program-type" name="category" disabled>
             <option value="xseries"><%= gettext('XSeries') %></option>
         </select>
     </div>
 
     <div>
         <label for="program-org"><%= gettext('Organization') %></label>
-        <select id="program-org" class="program-org">
+        <select id="program-org" class="program-org" name="organization">
             <option value="false"><%= gettext('Select an organization') %></option>
           <% _.each( orgs, function( org ) { %>
             <option value="<%- org.key %>"><%- org.display_name %></option>
@@ -19,14 +19,14 @@
 
     <div>
         <label for="program-name"><%= gettext('Name') %></label>
-        <input id="program-name" class="program-name" aria-describedby="program-name-desc" required>
+        <input id="program-name" class="program-name" name="name" maxlength="64" aria-describedby="program-name-desc" required>
         <span id="program-name-desc"><%= gettext('The public display name of the program.') %></span>
     </div>
 
     <div>
         <label for="program-subtitle"><%= gettext('Subtitle') %></label>
-        <input id="program-subtitle" class="program-subtitle" maxlength="140" aria-describedby="program-subtitle-desc" required>
-        <span id="program-subtitle-desc"><%= gettext('A short description of the program, including concepts covered and expected outcomes (140 character limit).') %></span>
+        <input id="program-subtitle" class="program-subtitle" name="subtitle" maxlength="255" aria-describedby="program-subtitle-desc">
+        <span id="program-subtitle-desc"><%= gettext('A short description of the program, including concepts covered and expected outcomes (255 character limit).') %></span>
     </div>
 
     <div>

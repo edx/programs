@@ -1,22 +1,17 @@
-/**
- * This is where your tests go.  It should happen automatically when you
- * add files to the karma configuration.
- */
-
 var specs = [],
     config = {};
 
-// you can automatically get the test files using karma's configs
+// You can automatically get the test files using karma's configs
 for (var file in window.__karma__.files) {
     if (/js\/test\/specs\/.*spec\.js$/.test(file)) {
         specs.push(file);
     }
 }
 
-// This is where karma puts the files
+// This is where karma puts the files.
 config.baseUrl = '/base/programs/static/';
 
-// Karma lets you list the test files here
+// Karma lets you list the test files here.
 config.deps = specs;
 config.callback = window.__karma__.start;
 
