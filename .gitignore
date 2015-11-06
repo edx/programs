@@ -30,6 +30,7 @@ default.db
 # Static assets
 media/cache/
 assets/
+programs/static/css/
 
 # Unit test / coverage reports
 .coverage

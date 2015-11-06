@@ -1,4 +1,12 @@
-<h2><%- name %></h2>
-<p><%- subtitle %></p>
-<div class="js-course-list"></div>
-<button class="js-add-course">+ <%= gettext('Add a course') %></button>
+<header class="app-header">
+    <h2><%- name %></h2>
+    <p><%- subtitle %></p>
+</header>
+<div class="layout-col layout-col-b">
+    <div class="js-course-list"></div>
+    <button class="js-add-course btn btn-default btn-base full">
+        <span class="icon icon-plus" aria-hidden="true"></span>
+        <span class="text"><%= gettext('Add a course') %></span>
+    </button>
+</div>
+<aside class="js-aside layout-col layout-col-a"></aside>

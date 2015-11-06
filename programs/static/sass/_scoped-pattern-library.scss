@@ -1,0 +1,52 @@
+// ------------------------------
+// edX Pattern Library : Build Partial Scoped to the $scope-class
+
+// About: Shared sass compilation between LTR/RTL produced stylesheets. Includes all dependencies and current pattern styling of the edX Pattern Library
+
+// ------------------------------
+// #CONFIG + UTILITIES
+// ------------------------------
+
+@import '../bower_components/edx-pattern-library/pattern-library/sass/utilities/functions';
+
+// set RTL/LTR specific variables
+@if $layout-direction == rtl {
+    @import '../bower_components/edx-pattern-library/pattern-library/sass/utilities/variables-rtl';
+} @else {
+    @import '../bower_components/edx-pattern-library/pattern-library/sass/utilities/variables-ltr';
+}
+
+@import '../bower_components/edx-pattern-library/pattern-library/sass/utilities/variables';
+@import '../bower_components/edx-pattern-library/pattern-library/sass/utilities/mixins';
+@import '../bower_components/edx-pattern-library/pattern-library/sass/utilities/helpers';
+
+.#{$scope-class} {
+    @import '../bower_components/edx-pattern-library/pattern-library/sass/utilities/normalize';
+}
+
+// TODO: Test this on studio, may need to create a custom reset for the app
+// to get the fonts to work (i.e. body and html level resets don't work when scoped)
+@import '../bower_components/edx-pattern-library/pattern-library/sass/utilities/reset';
+
+.#{$scope-class} {
+    @import '../bower_components/edx-pattern-library/pattern-library/sass/utilities/typography';
+}
+
+@import '../bower_components/edx-pattern-library/pattern-library/sass/utilities/afontgarde';
+
+
+// ------------------------------
+// #COMPONENTS
+// ------------------------------
+.#{$scope-class} {
+    @import '../bower_components/edx-pattern-library/pattern-library/sass/patterns/buttons';
+    @import '../bower_components/edx-pattern-library/pattern-library/sass/patterns/headings';
+    @import '../bower_components/edx-pattern-library/pattern-library/sass/patterns/copy';
+    @import '../bower_components/edx-pattern-library/pattern-library/sass/patterns/forms';
+}
+
+@import '../bower_components/edx-pattern-library/pattern-library/sass/patterns/grid';
+@import '../bower_components/edx-pattern-library/pattern-library/sass/patterns/layouts';
+@import '../bower_components/edx-pattern-library/pattern-library/sass/patterns/depth';
+
+@import '../bower_components/edx-pattern-library/pattern-library/sass/patterns/icons';

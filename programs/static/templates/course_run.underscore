@@ -1,5 +1,22 @@
-<fieldset>
-    <h4>Run <%- course_key %></h4>
-    <button class="js-remove-run">delete</button>
-    <p>Start Date: <%- start_date %></p>
-</fieldset>
+<div class="card run-container">
+    <span class="copy copy-large emphasized"><%= interpolate(
+        gettext('Run %(key)s'),
+        { key: course_key },
+        true
+    ) %></span>
+    <button class="js-remove-run btn delete right">
+        <span class="icon-fallback icon-fallback-text">
+            <span class="icon icon-trash-o" aria-hidden="true"></span>
+            <span class="text"><%= interpolate(
+                gettext('Remove run %(key)s from the program'),
+                { key: course_key },
+                true
+            ) %></span>
+        </span>
+    </button>
+    <p class="copy copy-base subtitle"><%= interpolate(
+        gettext('Start Date: %(date)s'),
+        { date: start_date },
+        true
+    ) %></p>
+</div>

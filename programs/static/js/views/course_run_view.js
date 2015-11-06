@@ -2,7 +2,8 @@ define([
         'backbone',
         'jquery',
         'underscore',
-        'text!templates/course_run.underscore'
+        'text!templates/course_run.underscore',
+        'js/shims/edx-icons'
     ],
     function ( Backbone, $, _, CourseRunTpl ) {
         'use strict';

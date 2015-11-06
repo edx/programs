@@ -12,5 +12,11 @@
         };
     }
 
-    return window.gettext;
+    if ( !window.interpolate ) {
+        window.interpolate = function (text) {
+            return text;
+        };
+    }
+
+    return window;
 })();

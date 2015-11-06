@@ -10,9 +10,11 @@
     "requirejs": "^2.1.18"
   },
   "devDependencies": {
+    "del": "*",
     "gulp": "^3.9.0",
     "gulp-jscs": "^3.0.1",
     "gulp-jshint": "^1.11.2",
+    "gulp-sass": "*",
     "jasmine-core": "^2.3.4",
     "karma": "^0.13.2",
     "karma-coverage": "^0.5.2",

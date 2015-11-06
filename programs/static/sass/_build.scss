@@ -1,0 +1,41 @@
+// ------------------------------
+// Programs: Main Style Compile
+
+// About: Sass compile for the Programs IDA.
+
+// #CONFIG:         app-centric configuration/overrides
+// #LIB:            third party libraries and dependencies
+// #EXTENSIONS:     add-ons and further customizations
+
+
+// ------------------------------
+// #CONFIG
+// ------------------------------
+$scope-class: 'program-app';
+@import 'config';
+
+
+// ------------------------------
+// #LIB
+// ------------------------------
+@import 'lib';
+@import 'scoped-pattern-library';
+
+
+// ------------------------------
+// #EXTENSIONS
+// ------------------------------
+/*
+Default views to add - being commented out and kept =
+until app styles are finalized (in case we need the partials)
+@import 'utilities';
+*/
+.#{$scope-class} {
+    @import 'components';
+    @import 'layouts';
+    @import 'views';
+}
+/*
+@import 'print';
+@import 'overrides';
+*/
