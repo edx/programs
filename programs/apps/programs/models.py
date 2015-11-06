@@ -5,7 +5,8 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from django_extensions.db.models import TimeStampedModel
 from django.utils.translation import ugettext_lazy as _
-
+from opaque_keys import InvalidKeyError
+from opaque_keys.edx.keys import CourseKey
 
 from programs.apps.programs import constants
 
@@ -222,6 +223,15 @@ class ProgramCourseRunMode(TimeStampedModel):
         blank=True,
     )
 
+    start_date = models.DateTimeField(
+        help_text=_("The start date of this course run in the target LMS.")
+    )
+
+    run_key = models.CharField(
+        help_text=_("A string referencing the last part of course key identifying this course run in the target LMS."),
+        max_length=255
+    )
+
     class Meta(object):  # pylint: disable=missing-docstring
         unique_together = (('program_course_code', 'course_key', 'mode_slug', 'sku'))
 
@@ -243,5 +253,11 @@ class ProgramCourseRunMode(TimeStampedModel):
                 sku=None,
         ).exists():
             raise ValidationError(_('Duplicate course run modes are not allowed for course codes in a program.'))
+
+        try:
+            course_key = CourseKey.from_string(self.course_key)
+            self.run_key = course_key.run
+        except InvalidKeyError:
+            raise ValidationError(_("Invalid course key."))
 
         return super(ProgramCourseRunMode, self).save()

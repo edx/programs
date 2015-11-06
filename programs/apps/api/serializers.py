@@ -26,7 +26,7 @@ class ProgramCourseRunModeSerializer(serializers.ModelSerializer):
 
     class Meta(object):  # pylint: disable=missing-docstring
         model = models.ProgramCourseRunMode
-        fields = ('course_key', 'mode_slug', 'sku')
+        fields = ('course_key', 'mode_slug', 'sku', 'start_date', 'run_key')
 
 
 class CourseCodeSerializer(serializers.ModelSerializer):

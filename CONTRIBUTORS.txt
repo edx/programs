@@ -2,4 +2,5 @@ Jim Abramson <jsa@edx.org>
 Clinton Blackburn <cblackburn@edx.org>
 Alasdair Swan <aswan@edx.org>
 Renzo Lucioni <renzo@edx.org>
+Awais Qureshi <awais@edx.org>
 Ahsan Ulhaq <ahsan.ulhaq84@gmail.com>

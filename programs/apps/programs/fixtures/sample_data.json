@@ -216,7 +216,8 @@
         "program_course_code": 1,
         "course_key": "organization-a/course-a/fall",
         "modified": "2015-10-26T20:00:47.011Z",
-        "lms_url": ""
+        "lms_url": "",
+        "start_date": "2015-10-27T16:05:11.102Z"
     },
     "model": "programs.programcourserunmode",
     "pk": 1
@@ -229,7 +230,8 @@
         "program_course_code": 1,
         "course_key": "organization-a/course-a/winter",
         "modified": "2015-10-26T20:00:51.728Z",
-        "lms_url": ""
+        "lms_url": "",
+        "start_date": "2015-10-27T16:05:11.102Z"
     },
     "model": "programs.programcourserunmode",
     "pk": 2
@@ -242,7 +244,8 @@
         "program_course_code": 2,
         "course_key": "organization-a/course-b/fall",
         "modified": "2015-10-26T20:00:57.798Z",
-        "lms_url": ""
+        "lms_url": "",
+        "start_date": "2015-10-27T16:05:11.102Z"
     },
     "model": "programs.programcourserunmode",
     "pk": 3
@@ -255,7 +258,8 @@
         "program_course_code": 2,
         "course_key": "organization-a/course-b/winter",
         "modified": "2015-10-26T20:01:04.534Z",
-        "lms_url": ""
+        "lms_url": "",
+        "start_date": "2015-10-27T16:05:11.102Z"
     },
     "model": "programs.programcourserunmode",
     "pk": 4
@@ -268,7 +272,8 @@
         "program_course_code": 3,
         "course_key": "organization-b/course-c/fall",
         "modified": "2015-10-26T20:01:41.236Z",
-        "lms_url": ""
+        "lms_url": "",
+        "start_date": "2015-10-27T16:05:11.102Z"
     },
     "model": "programs.programcourserunmode",
     "pk": 5
@@ -281,7 +286,8 @@
         "program_course_code": 3,
         "course_key": "organization-b/course-c/winter",
         "modified": "2015-10-26T20:01:56.975Z",
-        "lms_url": ""
+        "lms_url": "",
+        "start_date": "2015-10-27T16:05:11.102Z"
     },
     "model": "programs.programcourserunmode",
     "pk": 6
@@ -294,7 +300,8 @@
         "program_course_code": 4,
         "course_key": "organization-b/course-d/fall",
         "modified": "2015-10-26T20:02:08.849Z",
-        "lms_url": ""
+        "lms_url": "",
+        "start_date": "2015-10-27T16:05:11.102Z"
     },
     "model": "programs.programcourserunmode",
     "pk": 7
@@ -307,7 +314,8 @@
         "program_course_code": 4,
         "course_key": "organization-b/course-d/winter",
         "modified": "2015-10-26T20:02:22.721Z",
-        "lms_url": ""
+        "lms_url": "",
+        "start_date": "2015-10-27T16:05:11.102Z"
     },
     "model": "programs.programcourserunmode",
     "pk": 8
@@ -320,7 +328,8 @@
         "program_course_code": 5,
         "course_key": "edX/DemoX/Demo_Course",
         "modified": "2015-10-27T16:05:11.102Z",
-        "lms_url": ""
+        "lms_url": "",
+        "start_date": "2015-10-27T16:05:11.102Z"
     },
     "model": "programs.programcourserunmode",
     "pk": 9

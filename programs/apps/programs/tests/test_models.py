@@ -1,6 +1,10 @@
 """
 Tests for custom model code in the programs app.
 """
+import datetime
+
+import ddt
+import pytz
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 
@@ -170,10 +174,25 @@ class TestProgramCourseCode(TestCase):
         )
 
 
+@ddt.ddt
 class TestProgramCourseRunMode(TestCase):
     """
     Tests for the ProgramCourseRunMode model.
     """
+    def setUp(self):
+        """
+        DRY object initializations.
+        """
+        self.program = factories.ProgramFactory.create()
+        self.org = factories.OrganizationFactory.create()
+        factories.ProgramOrganizationFactory.create(program=self.program, organization=self.org)
+        self.course_code = factories.CourseCodeFactory.create(organization=self.org)
+        self.program_course = factories.ProgramCourseCodeFactory.create(
+            program=self.program, course_code=self.course_code
+        )
+        self.start_date = datetime.datetime.now(tz=pytz.UTC)
+        self.course_key = 'edX/DemoX/Demo_Course'
+        super(TestProgramCourseRunMode, self).setUp()
 
     def test_unique_null_sku(self):
         """
@@ -181,25 +200,21 @@ class TestProgramCourseRunMode(TestCase):
         instances of (course_key, mode_slug, sku=NULL) in a program for the
         same course code.
         """
-        program = factories.ProgramFactory.create()
-        org = factories.OrganizationFactory.create()
-        factories.ProgramOrganizationFactory.create(program=program, organization=org)
-        course_code = factories.CourseCodeFactory.create(organization=org)
-        pgm_course = factories.ProgramCourseCodeFactory.create(program=program, course_code=course_code)
-
         factories.ProgramCourseRunModeFactory.create(
-            program_course_code=pgm_course,
-            course_key='test-course-key',
+            program_course_code=self.program_course,
+            course_key=self.course_key,
             mode_slug='test-mode-slug',
-            sku=None
+            sku=None,
+            start_date=self.start_date
         )
 
         with self.assertRaises(ValidationError) as context:
             factories.ProgramCourseRunModeFactory.create(
-                program_course_code=pgm_course,
-                course_key='test-course-key',
+                program_course_code=self.program_course,
+                course_key=self.course_key,
                 mode_slug='test-mode-slug',
-                sku=None
+                sku=None,
+                start_date=self.start_date
             )
         self.assertEqual(
             'Duplicate course run modes are not allowed for course codes in a program.',
@@ -208,8 +223,46 @@ class TestProgramCourseRunMode(TestCase):
 
         # this should not cause an error, because the sku has a different non-empty value
         factories.ProgramCourseRunModeFactory.create(
-            program_course_code=pgm_course,
-            course_key='test-course-key',
+            program_course_code=self.program_course,
+            course_key=self.course_key,
             mode_slug='test-mode-slug',
-            sku='test-sku'
+            sku='test-sku',
+            start_date=self.start_date
+        )
+
+    @ddt.data(
+        ('edx/demo/course1', 'course1'),
+        ('edx/demo/course2', 'course2'),
+        ('course-v1:edX+DemoX+Demo_Course', 'Demo_Course')
+    )
+    @ddt.unpack
+    def test_run_key_parse_from_course_key(self, course_key, run_key):
+        """
+        Verify that run key is parsed from a given course key and saves into
+        the run key.
+        """
+        prog_course_run_mode = factories.ProgramCourseRunModeFactory.create(
+            program_course_code=self.program_course,
+            course_key=course_key,
+            mode_slug='test-mode-slug',
+            sku=None,
+            start_date=self.start_date
+        )
+        self.assertEqual(prog_course_run_mode.run_key, run_key)
+
+    @ddt.data('edx/demo', 'course-v1:edX+DemoX', '', 'invalid')
+    def test_invalid_course_key(self, course_key):
+        """Verify that invalid course key raises error."""
+        with self.assertRaises(ValidationError) as context:
+            factories.ProgramCourseRunModeFactory.create(
+                program_course_code=self.program_course,
+                course_key=course_key,
+                mode_slug='test-mode-slug',
+                sku=None,
+                start_date=self.start_date
+            )
+
+        self.assertEqual(
+            'Invalid course key.',
+            context.exception.message
         )
