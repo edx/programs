@@ -4,16 +4,17 @@ Programs API views (v1).
 from rest_framework import mixins, viewsets
 
 from programs.apps.programs import models
-from programs.apps.api import filters, permissions, serializers
+from programs.apps.api import filters, permissions, serializers, parsers
 
 
 class ProgramsViewSet(
-        mixins.CreateModelMixin, mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+        mixins.CreateModelMixin, mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.UpdateModelMixin,
+        viewsets.GenericViewSet):
     """
 
     **Use Cases**
 
-        List existing Programs, and create new ones.
+        List and update existing Programs, and create new ones.
 
     **Example Requests**
 
@@ -32,6 +33,15 @@ class ProgramsViewSet(
         Only users with global administrative rights may create programs.  POST requests from non-
         admins will result in status 403.
 
+        # Update existing Program.
+        PATCH /api/v1/programs/{program_id}
+
+        If the request is successful, the HTTP status will be 200 and the response body will
+        contain a JSON-formatted representation of the newly-updated program.
+
+        Only users with global administrative rights may update programs.  PATCH requests from non-
+        admins will result in status 403.
+
     **Response Values**
 
         * id: The ID of the program.
@@ -39,6 +49,7 @@ class ProgramsViewSet(
         * subtitle: A brief, descriptive subtitle for the Program.
         * category: The category / type of Program.  Right now the only value allowed is 'xseries'.
         * status: The lifecycle status of this Program.  Right now the only value allowed is 'unpublished'.
+        * marketing_slug: Slug used to generate links to the marketing site.
         * created: The date/time this Program was created.
         * modified: The date/time this Program was last modified.
 
@@ -51,6 +62,7 @@ class ProgramsViewSet(
         filters.ProgramOrgKeyFilterBackend,
     )
     serializer_class = serializers.ProgramSerializer
+    parser_classes = (parsers.MergePatchParser,)
 
 
 class CourseCodesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):

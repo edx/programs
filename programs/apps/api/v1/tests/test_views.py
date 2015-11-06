@@ -51,7 +51,12 @@ class ProgramsViewTests(JwtMixin, TestCase):
             url = reverse("api:v1:programs-detail", kwargs={'pk': program_id})
         else:
             url = reverse("api:v1:programs-list")
-        return getattr(self.client, method)(url, data=data, HTTP_AUTHORIZATION=auth)
+        if method == 'patch':
+            return getattr(self.client, method)(
+                url, data=data, HTTP_AUTHORIZATION=auth, content_type="application/merge-patch+json"
+            )
+        else:
+            return getattr(self.client, method)(url, data=data, HTTP_AUTHORIZATION=auth)
 
     def test_authentication(self):
         """
@@ -154,6 +159,32 @@ class ProgramsViewTests(JwtMixin, TestCase):
                 u'marketing_slug': None,
             }
         )
+
+    @ddt.data(
+        ({"subtitle": "dummy-subtitle"}, "subtitle"),
+        ({"marketing_slug": "dummy-marketing-slug"}, "marketing_slug"),
+        ({"name": "dummy-name"}, "name")
+    )
+    @ddt.unpack
+    def test_patch(self, program_data, field_updated):
+        """
+        Ensure the API supports Patch request for Programs.
+        """
+        program = ProgramFactory.create()
+        json_data = json.dumps(program_data)
+        response = self._make_request(method="patch", program_id=program.id, data=json_data, admin=True)
+        response_data = json.loads(response.content)
+        self.assertEqual(response_data[field_updated], program_data[field_updated])
+
+    def test_patch_non_admin(self):
+        """
+        Ensure the API support PATCH only for admin users.
+        """
+        # Only allow admin to update program
+        program = ProgramFactory.create()
+        data = json.dumps({"name": "dummy-name"})
+        response = self._make_request(method="patch", program_id=program.id, data=data)
+        self.assertEqual(response.status_code, 403)
 
     @ddt.data(*STATUSES)
     def test_view_admin(self, status):
