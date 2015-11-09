@@ -3,12 +3,15 @@ Tests for REST API Authentication
 """
 import ddt
 from django.contrib.auth.models import Group
+from django.db import IntegrityError
 from django.test import TestCase
+import mock
 from rest_framework.exceptions import AuthenticationFailed
 
 from programs.apps.api.authentication import JwtAuthentication, pipeline_set_user_roles
 from programs.apps.api.v1.tests.mixins import JwtMixin
 from programs.apps.core.constants import Role
+from programs.apps.core.models import User
 from programs.apps.core.tests.factories import UserFactory
 
 
@@ -16,6 +19,7 @@ class TestJWTAuthentication(JwtMixin, TestCase):
     """
     Test id_token authentication used with the browseable API.
     """
+    USERNAME = 'test-username'
 
     def test_no_preferred_username(self):
         """
@@ -23,13 +27,31 @@ class TestJWTAuthentication(JwtMixin, TestCase):
         """
         # with preferred_username: all good
         authentication = JwtAuthentication()
-        user = authentication.authenticate_credentials({'preferred_username': 'test-username'})
-        self.assertEqual(user.username, 'test-username')
+        user = authentication.authenticate_credentials({'preferred_username': self.USERNAME})
+        self.assertEqual(user.username, self.USERNAME)
 
         # missing preferred_username: exception
         authentication = JwtAuthentication()
         with self.assertRaises(AuthenticationFailed):
             authentication.authenticate_credentials({})
+
+    def test_user_creation_failure(self):
+        """
+        Verify that the service is robust to failures during user creation.
+        """
+        authentication = JwtAuthentication()
+
+        with mock.patch.object(User.objects, 'get_or_create') as mocked:
+            # If side_effect is an iterable, each call to the mock will return
+            # the next value from the iterable.
+            # See: https://docs.python.org/3/library/unittest.mock.html#unittest.mock.Mock.side_effect.
+            mocked.side_effect = [
+                IntegrityError,
+                (User.objects.create(username=self.USERNAME), False)
+            ]
+
+            user = authentication.authenticate_credentials({'preferred_username': self.USERNAME})
+            self.assertEqual(user.username, self.USERNAME)
 
 
 @ddt.ddt

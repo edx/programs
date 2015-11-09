@@ -5,6 +5,7 @@ Authentication logic for REST API.
 import logging
 
 from django.contrib.auth.models import Group
+from django.db import IntegrityError
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
@@ -55,7 +56,20 @@ class JwtAuthentication(JSONWebTokenAuthentication):
         if 'preferred_username' not in payload:
             logger.warning('Invalid JWT payload: preferred_username not present.')
             raise AuthenticationFailed()
+
         username = payload['preferred_username']
-        user, __ = User.objects.get_or_create(username=username)  # pylint: disable=no-member
+
+        try:
+            # get_or_create is vulnerable to a race condition which can cause
+            # IntegrityErrors to be raised here.
+            # See: https://code.djangoproject.com/ticket/13906 and https://code.djangoproject.com/ticket/18557.
+            user, __ = User.objects.get_or_create(username=username)  # pylint: disable=no-member
+        except IntegrityError:
+            logger.warning('User retrieval or creation failed. Retrying.')
+
+            # get_or_create should not fail twice. The object responsible for the
+            # previously raised IntegrityError should be retrieved.
+            user, __ = User.objects.get_or_create(username=username)  # pylint: disable=no-member
+
         _set_user_roles(user, payload)
         return user
