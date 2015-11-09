@@ -103,6 +103,7 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_PAGINATION_CLASS': 'programs.apps.api.pagination.DefaultPagination',
     'PAGE_SIZE': 20,
+    'EXCEPTION_HANDLER': 'programs.apps.api.exception_handler.auth_exception_handler',
 }
 
 # MEDIA CONFIGURATION
