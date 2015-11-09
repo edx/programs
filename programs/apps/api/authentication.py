@@ -54,9 +54,9 @@ class JwtAuthentication(JSONWebTokenAuthentication):
         make sure that the roles associated with this user are up-to-date.
         """
         if 'preferred_username' not in payload:
-            logger.warning('Invalid JWT payload: preferred_username not present.')
-            raise AuthenticationFailed()
-
+            msg = 'Invalid JWT payload: preferred_username not present.'
+            logger.warning(msg)
+            raise AuthenticationFailed(msg)
         username = payload['preferred_username']
 
         try:
