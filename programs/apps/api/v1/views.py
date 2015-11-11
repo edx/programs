@@ -1,10 +1,10 @@
 """
 Programs API views (v1).
 """
-from rest_framework import mixins, viewsets
+from rest_framework import mixins, viewsets, parsers as drf_parsers
 
 from programs.apps.programs import models
-from programs.apps.api import filters, permissions, serializers, parsers
+from programs.apps.api import filters, permissions, serializers, parsers as edx_parsers
 
 
 class ProgramsViewSet(
@@ -50,6 +50,7 @@ class ProgramsViewSet(
         * category: The category / type of Program.  Right now the only value allowed is 'xseries'.
         * status: The lifecycle status of this Program.  Right now the only value allowed is 'unpublished'.
         * marketing_slug: Slug used to generate links to the marketing site.
+        * organizations: List data containing organizations with which the program is associated.
         * created: The date/time this Program was created.
         * modified: The date/time this Program was last modified.
 
@@ -62,7 +63,7 @@ class ProgramsViewSet(
         filters.ProgramOrgKeyFilterBackend,
     )
     serializer_class = serializers.ProgramSerializer
-    parser_classes = (parsers.MergePatchParser,)
+    parser_classes = (edx_parsers.MergePatchParser, drf_parsers.JSONParser)
 
 
 class CourseCodesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
