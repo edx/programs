@@ -72,7 +72,9 @@
         border: 2px solid palette(error, base);
     }
 
-    .field-input {
+    .field-input,
+    .field-hint,
+    .field-message {
         min-with: 300px;
         width: 50%;
 

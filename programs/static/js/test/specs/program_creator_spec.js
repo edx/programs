@@ -50,7 +50,7 @@ define([
                             course_codes: [{
                                 display_name: 'test-course-display_name',
                                 key: 'test-course-key',
-                                organization: {
+                                organizations: {
                                     display_name: 'test-org-display_name',
                                     key: 'test-org-key'
                                 },
@@ -80,7 +80,7 @@ define([
                     next: null
                 },
                 sampleInput = {
-                    organization: 'test-org-key',
+                    organizations: 'test-org-key',
                     name: 'Test Course Name',
                     subtitle: 'Test Course Subtitle',
                     marketing_slug: 'test-management'
@@ -88,7 +88,7 @@ define([
                 completeForm = function( data ) {
                     view.$el.find('#program-name').val( data.name );
                     view.$el.find('#program-subtitle').val( data.subtitle );
-                    view.$el.find('#program-org').val( data.organization );
+                    view.$el.find('#program-org').val( data.organizations );
 
                     if ( data.category ) {
                         view.$el.find('#program-type').val( data.category );
@@ -99,17 +99,21 @@ define([
                     }
                 },
                 verifyValidation = function ( data, invalidAttr ) {
-                    var $invalidElement;
+                    var errorClass = 'has-error',
+                        $invalidElement = view.$el.find( '[name="' + invalidAttr + '"]' ),
+                        $errorMsg = $invalidElement.siblings('.field-message'),
+                        inputErrorMsg = '';
 
                     completeForm( data );
 
                     view.$el.find('.js-create-program').click();
-
-                    $invalidElement = view.$el.find( '[name="' + invalidAttr + '"]' );
+                    inputErrorMsg = $invalidElement.data('error');
 
                     expect( view.model.save ).not.toHaveBeenCalled();
-                    expect( $invalidElement.hasClass( 'has-error' ) ).toBe( true );
-                    expect( $invalidElement.attr('data-error') ).toBeDefined();
+                    expect( $invalidElement ).toHaveClass( errorClass );
+                    expect( $errorMsg ).toHaveClass( errorClass );
+                    expect( inputErrorMsg ).toBeDefined();
+                    expect( $errorMsg.find('.field-message-content').html() ).toEqual( inputErrorMsg );
                 };
 
             beforeEach( function() {
@@ -153,7 +157,7 @@ define([
 
                 expect( formData.name ).toEqual( sampleInput.name );
                 expect( formData.subtitle ).toEqual( sampleInput.subtitle );
-                expect( formData.organization[0].key ).toEqual( sampleInput.organization );
+                expect( formData.organizations[0].key ).toEqual( sampleInput.organizations );
             });
 
             it( 'should submit the form when the user clicks submit', function() {
@@ -197,7 +201,7 @@ define([
 
                 expect( view.model.get('name') ).toEqual( sampleInput.name );
                 expect( view.model.get('subtitle') ).toEqual( sampleInput.subtitle );
-                expect( view.model.get('organization')[0].key ).toEqual( sampleInput.organization );
+                expect( view.model.get('organizations')[0].key ).toEqual( sampleInput.organizations );
                 expect( view.model.get('marketing_slug') ).toEqual( sampleInput.marketing_slug );
             });
 
@@ -241,8 +245,8 @@ define([
                 spyOn( view.model, 'save' );
 
                 // No organization selected.
-                invalidInput.organization = 'false';
-                verifyValidation( invalidInput, 'organization' );
+                invalidInput.organizations = 'false';
+                verifyValidation( invalidInput, 'organizations' );
             });
 
             it( 'should not set the model when an invalid marketing slug is submitted', function() {

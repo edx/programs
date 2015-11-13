@@ -86,7 +86,7 @@ define([
                     subtitle: this.$el.find( '.program-subtitle' ).val(),
                     category: this.$el.find( '.program-type' ).val(),
                     marketing_slug: this.$el.find( '.program-marketing-slug' ).val(),
-                    organization: [{
+                    organizations: [{
                         key: this.$el.find( '.program-org' ).val()
                     }]
                 };
