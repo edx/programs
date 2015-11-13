@@ -27,13 +27,20 @@ class JwtMixin(object):
         token = jwt.encode(payload, secret)
         return token
 
-    def generate_id_token(self, user, admin=False, ttl=0):
+    def generate_id_token(self, user, admin=False, ttl=1, **overrides):
         """Generate a JWT id_token that looks like the ones currently
         returned by the edx oidc provider."""
 
+        payload = self.default_payload(user=user, admin=admin, ttl=ttl)
+        payload.update(overrides)
+        return self.generate_token(payload)
+
+    def default_payload(self, user, admin=False, ttl=1):
+        """Generate a bare payload, in case tests need to manipulate
+        it directly before encoding."""
         now = int(time())
 
-        return self.generate_token({
+        return {
             "iss": self.JWT_ISSUER,
             "sub": user.pk,
             "aud": self.JWT_AUDIENCE,
@@ -47,7 +54,7 @@ class JwtMixin(object):
             "name": user.full_name,
             "given_name": "",
             "family_name": "",
-        })
+        }
 
 
 class AuthClientMixin(object):
