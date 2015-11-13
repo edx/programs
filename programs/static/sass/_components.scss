@@ -1,0 +1,63 @@
+// ------------------------------
+// Programs: Components
+
+// About: styling for specific UI components ranging from global to modular.
+
+// #BUTTONS
+
+
+// ------------------------------
+// #BUTTONS
+// ------------------------------
+.btn {
+    &.delete {
+        border: none;
+        background: none;
+        color: palette(grayscale, base);
+
+        &:hover,
+        &:focus,
+        &:active {
+            color: palette(grayscale, black);
+        }
+    }
+
+    &.full {
+        width: 100%;
+    }
+
+    &.right {
+        @include float(right);
+    }
+
+    &.btn-create {
+        background: palette(success, base);
+        border-color: palette(success, base);
+
+        // STATE: hover and focus
+        &:hover,
+        &.is-hovered,
+        &:focus,
+        &.is-focused {
+            background: shade($success, 33%);
+            color: $btn-default-focus-color;
+        }
+
+        // STATE: is pressed or active
+        &:active,
+        &.is-pressed,
+        &.is-active {
+            border-color: shade($success, 33%);
+            background: shade($success, 33%);
+        }
+
+        .text {
+            margin-left: 5px;
+        }
+    }
+
+    .icon,
+    .text {
+        vertical-align: middle;
+    }
+}

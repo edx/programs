@@ -1,44 +1,50 @@
-<h3><%= gettext('Create a New Program') %></h3>
-<form>
-    <div>
-        <label for="program-type"><%= gettext('Program type') %></label>
-        <select id="program-type" class="program-type" name="category" disabled>
-            <option value="xseries"><%= gettext('XSeries') %></option>
-        </select>
-    </div>
+<h3 class="hd-3 emphasized"><%= gettext('Create a New Program') %></h3>
+<form class="form">
+    <fieldset class="form-group">
+        <div class="field">
+            <label class="field-label" for="program-type"><%= gettext('Program type') %></label>
+            <select id="program-type" class="field-input input-select program-type" name="category" disabled>
+                <option value="xseries"><%= gettext('XSeries') %></option>
+            </select>
+        </div>
 
-    <div>
-        <label for="program-org"><%= gettext('Organization') %></label>
-        <select id="program-org" class="program-org" name="organization">
-            <option value="false"><%= gettext('Select an organization') %></option>
-          <% _.each( orgs, function( org ) { %>
-            <option value="<%- org.key %>"><%- org.display_name %></option>
-          <% }); %>
-        </select>
-    </div>
+        <div class="field">
+            <label class="field-label" for="program-org"><%= gettext('Organization') %></label>
+            <select id="program-org" class="field-input input-select program-org" name="organization">
+                <option value="false"><%= gettext('Select an organization') %></option>
+              <% _.each( orgs, function( org ) { %>
+                <option value="<%- org.key %>"><%- org.display_name %></option>
+              <% }); %>
+            </select>
+        </div>
 
-    <div>
-        <label for="program-name"><%= gettext('Name') %></label>
-        <input id="program-name" class="program-name" name="name" maxlength="64" aria-describedby="program-name-desc" required>
-        <span id="program-name-desc"><%= gettext('The public display name of the program.') %></span>
-    </div>
+        <div class="field">
+            <label class="field-label" for="program-name"><%= gettext('Name') %></label>
+            <input id="program-name" class="field-input input-text program-name" name="name" maxlength="64" aria-describedby="program-name-desc" required>
+            <div class="field-hint" id="program-name-desc">
+                <p><%= gettext('The public display name of the program.') %></p>
+            </div>
+        </div>
 
-    <div>
-        <label for="program-subtitle"><%= gettext('Subtitle') %></label>
-        <input id="program-subtitle" class="program-subtitle" name="subtitle" maxlength="255" aria-describedby="program-subtitle-desc">
-        <span id="program-subtitle-desc"><%= gettext('A short description of the program, including concepts covered and expected outcomes (255 character limit).') %></span>
-    </div>
+        <div class="field">
+            <label class="field-label" for="program-subtitle"><%= gettext('Subtitle') %></label>
+            <input id="program-subtitle" class="field-input input-text program-subtitle" name="subtitle" maxlength="255" aria-describedby="program-subtitle-desc">
+            <div class="field-hint" id="program-subtitle-desc">
+                <p><%= gettext('A short description of the program, including concepts covered and expected outcomes (255 character limit).') %></p>
+            </div>
+        </div>
 
-    <div>
-        <label for="program-marketing-slug"><%= gettext('Marketing Slug') %></label>
-        <input id="program-marketing-slug" class="program-marketing-slug" name="marketing_slug" aria-describedby="program-marketing-slug-desc">
-        <span id="program-marketing-slug-desc">
-            <%= gettext('Slug used to generate links to the marketing site.') %>
-        </span>
-    </div>
+        <div class="field">
+            <label class="field-label" for="program-marketing-slug"><%= gettext('Marketing Slug') %></label>
+            <input id="program-marketing-slug" class="field-input input-text program-marketing-slug" name="marketing_slug" aria-describedby="program-marketing-slug-desc">
+            <div class="field-hint" id="program-marketing-slug-desc">
+                <p><%= gettext('Slug used to generate links to the marketing site.') %></p>
+            </div>
+        </div>
 
-    <div>
-        <button class="js-create-program"><%= gettext('Create') %></button>
-        <button class="js-abort-view"><%= gettext('Cancel') %></button>
-    </div>
+        <div class="field">
+            <button class="btn btn-primary btn-base js-create-program"><%= gettext('Create') %></button>
+            <button class="btn btn-primary btn-base js-abort-view"><%= gettext('Cancel') %></button>
+        </div>
+    </fieldset>
 </form>

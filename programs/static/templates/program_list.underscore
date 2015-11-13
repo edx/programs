@@ -1,16 +1,24 @@
 <% if ( programs.length ) { %>
-    <h3><%= gettext('Program List') %></h3>
     <ul class="program-list">
         <% programs.each( function( programModel ) {
             var program = programModel.toJSON(); %>
-            <li class="program">
-                <a href="program/<%- program.id %>" class="js-app-click"><%- program.name %></a>
-                <p><%- program.status %></p>
-                <p><%- program.category %> <%= gettext('Program') %> - <%- program.course_codes.length %> <%= gettext('Courses') %> - <%- program.id %></p>
+            <li class="program-details card">
+                <a href="program/<%- program.id %>" class="js-app-click name"><%- program.name %></a>
+                <span class="copy copy-base emphasized status"><%- program.status %></span>
+                <p class="copy copy-base category"><%- program.category %> <%= gettext('Program') %> - <%- program.course_codes.length %> <%= gettext('Courses') %> - <%- program.id %></p>
         <% }) %>
     </ul>
 <% } else { %>
-    <p><%= gettext( 'You haven\'t created any programs yet.') %></p>
-    <p><%= gettext( 'Programs are groups of courses that provide cumulative knowledge of a subject.') %></p>
-    <a href="/author/program/new" class="create-program-link">+ <%= gettext('Create your first program') %></a>
+    <div class="layout-1t2t layout-reversed">
+        <div class="layout-col layout-col-a">
+            <a href="/author/program/new" class="create-program-link btn btn-primary btn-create btn-base">
+                <span class="icon icon-plus" aria-hidden="true"></span>
+                <span class="text"><%= gettext('Create your first program') %></span>
+            </a>
+        </div>
+        <div class="layout-col layout-col-b">
+            <span class="copy copy-large emphasized"><%= gettext( 'You haven\'t created any programs yet.') %></span>
+            <p class="copy copy-base"><%= gettext( 'Programs are groups of courses that provide cumulative knowledge of a subject.') %></p>
+        </div>
+    </div>
 <% } %>

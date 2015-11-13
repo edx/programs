@@ -1,0 +1,14 @@
+// ------------------------------
+// Programs: Main Style Compile - RTL
+
+// About: Sass compile for the Programs IDA
+
+// ------------------------------
+// #CONFIG - layout direction
+// ------------------------------
+$layout-direction: rtl;
+
+// ------------------------------
+// #BUILD
+// ------------------------------
+@import 'build';                      // shared compile/build order for both LTR and RTL UI
