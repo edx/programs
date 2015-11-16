@@ -18,7 +18,8 @@
             name: 'js/common'
         },
         {
-            name: 'js/config'
+            name: 'js/apps/program_admin_app',
+            exclude: ['js/common']
         }
     ]
 })
