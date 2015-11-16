@@ -54,12 +54,33 @@ class ProgramsViewTests(JwtMixin, TestCase):
             url = reverse("api:v1:programs-detail", kwargs={'pk': program_id})
         else:
             url = reverse("api:v1:programs-list")
+
+        content_type = "application/json"
         if method == 'patch':
-            return getattr(self.client, method)(
-                url, data=data, HTTP_AUTHORIZATION=auth, content_type="application/merge-patch+json"
-            )
-        else:
-            return getattr(self.client, method)(url, data=data, HTTP_AUTHORIZATION=auth)
+            data = json.dumps(data)
+            content_type = "application/merge-patch+json"
+        elif method == 'post':
+            data = json.dumps(data)
+
+        return getattr(self.client, method)(
+            url, data=data, HTTP_AUTHORIZATION=auth, content_type=content_type
+        )
+
+    def _validate_org_data_errors(self, request_data, validation_error, organizations_data=None):
+        """
+        DRY helper for validation of error responses while creating programs
+        with invalid organizations data.
+        """
+        if organizations_data is not None:
+            request_data["organizations"] = organizations_data
+
+        response = self._make_request(method='post', data=request_data, admin=True)
+        self.assertEqual(response.status_code, 400)
+        response_data = json.loads(response.content)
+        self.assertEqual(
+            response_data['organizations'],
+            [validation_error]
+        )
 
     def test_authentication(self):
         """
@@ -142,10 +163,16 @@ class ProgramsViewTests(JwtMixin, TestCase):
 
     def test_create(self):
         """
-        Ensure the API supports creation of Programs.
+        Ensure the API supports creation of Programs with a valid organization.
         """
+        # Create a valid organization
+        OrganizationFactory.create(key="test-org-key", display_name="test-org-display_name")
+
         data = self._build_post_data()
+        # Add the valid organization in POST data while creating a Program
+        data["organizations"] = [{"key": "test-org-key"}]
         response = self._make_request(method='post', data=data, admin=True)
+
         self.assertEqual(response.status_code, 201)
         self.assertEqual(
             json.loads(response.content),
@@ -154,13 +181,54 @@ class ProgramsViewTests(JwtMixin, TestCase):
                 u"subtitle": data["subtitle"],
                 u"category": data["category"],
                 u"status": data["status"],
-                u"organizations": [],
+                u"organizations": [{"key": "test-org-key", "display_name": "test-org-display_name"}],
                 u"course_codes": [],
                 u"id": ANY,
                 u"created": ANY,
                 u"modified": ANY,
                 u'marketing_slug': None,
             }
+        )
+
+    def test_create_with_invalid_org_data(self):
+        """
+        Ensure the create Programs API fails if provided organization is
+        invalid or there are multiple organizations.
+        """
+        # validate without providing parameter 'organization' in request data
+        data = self._build_post_data()
+        error_msg = u'This field is required.'
+        self._validate_org_data_errors(request_data=data, validation_error=error_msg)
+
+        # validate with empty list as value for the parameter 'organization' in
+        # request data
+        error_msg = u'Provide exactly one valid/existing Organization while creating a Program.'
+        self._validate_org_data_errors(
+            request_data=data, validation_error=error_msg, organizations_data=[]
+        )
+
+        # validate with non existing organization key as value for the parameter
+        # 'organization' in request data
+        org_key = "non-existing-org-key"
+        error_msg = u"Provided Organization with key '{org_key}' doesn't exist.".format(org_key=org_key)
+        self._validate_org_data_errors(
+            request_data=data, validation_error=error_msg, organizations_data=[{"key": org_key}]
+        )
+
+        # create two valid organizations
+        OrganizationFactory.create(key="test-org-key-1", display_name="test-org-display_name-1")
+        OrganizationFactory.create(key="test-org-key-2", display_name="test-org-display_name-2")
+        # now add these multiple valid organizations in POST data while creating
+        # a Program and test that the user get validation error for providing
+        # multiple organizations
+        error_msg = u'Provide exactly one valid/existing Organization while creating a Program.'
+        self._validate_org_data_errors(
+            request_data=data,
+            validation_error=error_msg,
+            organizations_data=[
+                {"key": "test-org-key-2"},
+                {"key": "test-org-key-2"},
+            ]
         )
 
     @ddt.data(
@@ -174,8 +242,7 @@ class ProgramsViewTests(JwtMixin, TestCase):
         Ensure the API supports Patch request for Programs.
         """
         program = ProgramFactory.create()
-        json_data = json.dumps(program_data)
-        response = self._make_request(method="patch", program_id=program.id, data=json_data, admin=True)
+        response = self._make_request(method="patch", program_id=program.id, data=program_data, admin=True)
         response_data = json.loads(response.content)
         self.assertEqual(response_data[field_updated], program_data[field_updated])
 
@@ -317,8 +384,13 @@ class ProgramsViewTests(JwtMixin, TestCase):
             "subtitle": None,
             "status": ProgramStatus.UNPUBLISHED,
         }
+        # Create a valid organization
+        OrganizationFactory.create(key="test-org-key", display_name="test-org-display_name")
 
         data = self._build_post_data()
+        # Add the valid organization in POST data while creating a Program
+        data["organizations"] = [{"key": "test-org-key"}]
+
         del data[field]
         if field in defaults:
             expected_status = 201
@@ -333,7 +405,7 @@ class ProgramsViewTests(JwtMixin, TestCase):
         else:
             self.assertIn("field is required", content[field][0])
 
-    @ddt.data(ProgramStatus.ACTIVE, ProgramStatus.RETIRED, ProgramStatus.DELETED, None, "", " ", "unrecognized")
+    @ddt.data(ProgramStatus.ACTIVE, ProgramStatus.RETIRED, ProgramStatus.DELETED, "", " ", "unrecognized")
     def test_create_with_invalid_status(self, status):
         """
         Ensure that it is not allowed to create a Program with a status other than "unpublished"
@@ -344,7 +416,7 @@ class ProgramsViewTests(JwtMixin, TestCase):
         content = json.loads(response.content)
         self.assertIn("not a valid choice", content["status"][0])
 
-    @ddt.data(None, "", "unrecognized")
+    @ddt.data("", "unrecognized")
     def test_create_with_invalid_category(self, category):
         """
         Ensure that it is not allowed to create a Program with an empty or unrecognized category
