@@ -14,6 +14,7 @@ from programs.apps.api.v1.tests.mixins import AuthClientMixin, JwtMixin
 from programs.apps.core.constants import Role
 from programs.apps.core.tests.factories import UserFactory
 from programs.apps.programs.constants import ProgramCategory, ProgramStatus
+from programs.apps.programs.models import Program
 from programs.apps.programs.tests.factories import (
     CourseCodeFactory,
     OrganizationFactory,
@@ -55,10 +56,10 @@ class ProgramsViewTests(JwtMixin, TestCase):
         else:
             url = reverse("api:v1:programs-list")
 
-        content_type = "application/json"
+        content_type = 'application/json'
         if method == 'patch':
             data = json.dumps(data)
-            content_type = "application/merge-patch+json"
+            content_type = 'application/merge-patch+json'
         elif method == 'post':
             data = json.dumps(data)
 
@@ -232,23 +233,27 @@ class ProgramsViewTests(JwtMixin, TestCase):
         )
 
     @ddt.data(
-        ({"subtitle": "dummy-subtitle"}, "subtitle"),
-        ({"marketing_slug": "dummy-marketing-slug"}, "marketing_slug"),
-        ({"name": "dummy-name"}, "name")
+        {'name': 'dummy-name'},
+        {'subtitle': 'dummy-subtitle'},
+        {'marketing_slug': 'dummy-marketing-slug'},
+        {'subtitle': 'dummy-subtitle', 'marketing_slug': 'dummy-marketing-slug'},
     )
-    @ddt.unpack
-    def test_patch(self, program_data, field_updated):
+    def test_patch(self, patch_data):
         """
-        Ensure the API supports Patch request for Programs.
+        Verify that the API is able to apply PATCH requests.
         """
         program = ProgramFactory.create()
-        response = self._make_request(method="patch", program_id=program.id, data=program_data, admin=True)
-        response_data = json.loads(response.content)
-        self.assertEqual(response_data[field_updated], program_data[field_updated])
+        response = self._make_request(method="patch", program_id=program.id, data=patch_data, admin=True)
+
+        self.assertEqual(response.status_code, 200)
+
+        program = Program.objects.get(id=program.id)
+        for field, value in patch_data.viewitems():
+            self.assertEqual(getattr(program, field), value)
 
     def test_patch_non_admin(self):
         """
-        Ensure the API support PATCH only for admin users.
+        Verify that the API only allows admins to issue PATCH requests.
         """
         # Only allow admin to update program
         program = ProgramFactory.create()
