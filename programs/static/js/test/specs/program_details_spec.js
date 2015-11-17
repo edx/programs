@@ -241,6 +241,27 @@ define([
                     testInvalidUpdate( '.program-subtitle',  chars256 );
                     testInvalidUpdate( '.program-marketing-slug',  chars256 );
                 });
+
+                it( 'should create a POST config object by default', function() {
+                    var config = view.model.getConfig();
+
+                    expect( config.type ).toEqual( 'POST' );
+                    expect( config.contentType ).toEqual( 'application/json' );
+                    expect( config.data ).not.toBeDefined();
+                });
+
+                it( 'should create a PATCH config object when passed in object sets patch as true', function() {
+                    var data = { name: 'patched name' },
+                        config = view.model.getConfig({
+                            patch: true,
+                            update: data
+                        });
+
+                    expect( config.type ).toEqual( 'PATCH' );
+                    expect( config.contentType ).toEqual( 'application/merge-patch+json' );
+                    expect( config.data ).toBeDefined();
+                    expect( config.data ).toEqual( JSON.stringify( data ) );
+                });
             });
         });
     }

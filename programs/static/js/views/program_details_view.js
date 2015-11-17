@@ -61,17 +61,23 @@ define([
                     $span = $input.prev('.js-model-value'),
                     $btn = $input.next('.js-enable-edit'),
                     value = $input.val(),
-                    key = $input.data('field');
+                    key = $input.data('field'),
+                    data = {};
+
+                data[key] = value;
 
                 $input.addClass('is-hidden');
                 $btn.removeClass('is-hidden');
                 $span.removeClass('is-hidden');
 
                 if ( this.model.get( key ) !== value ) {
-                    this.model.set(key, value);
+                    this.model.set( data );
 
                     if ( this.model.isValid( true ) ) {
-                        this.model.save({ patch: true });
+                        this.model.save({
+                            patch: true,
+                            update: data
+                        });
                         $span.html( value );
                     }
                 }
