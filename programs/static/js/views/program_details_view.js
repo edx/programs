@@ -18,9 +18,10 @@ define([
             el: '.js-program-admin',
 
             events: {
+                'blur .js-inline-edit input': 'checkEdit',
                 'click .js-add-course': 'addCourse',
                 'click .js-enable-edit': 'editField',
-                'blur .js-inline-edit input': 'checkEdit'
+                'click .js-publish-program': 'confirmPublish'
             },
 
             tpl: _.template( ListTpl ),
@@ -83,6 +84,20 @@ define([
                 }
             },
 
+            /**
+             * Loads modal that user clicks a confirmation button
+             * in to publish the course (or they can cancel out of it)
+             */
+            confirmPublish: function( event ) {
+                event.preventDefault();
+
+                /**
+                 * TODO: add modal which will call this.publishProgram
+                 * if user clicks button to confirm
+                 */
+                this.publishProgram();
+            },
+
             editField: function( event ) {
                 /**
                  * Making the assumption that users can only see
@@ -98,6 +113,11 @@ define([
                    .addClass( 'edit' )
                    .focus();
                 $btn.addClass( 'is-hidden' );
+            },
+
+            publishProgram: function() {
+                this.model.set( 'status', 'active' );
+                this.model.save({ patch: true });
             }
         });
     }
