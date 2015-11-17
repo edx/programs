@@ -48,11 +48,10 @@ define([
                 }
             },
 
-            save: function( options ) {
-                var method = '',
-                    patch = options && options.patch ? true : false,
+            getConfig: function( options ) {
+                var patch = options && options.patch ? true : false,
                     params = patch ? this.get('id') : '',
-                    config = _.extend({validate: true, parse: true}, {
+                    config = _.extend({ validate: true, parse: true }, {
                         type: patch ? 'PATCH' : 'POST',
                         url: this.urlRoot + params,
                         // The API requires a CSRF token for all POST requests using session authentication.
@@ -64,11 +63,23 @@ define([
                         error: _.bind( this.saveError, this )
                     });
 
+                if ( patch ) {
+                    config.data = JSON.stringify( options.update ) || this.attributes;
+                }
+
+                return config;
+            },
+
+            save: function( options ) {
+                var method = '',
+                    patch = options && options.patch ? true : false,
+                    config = this.getConfig( options );
+
                 /**
                  * Simplified version of code from the default Backbone save function
                  * http://backbonejs.org/docs/backbone.html#section-87
                  */
-                method = this.isNew() ? 'create' : (patch ? 'patch' : 'update');
+                method = this.isNew() ? 'create' : ( patch ? 'patch' : 'update' );
 
                 this.sync( method, this, config );
             },
