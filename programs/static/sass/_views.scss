@@ -27,6 +27,7 @@
 }
 
 .app-header {
+    @include clearfix();
     border-bottom: 1px solid palette(grayscale, base);
     margin-bottom: 20px;
 }

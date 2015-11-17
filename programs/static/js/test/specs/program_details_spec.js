@@ -113,6 +113,7 @@ define([
 
                 jasmine.clock().install();
 
+                spyOn( ProgramModel.prototype, 'set' ).and.callThrough();
                 spyOn( ProgramModel.prototype, 'save' );
 
                 model = new ProgramModel();
@@ -261,6 +262,24 @@ define([
                     expect( config.contentType ).toEqual( 'application/merge-patch+json' );
                     expect( config.data ).toBeDefined();
                     expect( config.data ).toEqual( JSON.stringify( data ) );
+                });
+            });
+
+            describe( 'Publish a Program', function() {
+                it( 'should publish a program when the publish button is clicked', function() {
+                    var $btn = view.$el.find('.js-publish-program'),
+                        defaultStatus = programData.status,
+                        publishedStatus = 'active';
+
+                    expect( view.model.get( 'status' ) ).toEqual( defaultStatus );
+                    expect( view.model.get( 'status' ) ).not.toEqual( publishedStatus );
+
+                    $btn.click();
+
+                    expect( view.model.set ).toHaveBeenCalled();
+                    expect( view.model.get( 'status' ) ).not.toEqual( defaultStatus );
+                    expect( view.model.get( 'status' ) ).toEqual( publishedStatus );
+                    expect( view.model.save ).toHaveBeenCalled();
                 });
             });
         });
