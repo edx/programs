@@ -7,7 +7,7 @@ define([
         'use strict';
 
         return Backbone.Model.extend({
-            url: '/api/v1/programs/',
+            urlRoot: '/api/v1/programs/',
 
             // Backbone.Validation rules.
             // See: http://thedersen.com/projects/backbone-validation/#configure-validation-rules-on-the-model.
@@ -32,27 +32,32 @@ define([
                 }
             },
 
-            validateOrganization: function(orgArray) {
-                // The array passed to this method contains a single object representing
-                // the selected organization; the object contains the organization's key.
-                // In the future, multiple organizations might be associated with a program.
-                var i;
+            validateOrganization: function( orgArray ) {
+                /**
+                 * The array passed to this method contains a single object representing
+                 * the selected organization; the object contains the organization's key.
+                 * In the future, multiple organizations might be associated with a program.
+                 */
+                var i,
+                    len = orgArray ? orgArray.length : 0;
 
-                for (i = 0; i < orgArray.length; i++) {
+                for ( i = 0; i < len; i++ ) {
                     if ( orgArray[i].key === 'false' ) {
                         return gettext('Please select a valid organization.');
                     }
                 }
             },
 
-            save: function() {
+            save: function( options ) {
                 var method = '',
-                    options = _.extend({validate: true, parse: true}, {
-                        type: 'POST',
-                        url: this.url,
+                    patch = options && options.patch ? true : false,
+                    params = patch ? this.get('id') : '',
+                    config = _.extend({validate: true, parse: true}, {
+                        type: patch ? 'PATCH' : 'POST',
+                        url: this.urlRoot + params,
                         // The API requires a CSRF token for all POST requests using session authentication.
                         headers: {'X-CSRFToken': $.cookie('programs_csrftoken')},
-                        contentType: 'application/json',
+                        contentType: patch ? 'application/merge-patch+json' : 'application/json',
                         context: this,
                         // NB: setting context fails in tests
                         success: _.bind( this.saveSuccess, this ),
@@ -63,9 +68,9 @@ define([
                  * Simplified version of code from the default Backbone save function
                  * http://backbonejs.org/docs/backbone.html#section-87
                  */
-                method = this.isNew() ? 'create' : 'update';
+                method = this.isNew() ? 'create' : (patch ? 'patch' : 'update');
 
-                this.sync( method, this, options);
+                this.sync( method, this, config );
             },
 
             saveError: function( jqXHR ) {

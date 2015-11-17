@@ -36,7 +36,7 @@
 
         <div class="field">
             <label class="field-label" for="program-marketing-slug"><%= gettext('Marketing Slug') %></label>
-            <input id="program-marketing-slug" class="field-input input-text program-marketing-slug" name="marketing_slug" aria-describedby="program-marketing-slug-desc">
+            <input id="program-marketing-slug" class="field-input input-text program-marketing-slug" name="marketing_slug" maxlength="255" aria-describedby="program-marketing-slug-desc">
             <div class="field-hint" id="program-marketing-slug-desc">
                 <p><%= gettext('Slug used to generate links to the marketing site.') %></p>
             </div>

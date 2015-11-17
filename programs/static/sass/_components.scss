@@ -4,13 +4,15 @@
 // About: styling for specific UI components ranging from global to modular.
 
 // #BUTTONS
+// #FORMS
 
 
 // ------------------------------
 // #BUTTONS
 // ------------------------------
 .btn {
-    &.delete {
+    &.btn-delete,
+    &.btn-edit {
         border: none;
         background: none;
         color: palette(grayscale, base);
@@ -58,6 +60,28 @@
 
     .icon,
     .text {
+        vertical-align: middle;
+    }
+}
+
+// ------------------------------
+// #FORMS
+// ------------------------------
+.field {
+    .invalid {
+        border: 2px solid palette(error, base);
+    }
+
+    .field-input {
+        min-with: 300px;
+        width: 50%;
+
+        &.is-hidden {
+            @extend .is-hidden;
+        }
+    }
+
+    .copy {
         vertical-align: middle;
     }
 }

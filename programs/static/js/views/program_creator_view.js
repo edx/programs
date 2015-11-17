@@ -6,32 +6,11 @@ define([
         'js/models/organizations_model',
         'js/models/program_model',
         'text!templates/program_creator_form.underscore',
-        'gettext'
+        'gettext',
+        'js/utils/validation_config'
     ],
     function ( Backbone, BackboneValidation, $, _, OrganizationsModel, ProgramModel, ListTpl ) {
         'use strict';
-
-        // These are the same messages provided by Backbone.Validation,
-        // marked for translation.
-        // See: http://thedersen.com/projects/backbone-validation/#overriding-the-default-error-messages.
-        _.extend(Backbone.Validation.messages, {
-            required: gettext( '{0} is required' ),
-            acceptance: gettext( '{0} must be accepted' ),
-            min: gettext( '{0} must be greater than or equal to {1}' ),
-            max: gettext( '{0} must be less than or equal to {1}' ),
-            range: gettext( '{0} must be between {1} and {2}' ),
-            length: gettext( '{0} must be {1} characters' ),
-            minLength: gettext( '{0} must be at least {1} characters' ),
-            maxLength: gettext( '{0} must be at most {1} characters' ),
-            rangeLength: gettext( '{0} must be between {1} and {2} characters' ),
-            oneOf: gettext( '{0} must be one of: gettext( {1}' ),
-            equalTo: gettext( '{0} must be the same as {1}' ),
-            digits: gettext( '{0} must only contain digits' ),
-            number: gettext( '{0} must be a number' ),
-            email: gettext( '{0} must be a valid email' ),
-            url: gettext( '{0} must be a valid url' ),
-            inlinePattern: gettext( '{0} is invalid' )
-        });
 
         return Backbone.View.extend({
             parentEl: '.js-program-admin',
@@ -52,7 +31,7 @@ define([
 
                 // Hook up validation.
                 // See: http://thedersen.com/projects/backbone-validation/#validation-binding.
-                Backbone.Validation.bind(this);
+                Backbone.Validation.bind( this );
 
                 this.programsModel = options.programsModel;
                 this.programsModel.on( 'sync', this.goToListView, this );
