@@ -63,6 +63,7 @@ define([
                     value = $input.val(),
                     key = $input.data('field');
 
+                $input.addClass('is-hidden');
                 $btn.removeClass('is-hidden');
                 $span.removeClass('is-hidden');
 
