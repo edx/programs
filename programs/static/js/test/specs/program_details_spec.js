@@ -86,8 +86,6 @@ define([
                     expect( view.model.get( 'status' ) ).not.toEqual( publishedStatus );
 
                     $publishBtn.click();
-
-                    expect( view.modalView ).toBeDefined();
                 },
                 testUnchangedFieldBlur = function( el ) {
                     var $input = view.$el.find( el ),
@@ -290,6 +288,7 @@ define([
             describe( 'Publish a Program', function() {
                 it( 'should open the publish modal when the publish button is clicked', function() {
                     openPublishModal();
+                    expect( view.modalView ).toBeDefined();
                 });
 
                 it( 'should publish a program when the publish confirm button is clicked', function() {
@@ -297,6 +296,7 @@ define([
                         publishedStatus = 'active';
 
                     openPublishModal();
+                    expect( view.modalView ).toBeDefined();
 
                     view.$el.find('.js-confirm').click();
 
@@ -312,8 +312,18 @@ define([
                     expect( view.$el.find('.js-publish-program').length ).toEqual( 0 );
                 });
 
+                it( 'should show a validation error when publish button pressed if validation fails', function() {
+                    var $input = view.$el.find( '#program-marketing-slug' );
+
+                    view.model.set('marketing_slug', '');
+                    openPublishModal();
+                    expect( view.modalView ).not.toBeDefined();
+                    expect( $input ).toHaveClass( errorClass );
+                });
+
                 it( 'should destroy the publish modal when the cancel button is clicked', function() {
                     openPublishModal();
+                    expect( view.modalView ).toBeDefined();
 
                     // Close the modal
                     view.$el.find('.js-cancel').click();
@@ -325,6 +335,7 @@ define([
 
                 it( 'should destroy the publish modal when the esc key is pressed', function() {
                     openPublishModal();
+                    expect( view.modalView ).toBeDefined();
 
                     // Close the modal
                     keyPress( view.modalView.$el, constants.keyCodes.esc );
