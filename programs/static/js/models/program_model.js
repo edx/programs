@@ -70,6 +70,13 @@ define([
                 return config;
             },
 
+            patch: function( data ) {
+                this.save({
+                    patch: true,
+                    update: data
+                });
+            },
+
             save: function( options ) {
                 var method = '',
                     patch = options && options.patch ? true : false,

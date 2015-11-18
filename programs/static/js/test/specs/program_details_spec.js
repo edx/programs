@@ -1,9 +1,10 @@
 define([
         'jquery',
         'js/models/program_model',
-        'js/views/program_details_view'
+        'js/views/program_details_view',
+        'js/utils/constants'
     ],
-    function( $, ProgramModel, ProgramDetailsView ) {
+    function( $, ProgramModel, ProgramDetailsView, constants ) {
         'use strict';
 
         describe('ProgramDetailsView', function () {
@@ -66,6 +67,27 @@ define([
                     // Enable editing
                     expect( $input ).not.toHaveClass( 'is-hidden' );
                     expect( $input ).toHaveClass( 'edit' );
+                },
+                keyPress = function( $el, key ) {
+                    $el.trigger({
+                        type: 'keydown',
+                        keyCode: key,
+                        which: key,
+                        charCode: key
+                    });
+                },
+                openPublishModal = function() {
+                    var $publishBtn = view.$el.find('.js-publish-program'),
+                        defaultStatus = programData.status,
+                        publishedStatus = 'active';
+
+                    expect( view.modalView ).not.toBeDefined();
+                    expect( view.model.get( 'status' ) ).toEqual( defaultStatus );
+                    expect( view.model.get( 'status' ) ).not.toEqual( publishedStatus );
+
+                    $publishBtn.click();
+
+                    expect( view.modalView ).toBeDefined();
                 },
                 testUnchangedFieldBlur = function( el ) {
                     var $input = view.$el.find( el ),
@@ -266,20 +288,50 @@ define([
             });
 
             describe( 'Publish a Program', function() {
-                it( 'should publish a program when the publish button is clicked', function() {
-                    var $btn = view.$el.find('.js-publish-program'),
-                        defaultStatus = programData.status,
+                it( 'should open the publish modal when the publish button is clicked', function() {
+                    openPublishModal();
+                });
+
+                it( 'should publish a program when the publish confirm button is clicked', function() {
+                    var defaultStatus = programData.status,
                         publishedStatus = 'active';
 
-                    expect( view.model.get( 'status' ) ).toEqual( defaultStatus );
-                    expect( view.model.get( 'status' ) ).not.toEqual( publishedStatus );
+                    openPublishModal();
 
-                    $btn.click();
+                    view.$el.find('.js-confirm').click();
 
+                    // Model should be set and save called
                     expect( view.model.set ).toHaveBeenCalled();
                     expect( view.model.get( 'status' ) ).not.toEqual( defaultStatus );
                     expect( view.model.get( 'status' ) ).toEqual( publishedStatus );
                     expect( view.model.save ).toHaveBeenCalled();
+
+                    // Publish button should be removed once API has completed its call
+                    expect( view.$el.find('.js-publish-program').length ).toEqual( 1 );
+                    view.model.trigger( 'sync' );
+                    expect( view.$el.find('.js-publish-program').length ).toEqual( 0 );
+                });
+
+                it( 'should destroy the publish modal when the cancel button is clicked', function() {
+                    openPublishModal();
+
+                    // Close the modal
+                    view.$el.find('.js-cancel').click();
+
+                    // Expect the modal DOM elements to not be there anymore
+                    expect( view.$el.find('.js-cancel').length ).toEqual( 0 );
+                    expect( view.modalView.$parentEl.html().length ).toEqual( 0 );
+                });
+
+                it( 'should destroy the publish modal when the esc key is pressed', function() {
+                    openPublishModal();
+
+                    // Close the modal
+                    keyPress( view.modalView.$el, constants.keyCodes.esc );
+
+                    // Expect the modal DOM elements to not be there anymore
+                    expect( view.$el.find('.js-cancel').length ).toEqual( 0 );
+                    expect( view.modalView.$parentEl.html().length ).toEqual( 0 );
                 });
             });
         });
