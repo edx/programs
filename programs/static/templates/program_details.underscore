@@ -64,3 +64,4 @@
     </button>
 </div>
 <aside class="js-aside layout-col layout-col-a"></aside>
+<div class="js-publish-modal"></div>

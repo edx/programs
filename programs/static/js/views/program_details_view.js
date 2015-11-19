@@ -5,13 +5,14 @@ define([
         'underscore',
         'js/models/course_list_model',
         'js/models/pagination_model',
+        'js/views/confirm_modal_view',
         'js/views/course_details_view',
         'text!templates/program_details.underscore',
         'gettext',
         'js/utils/validation_config'
     ],
     function( Backbone, BackboneValidation, $, _, CourseListModel, ProgramsModel,
-              CourseView, ListTpl ) {
+              ModalView, CourseView, ListTpl ) {
         'use strict';
 
         return Backbone.View.extend({
@@ -48,6 +49,9 @@ define([
                         data: course
                     });
                 }.bind(this) );
+
+                // Stop listening to the model sync set when publishing
+                this.model.off( 'sync' );
             },
 
             addCourse: function() {
@@ -75,10 +79,7 @@ define([
                     this.model.set( data );
 
                     if ( this.model.isValid( true ) ) {
-                        this.model.save({
-                            patch: true,
-                            update: data
-                        });
+                        this.model.patch( data );
                         $span.html( value );
                     }
                 }
@@ -91,11 +92,13 @@ define([
             confirmPublish: function( event ) {
                 event.preventDefault();
 
-                /**
-                 * TODO: add modal which will call this.publishProgram
-                 * if user clicks button to confirm
-                 */
-                this.publishProgram();
+                this.modalView = new ModalView({
+                    model: this.model,
+                    callback: _.bind( this.publishProgram, this ),
+                    content: this.getModalContent(),
+                    parentEl: '.js-publish-modal',
+                    parentView: this
+                });
             },
 
             editField: function( event ) {
@@ -115,9 +118,33 @@ define([
                 $btn.addClass( 'is-hidden' );
             },
 
+            getModalContent: function() {
+                /* jshint maxlen: 300 */
+                return {
+                    name: gettext('confirm'),
+                    title: gettext('Publish this program?'),
+                    body: gettext('After you publish this program, you cannot add or remove course codes or remove course runs.'),
+                    cta: {
+                        cancel: gettext('Cancel'),
+                        confirm: gettext('Publish')
+                    }
+                };
+            },
+
             publishProgram: function() {
-                this.model.set( 'status', 'active' );
-                this.model.save({ patch: true });
+                var data = {
+                    status: 'active'
+                };
+
+                this.model.set( data, { silent: true } );
+                this.model.on( 'sync', this.removeBtn, this );
+                this.model.patch( data );
+            },
+
+            removeBtn: function() {
+                var $btn = this.$el.find('.js-publish-program');
+
+                $btn.remove();
             }
         });
     }
