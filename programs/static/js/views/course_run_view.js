@@ -21,6 +21,7 @@ define([
                  * to keep parent view up to date with run changes
                  */
                 this.data = options.data;
+                this.data.programStatus = this.model.get('programStatus');
 
                 // Temporary hack
                 // ===============

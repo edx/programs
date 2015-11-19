@@ -30,6 +30,7 @@ define([
             initialize: function( options ) {
                 this.model = new ProgramModel();
                 this.$parentEl = $( this.parentEl );
+                this.programStatus = options.programStatus;
 
                 // Data passed in because it is not an actual model
                 if ( options.data ) {
@@ -127,7 +128,8 @@ define([
             setDefaultModel: function() {
                 this.model.set({
                     display_name: false,
-                    courseList: this.courseList
+                    courseList: this.courseList,
+                    programStatus: 'unpublished'
                 });
             },
 
