@@ -33,12 +33,11 @@ define([
                 // See: http://thedersen.com/projects/backbone-validation/#validation-binding.
                 Backbone.Validation.bind( this );
 
-                this.programsModel = options.programsModel;
-                this.programsModel.on( 'sync', this.goToListView, this );
-
                 this.organizations = new OrganizationsModel();
                 this.organizations.on( 'sync', this.render, this );
                 this.organizations.fetch();
+
+                this.router = options.router;
             },
 
             render: function() {
@@ -51,8 +50,9 @@ define([
                 this.$parentEl.html( this.$el );
             },
 
-            abort: function() {
-                this.goToListView();
+            abort: function( event ) {
+                event.preventDefault();
+                this.router.goHome();
             },
 
             createProgram: function( event ) {
@@ -92,9 +92,8 @@ define([
                 };
             },
 
-            goToListView: function() {
-                Backbone.history.navigate( '', { trigger: true } );
-
+            goToView: function( uri ) {
+                Backbone.history.navigate( uri, { trigger: true } );
                 this.destroy();
             },
 
@@ -104,7 +103,7 @@ define([
             },
 
             saveSuccess: function() {
-                this.programsModel.getList();
+                this.goToView( 'program/' + this.model.get( 'id' ) );
             }
         });
     }

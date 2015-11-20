@@ -20,7 +20,11 @@
             name: 'js/common'
         },
         {
-            name: 'js/apps/program_admin_app',
+            name: 'js/apps/program_admin_app_core',
+            exclude: ['js/common']
+        },
+        {
+            name: 'js/apps/program_admin_app_dev',
             exclude: ['js/common']
         }
     ]

@@ -3,7 +3,7 @@
         <% programs.each( function( programModel ) {
             var program = programModel.toJSON(); %>
             <li class="program-details card">
-                <a href="program/<%- program.id %>" class="js-app-click name"><%- program.name %></a>
+                <a href="/<%- program.id %>" class="js-app-click name"><%- program.name %></a>
                 <span class="copy copy-base emphasized status"><%- program.status %></span>
                 <p class="copy copy-base category"><%- program.category %> <%= gettext('Program') %> - <%- program.course_codes.length %> <%= gettext('Courses') %> - <%- program.id %></p>
         <% }) %>
@@ -11,7 +11,7 @@
 <% } else { %>
     <div class="layout-1t2t layout-reversed">
         <div class="layout-col layout-col-a">
-            <a href="/author/program/new" class="create-program-link btn btn-primary btn-create btn-base">
+            <a href="/program/new" class="create-program-link btn btn-primary btn-create btn-base">
                 <span class="icon icon-plus" aria-hidden="true"></span>
                 <span class="text"><%= gettext('Create your first program') %></span>
             </a>
