@@ -92,13 +92,21 @@ define([
             confirmPublish: function( event ) {
                 event.preventDefault();
 
-                this.modalView = new ModalView({
-                    model: this.model,
-                    callback: _.bind( this.publishProgram, this ),
-                    content: this.getModalContent(),
-                    parentEl: '.js-publish-modal',
-                    parentView: this
-                });
+                /**
+                 * Update validation to make marketing slug required
+                 * Note that because this validation is not required for
+                 * the program creation form and is only happening here
+                 * it makes sense to have the validation at the view level
+                 */
+                if ( this.model.isValid( true ) && this.validateMarketingSlug() ) {
+                    this.modalView = new ModalView({
+                        model: this.model,
+                        callback: _.bind( this.publishProgram, this ),
+                        content: this.getModalContent(),
+                        parentEl: '.js-publish-modal',
+                        parentView: this
+                    });
+                }
             },
 
             editField: function( event ) {
@@ -145,6 +153,27 @@ define([
                 var $btn = this.$el.find('.js-publish-program');
 
                 $btn.remove();
+            },
+
+            validateMarketingSlug: function() {
+                var isValid = false,
+                    $input = {},
+                    $message = {};
+
+                if ( this.model.get( 'marketing_slug' ).length > 0 ) {
+                    isValid = true;
+                } else {
+                    $input = this.$el.find( '#program-marketing-slug' );
+                    $message = $input.siblings( '.field-message' );
+
+                    // Update DOM
+                    $input.addClass( 'has-error' );
+                    $message.addClass( 'has-error' );
+                    $message.find( '.field-message-content' )
+                        .html( gettext( 'Marketing Slug is required.') );
+                }
+
+                return isValid;
             }
         });
     }

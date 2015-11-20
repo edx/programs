@@ -27,7 +27,6 @@ define([
                 },
                 organizations: 'validateOrganizations',
                 marketing_slug: {
-                    // The underlying Django model does not require a marketing_slug.
                     maxLength: 255
                 }
             },
