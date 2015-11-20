@@ -39,14 +39,15 @@ define([
             },
 
             postRender: function() {
-                var courses = this.model.get('course_codes');
+                var courses = this.model.get( 'course_codes' );
 
                 _.each( courses, function( course ) {
-                    var title = course.key + 'Course';
+                    var title = course.key + 'Course',
+                        data = $.extend( course, { programStatus: this.model.get( 'status' ) });
 
                     this[ title ] = new CourseView({
                         collection: courses,
-                        data: course
+                        data: data
                     });
                 }.bind(this) );
 
@@ -63,7 +64,7 @@ define([
 
             checkEdit: function( event ) {
                 var $input = $(event.target),
-                    $span = $input.prev('.js-model-value'),
+                    $span = $input.prevAll('.js-model-value'),
                     $btn = $input.next('.js-enable-edit'),
                     value = $input.val(),
                     key = $input.data('field'),
@@ -119,7 +120,7 @@ define([
 
                 event.preventDefault();
 
-                $el.prev( '.js-model-value' ).addClass( 'is-hidden' );
+                $el.prevAll( '.js-model-value' ).addClass( 'is-hidden' );
                 $el.removeClass( 'is-hidden' )
                    .addClass( 'edit' )
                    .focus();
@@ -145,7 +146,7 @@ define([
                 };
 
                 this.model.set( data, { silent: true } );
-                this.model.on( 'sync', this.removeBtn, this );
+                this.model.on( 'sync', this.render, this );
                 this.model.patch( data );
             },
 

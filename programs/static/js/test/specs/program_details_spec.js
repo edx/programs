@@ -114,6 +114,12 @@ define([
                     expect( $input.val() ).toEqual( update );
                     expect( view.model.save ).toHaveBeenCalled();
                 },
+                testHidingButtonsAfterPublish = function( el ) {
+                    expect( view.$el.find( el ).length ).toBeGreaterThan( 0 );
+                    view.model.set({ status: 'active' });
+                    view.render();
+                    expect( view.$el.find( el ).length ).toEqual( 0 );
+                },
                 testInvalidUpdate = function( el, update ) {
                     var $input = view.$el.find( el ),
                         $btn = view.$el.find( '.js-add-course' );
@@ -194,6 +200,18 @@ define([
                     }, testTimeoutInterval );
 
                     jasmine.clock().tick( testTimeoutInterval + 1 );
+                });
+
+                it( 'should not show the delete course button if program status is not unpublished', function() {
+                    testHidingButtonsAfterPublish('.js-remove-course');
+                });
+
+                it( 'should not show the add course button if program status is not unpublished', function() {
+                    testHidingButtonsAfterPublish('.js-add-course');
+                });
+
+                it( 'should not show the delete run button if program status is not unpublished', function() {
+                    testHidingButtonsAfterPublish('.js-remove-run');
                 });
             });
 

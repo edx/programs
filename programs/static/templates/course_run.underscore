@@ -4,6 +4,7 @@
         { key: course_key },
         true
     ) %></span>
+  <% if ( programStatus === 'unpublished' ) { %>
     <button class="js-remove-run btn btn-delete right">
         <span class="icon-fallback icon-fallback-text">
             <span class="icon icon-trash-o" aria-hidden="true"></span>
@@ -14,6 +15,7 @@
             ) %></span>
         </span>
     </button>
+  <% } %>
     <p class="copy copy-base subtitle"><%= interpolate(
         gettext('Start Date: %(date)s'),
         { date: start_date },
