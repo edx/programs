@@ -150,12 +150,6 @@ define([
                 this.model.patch( data );
             },
 
-            removeBtn: function() {
-                var $btn = this.$el.find('.js-publish-program');
-
-                $btn.remove();
-            },
-
             validateMarketingSlug: function() {
                 var isValid = false,
                     $input = {},

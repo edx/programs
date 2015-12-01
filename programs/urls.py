@@ -56,11 +56,11 @@ urlpatterns = [
 
 if settings.DEBUG:  # pragma: no cover
     # View displaying a page which loads the Programs administration app.
-    author_view = TemplateView.as_view(template_name='author.html')
+    program_view = TemplateView.as_view(template_name='program.html')
 
     urlpatterns += [
         # Drops into the Programs authoring app, which handles its own routing.
-        url(r'^author/*', author_view, name='author'),
+        url(r'^program/*', program_view, name='program'),
     ]
 
     if os.environ.get('ENABLE_DJANGO_TOOLBAR', False):

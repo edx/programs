@@ -31,6 +31,10 @@ define([
                 }
             },
 
+            initialize: function() {
+                this.url = this.urlRoot + this.id;
+            },
+
             validateOrganizations: function( orgArray ) {
                 /**
                  * The array passed to this method contains a single object representing
@@ -94,7 +98,8 @@ define([
                 this.trigger( 'error', jqXHR );
             },
 
-            saveSuccess: function() {
+            saveSuccess: function( data ) {
+                this.set({ id: data.id });
                 this.trigger( 'sync', this );
             }
         });

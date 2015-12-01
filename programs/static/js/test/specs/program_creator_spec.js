@@ -1,74 +1,21 @@
 define([
+        'backbone',
         'jquery',
-        'js/models/pagination_model',
         'js/views/program_creator_view'
     ],
-    function( $, ProgramsModel, ProgramCreatorView ) {
+    function( Backbone, $, ProgramCreatorView ) {
         'use strict';
 
         describe('ProgramCreatorView', function () {
             var view = {},
-                model = {},
-                listData = {
-                    count: 4,
-                    next: null,
-                    num_pages: 1,
-                    previous: null,
-                    results: [
-                        {
-                            category: 'xseries',
-                            course_codes: [],
-                            created: '2015-10-20T18:11:28.454174Z',
-                            id: 2,
-                            modified: '2015-10-20T18:11:28.454370Z',
-                            name: 'active program',
-                            organizations: [],
-                            status: 'active',
-                            subtitle: 'test-subtitle'
-                        }, {
-                            category: 'xseries',
-                            course_codes: [],
-                            created: '2015-10-20T18:11:28.455301Z',
-                            id: 3,
-                            modified: '2015-10-20T18:11:28.455466Z',
-                            name: 'retired program',
-                            organizations: [],
-                            status: 'retired',
-                            subtitle: 'test-subtitle'
-                        }, {
-                            category: 'xseries',
-                            course_codes: [],
-                            created: '2015-10-20T18:11:28.455301Z',
-                            id: 4,
-                            modified: '2015-10-20T18:11:28.455466Z',
-                            name: 'retired program 2',
-                            organizations: [],
-                            status: 'retired',
-                            subtitle: 'test-subtitle'
-                        }, {
-                            category: 'xseries',
-                            course_codes: [{
-                                display_name: 'test-course-display_name',
-                                key: 'test-course-key',
-                                organizations: {
-                                    display_name: 'test-org-display_name',
-                                    key: 'test-org-key'
-                                },
-                                run_modes: []
-                            }],
-                            created: '2015-10-20T18:11:46.854451Z',
-                            id: 5,
-                            modified: '2015-10-20T18:11:46.854735Z',
-                            name: 'test-program-5',
-                            organizations: [{
-                                display_name: 'test-org-display_name',
-                                key: 'test-org-key'
-                            }],
-                            status: 'unpublished',
-                            subtitle: 'test-subtitle'
-                        }
-                    ]
-                },
+                Router = Backbone.Router.extend({
+                    initialize: function( options ) {
+                        this.homeUrl = options.homeUrl;
+                    },
+                    goHome: function() {
+                        window.location.href = this.homeUrl;
+                    }
+                }),
                 organizations = {
                     count: 1,
                     previous: null,
@@ -118,21 +65,18 @@ define([
 
             beforeEach( function() {
                 // Set the DOM
-                setFixtures( '<div class="js-program-admin"></div>' );
+                setFixtures( '<div class="js-program-admin" data-home-url="/home"></div>' );
 
                 jasmine.clock().install();
 
-                spyOn( ProgramsModel.prototype, 'getList' );
-
-                model = new ProgramsModel();
-                model.set( listData );
-                model.setResults( listData.results );
-
                 spyOn( ProgramCreatorView.prototype, 'saveSuccess' ).and.callThrough();
                 spyOn( ProgramCreatorView.prototype, 'saveError' ).and.callThrough();
+                spyOn( Router.prototype, 'goHome' );
 
                 view = new ProgramCreatorView({
-                    programsModel: model
+                    router: new Router({
+                        homeUrl: '/author/home'
+                    })
                 });
 
                 view.organizations.set( organizations );
@@ -164,7 +108,7 @@ define([
                 completeForm( sampleInput );
 
                 spyOn( $, 'ajax' ).and.callFake( function( event ) {
-                    event.success();
+                    event.success({ id: 10001110101 });
                 });
 
                 view.$el.find('.js-create-program').click();
@@ -172,7 +116,6 @@ define([
                 expect( $.ajax ).toHaveBeenCalled();
                 expect( view.saveSuccess ).toHaveBeenCalled();
                 expect( view.saveError ).not.toHaveBeenCalled();
-                expect( view.programsModel.getList ).toHaveBeenCalled();
             });
 
             it( 'should run the saveError when model save failures occur', function() {
@@ -194,7 +137,7 @@ define([
                 completeForm( sampleInput );
 
                 spyOn( $, 'ajax' ).and.callFake( function( event ) {
-                    event.success();
+                    event.success({ id: 10001110101 });
                 });
 
                 view.$el.find('.js-create-program').click();
@@ -263,7 +206,7 @@ define([
                 completeForm( sampleInput );
                 expect( view.$parentEl.html().length ).toBeGreaterThan( 0 );
                 view.$el.find('.js-abort-view').click();
-                expect( view.$parentEl.html().length ).toEqual( 0 );
+                expect( view.router.goHome ).toHaveBeenCalled();
             });
         });
     }

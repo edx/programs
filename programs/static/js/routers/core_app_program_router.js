@@ -2,22 +2,34 @@ define([
         'backbone',
         'js/views/program_creator_view',
         'js/views/program_details_view',
-        'js/views/program_list_view'
+        'js/views/program_list_view',
+        'js/models/pagination_model',
+        'js/models/program_model'
     ],
-    function( Backbone, ProgramCreatorView, ProgramDetailsView, ProgramListView ) {
+    function( Backbone, ProgramCreatorView, ProgramDetailsView,
+              ProgramListView, ProgramsListModel, ProgramModel ) {
         'use strict';
 
         return Backbone.Router.extend({
-            root: '/author/',
+            root: '/program/',
 
             routes: {
-                '': 'programList',
-                'program/new': 'programCreator',
-                'program/:id': 'programDetails'
+                'new': 'programCreator',
+                ':id': 'programDetails'
             },
 
             initialize: function( options ) {
-                this.model = options.model;
+                this.homeUrl = options.homeUrl;
+            },
+
+            goHome: function() {
+                window.location.href = this.homeUrl;
+            },
+
+            loadProgramDetails: function() {
+                this.programDetailsView = new ProgramDetailsView({
+                    model: this.programModel
+                });
             },
 
             programCreator: function() {
@@ -26,24 +38,17 @@ define([
                 }
 
                 this.programCreatorView = new ProgramCreatorView({
-                    programsModel: this.model
+                    router: this
                 });
-            },
-
-            programList: function() {
-                if ( !this.programListView ) {
-                    this.programListView = new ProgramListView({
-                        model: this.model
-                    });
-                }
             },
 
             programDetails: function( id ) {
-                var programModel = this.model.get('results').get(id);
-
-                this.programDetailsView = new ProgramDetailsView({
-                    model: programModel
+                 this.programModel = new ProgramModel({
+                    id: id
                 });
+
+                this.programModel.on( 'sync', this.loadProgramDetails, this );
+                this.programModel.fetch();
             },
 
             /**
