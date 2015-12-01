@@ -5,6 +5,8 @@
     dir: 'programs/static/build',
     removeCombined: true,
     findNestedDependencies: true,
+    // See: http://jrburke.com/2014/02/16/requirejs-2.1.11-released/.
+    wrapShim: true,
 
     // Disable all optimization. django-compressor will handle that for us.
     optimizeCss: false,
