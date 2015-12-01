@@ -1,10 +1,10 @@
 define([
-        'backbone'
+        'js/models/auto_auth_model'
     ],
-    function( Backbone ) {
+    function( AutoAuthModel ) {
         'use strict';
 
-        return Backbone.Model.extend({
+        return AutoAuthModel.extend({
             defaults: [
                 {
                     name: 'Course 1',

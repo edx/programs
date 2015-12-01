@@ -1,13 +1,14 @@
 define([
-        'backbone',
         'jquery',
+        'js/utils/api_config',
+        'js/models/auto_auth_model',
         'js/collections/programs_collection'
     ],
-    function( Backbone, $, ProgramsCollection ) {
+    function( $, apiConfig, AutoAuthModel, ProgramsCollection ) {
         'use strict';
 
-        return Backbone.Model.extend({
-            urlRoot: '/api/v1/programs/',
+        return AutoAuthModel.extend({
+            urlRoot: apiConfig.get('base_url') + 'programs/',
 
             initialize: function() {
                 this.setHeaders();
