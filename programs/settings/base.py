@@ -23,7 +23,8 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles'
+    'django.contrib.staticfiles',
+    'corsheaders',
 )
 
 THIRD_PARTY_APPS = (
@@ -46,6 +47,7 @@ INSTALLED_APPS += PROJECT_APPS
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -141,6 +143,7 @@ COMPRESS_PRECOMPILERS = (
 COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssAbsoluteFilter']
 # END STATIC FILE CONFIGURATION
 
+
 # TEMPLATE CONFIGURATION
 # See: https://docs.djangoproject.com/en/1.8/ref/settings/#templates
 TEMPLATES = [
@@ -176,6 +179,7 @@ SESSION_COOKIE_NAME = 'programs_sessionid'
 CSRF_COOKIE_NAME = 'programs_csrftoken'
 LANGUAGE_COOKIE_NAME = 'programs_language'
 # END COOKIE CONFIGURATION
+
 
 # AUTHENTICATION CONFIGURATION
 AUTH_USER_MODEL = 'core.User'
@@ -222,8 +226,6 @@ SOCIAL_AUTH_USER_FIELDS = ['username', 'email', 'full_name']
 # want the uer to see the message; but, we do want our downstream exception handlers to log the message.
 SOCIAL_AUTH_RAISE_EXCEPTIONS = True
 
-
-
 # Set these to the correct values for your OAuth2/OpenID Connect provider (e.g., devstack)
 SOCIAL_AUTH_EDX_OIDC_KEY = 'replace-me'
 SOCIAL_AUTH_EDX_OIDC_SECRET = 'replace-me'
@@ -251,3 +253,19 @@ JWT_AUTH = {
 # OPENEDX-SPECIFIC CONFIGURATION 
 PLATFORM_NAME = 'Your Platform Name Here'
 # END OPENEDX-SPECIFIC CONFIGURATION
+
+
+# CORS
+# See: https://github.com/ottoyiu/django-cors-headers/.
+CORS_ORIGIN_WHITELIST = ()
+CORS_URLS_REGEX = r'^/api/.*$'
+CORS_ALLOW_HEADERS = (
+    'x-requested-with',
+    'content-type',
+    'accept',
+    'origin',
+    'authorization',
+    'x-csrftoken',
+    'x-http-method-override',
+)
+# END CORS
