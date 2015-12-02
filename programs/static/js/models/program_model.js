@@ -53,7 +53,7 @@ define([
 
             getConfig: function( options ) {
                 var patch = options && options.patch ? true : false,
-                    params = patch ? this.get('id') : '',
+                    params = patch ? this.get('id') + '/' : '',
                     config = _.extend({ validate: true, parse: true }, {
                         type: patch ? 'PATCH' : 'POST',
                         url: this.urlRoot + params,
