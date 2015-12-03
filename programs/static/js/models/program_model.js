@@ -32,7 +32,7 @@ define([
             },
 
             initialize: function() {
-                this.url = this.urlRoot + this.id;
+                this.url = this.urlRoot + this.id + '/';
             },
 
             validateOrganizations: function( orgArray ) {
