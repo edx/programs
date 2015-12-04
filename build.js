@@ -26,6 +26,10 @@
         {
             name: 'js/apps/program_admin_app_dev',
             exclude: ['js/common']
-        }
+        },
+        {
+            name: 'js/apps/program_admin_app',
+            exclude: ['js/common']
+        },
     ]
 })
