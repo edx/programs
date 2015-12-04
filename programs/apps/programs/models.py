@@ -25,7 +25,7 @@ class Program(TimeStampedModel):
 
     name = models.CharField(
         help_text=_('The user-facing display name for this Program.'),
-        max_length=64,
+        max_length=255,
         unique=True,
     )
 
