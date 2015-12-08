@@ -8,7 +8,7 @@ define([
         'use strict';
 
         return AutoAuthModel.extend({
-            urlRoot: apiConfig.get('base_url') + 'programs/',
+            urlRoot: apiConfig.get('baseUrl') + 'programs/',
 
             initialize: function() {
                 this.setHeaders();

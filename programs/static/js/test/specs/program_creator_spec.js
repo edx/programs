@@ -65,7 +65,7 @@ define([
 
             beforeEach( function() {
                 // Set the DOM
-                setFixtures( '<div class="js-program-admin" data-home-url="/home"></div>' );
+                setFixtures( '<div class="js-program-admin"></div>' );
 
                 jasmine.clock().install();
 
