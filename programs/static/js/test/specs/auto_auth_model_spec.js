@@ -17,7 +17,7 @@ define([
                 callSync,
                 checkAuthAttempted,
                 dummyModel = {'dummy': 'model'},
-                authUrl = apiConfig.get( 'auth_url' );
+                authUrl = apiConfig.get( 'authUrl' );
 
             beforeEach( function() {
 

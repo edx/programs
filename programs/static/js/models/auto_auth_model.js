@@ -53,7 +53,7 @@ define([
              */
             _setHeaders: function( ajaxOptions ) {
                 ajaxOptions.headers = _.extend ( ajaxOptions.headers || {}, {
-                    Authorization: 'JWT ' + apiConfig.get( 'id_token' )
+                    Authorization: 'JWT ' + apiConfig.get( 'idToken' )
                 });
                 ajaxOptions.xhrFields = _.extend( ajaxOptions.xhrFields || {}, {
                     withCredentials: true
@@ -67,14 +67,14 @@ define([
             _updateToken: function( success ) {
 
                 $.ajax({
-                    url: apiConfig.get('auth_url'),
+                    url: apiConfig.get('authUrl'),
                     xhrFields: {
                         withCredentials: true
                     },
                     crossDomain: true
                 }).done(function ( data ) {
                     // save the newly-retrieved id token
-                    apiConfig.set( 'id_token', data.id_token );
+                    apiConfig.set( 'idToken', data.id_token );
                 }).done( success );
 
             }
