@@ -1,11 +1,12 @@
 define([
-        'backbone'
+        'js/utils/api_config',
+        'js/models/auto_auth_model'
     ],
-    function( Backbone ) {
+    function( apiConfig, AutoAuthModel ) {
         'use strict';
 
-        return Backbone.Model.extend({
-            urlRoot: '/api/v1/organizations/'
+        return AutoAuthModel.extend({
+            urlRoot: apiConfig.get('base_url') + 'organizations/'
         });
     }
 );

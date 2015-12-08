@@ -1,13 +1,14 @@
 define([
         'backbone',
         'jquery',
+        'js/utils/api_config',
+        'js/models/auto_auth_model',
         'jquery-cookie'
     ],
-    function( Backbone, $ ) {
+    function( Backbone, $, apiConfig, AutoAuthModel ) {
         'use strict';
 
-        return Backbone.Model.extend({
-            urlRoot: '/api/v1/programs/',
+        return AutoAuthModel.extend({
 
             // Backbone.Validation rules.
             // See: http://thedersen.com/projects/backbone-validation/#configure-validation-rules-on-the-model.
@@ -32,7 +33,7 @@ define([
             },
 
             initialize: function() {
-                this.url = this.urlRoot + this.id + '/';
+                this.url = apiConfig.get('base_url') + 'programs/' + this.id + '/';
             },
 
             validateOrganizations: function( orgArray ) {
@@ -56,9 +57,7 @@ define([
                     params = patch ? this.get('id') + '/' : '',
                     config = _.extend({ validate: true, parse: true }, {
                         type: patch ? 'PATCH' : 'POST',
-                        url: this.urlRoot + params,
-                        // The API requires a CSRF token for all POST requests using session authentication.
-                        headers: {'X-CSRFToken': $.cookie('programs_csrftoken')},
+                        url: apiConfig.get('base_url') + 'programs/' + params,
                         contentType: patch ? 'application/merge-patch+json' : 'application/json',
                         context: this,
                         // NB: setting context fails in tests
@@ -81,7 +80,7 @@ define([
             },
 
             save: function( options ) {
-                var method = '',
+                var method,
                     patch = options && options.patch ? true : false,
                     config = this.getConfig( options );
 
