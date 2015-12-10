@@ -6,11 +6,57 @@ should be created here. As the API evolves, serializers may become more
 specific to a particular version of the API. In this case, the serializers
 in question should be moved to versioned sub-package.
 """
+from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext as _
-from rest_framework import serializers
-
+from rest_framework import fields, exceptions, serializers
 
 from programs.apps.programs import models, constants
+
+
+class NestedWriteableSerializer(serializers.ListSerializer):
+    """
+    Reusable implementation of updatable nested lists.
+
+    In order to use this serializer class, you must:
+      a) specify it as the list_serializer_class for the serializer being nested
+      b) define classmethod `unique_attrs(obj)` on the serializer being nested.  That
+         method should return a tuple of values that are guaranteed to be unique
+         for any child relative to the parent, and it should work with either
+         mapping objects (keys) or model instances (attributes).  See the examples
+         defined in this file.
+    """
+
+    def update(self, instance, validated_data):
+
+        def _key(obj):
+            """
+            Use unique_attrs to compare across nested json dicts and model
+            instances.
+            """
+            return self.child.unique_attrs(obj)
+
+        db_objs = {_key(obj): obj for obj in instance}
+        req_objs = {_key(obj): obj for obj in validated_data}
+
+        # Perform creations and updates.
+        ret = []
+
+        for key, req_obj in req_objs.items():
+            db_obj = db_objs.get(key)
+            if db_obj is None:
+                # create the thing
+                ret.append(self.child.create(req_obj))
+            else:
+                # update the thing
+                ret.append(self.child.update(db_obj, req_obj))
+
+        # Perform deletions.
+        for key, db_obj in db_objs.items():
+            if key not in req_objs:
+                # delete the thing
+                db_obj.delete()
+
+        return ret
 
 
 class OrganizationSerializer(serializers.ModelSerializer):
@@ -38,6 +84,21 @@ class ProgramCourseRunModeSerializer(serializers.ModelSerializer):
     class Meta(object):  # pylint: disable=missing-docstring
         model = models.ProgramCourseRunMode
         fields = ('course_key', 'mode_slug', 'sku', 'start_date', 'run_key')
+        list_serializer_class = NestedWriteableSerializer
+
+    @classmethod
+    def unique_attrs(cls, obj):
+        """
+        For use with `NestedWriteableSerializer.update`
+        """
+        try:
+            if isinstance(obj, models.ProgramCourseRunMode):
+                return obj.course_key, obj.mode_slug, obj.sku
+            else:
+                return obj['course_key'], obj['mode_slug'], obj.get('sku')
+        except (AttributeError, KeyError) as exc:
+            # avoid errors when working with incomplete/invalid nested data
+            raise exceptions.ValidationError(exc.message)
 
 
 class CourseCodeSerializer(serializers.ModelSerializer):
@@ -56,11 +117,90 @@ class ProgramCourseCodeSerializer(serializers.ModelSerializer):
     class Meta(object):  # pylint: disable=missing-docstring
         model = models.ProgramCourseCode
         fields = ('display_name', 'key', 'organization', 'run_modes')
+        list_serializer_class = NestedWriteableSerializer
 
     display_name = serializers.CharField(source='course_code.display_name')
     key = serializers.CharField(source='course_code.key')
     organization = OrganizationSerializer(read_only=True, source='course_code.organization')
-    run_modes = ProgramCourseRunModeSerializer(many=True, read_only=True)
+    run_modes = ProgramCourseRunModeSerializer(many=True, required=False)
+
+    @classmethod
+    def unique_attrs(cls, obj):
+        """
+        For use with `NestedWriteableSerializer.update`
+        """
+        if isinstance(obj, models.ProgramCourseCode):
+            return obj.course_code.organization.key, obj.course_code.key
+        else:
+            return obj['course_code'].organization.key, obj['course_code'].key
+
+    def to_internal_value(self, data):
+        """
+        Overrides the default deserialization to look up related objects that
+        are needed to create/update the correct models.
+        """
+        # use 'key' and 'organization.key' to find the course code we need
+        try:
+            cc = models.CourseCode.objects.get(
+                key=data[u'key'],
+                organization__key=data[u'organization'][u'key'],
+            )
+        except models.CourseCode.DoesNotExist:
+            # avoid errors when working with incomplete/invalid nested data
+            raise ValidationError('Unknown course code.')
+        # get rid of extraneous fields, as they can confuse DRF internals
+        # which assume that further nested writing is intended.
+        out_data = {'program': self.root.instance, 'course_code': cc}
+
+        # handle run_modes if present
+        if 'run_modes' in data:
+            # NB this next block is based on `ModelSerializer.to_internal_value`
+            # but has to be duplicated here because the superclass' method is
+            # incompatible with nested writes.
+            errors = {}
+            try:
+                validated_value = self.fields['run_modes'].run_validation(data['run_modes'])
+            except exceptions.ValidationError as exc:
+                errors['run_modes'] = exc.detail
+            else:
+                fields.set_value(out_data, self.fields['run_modes'].source_attrs, validated_value)
+
+            if errors:
+                raise exceptions.ValidationError(errors)
+
+        return out_data
+
+    def _update_run_modes(self, instance, validated_run_modes):
+        """
+        Call the list serializer associated with the `run_modes` field on this serializer,
+        to handle nested list update logic.
+        """
+        if validated_run_modes is not None:
+            for run_mode in validated_run_modes:
+                # push down the reference to this parent object before passing data along
+                run_mode['program_course_code'] = instance
+            try:
+                self.fields['run_modes'].update(instance.run_modes.all(), validated_run_modes)
+            except ValidationError as exc:
+                raise exceptions.ValidationError(list(exc.messages))
+
+    def update(self, instance, validated_data):
+        """
+        Implement nested writeable run modes during updates.
+        """
+        run_modes = validated_data.pop('run_modes', None)
+        instance = super(ProgramCourseCodeSerializer, self).update(instance, validated_data)
+        self._update_run_modes(instance, run_modes)
+        return instance
+
+    def create(self, validated_data):
+        """
+        Implement nested writeable run modes upon creation.
+        """
+        run_modes = validated_data.pop('run_modes', None)
+        instance = super(ProgramCourseCodeSerializer, self).create(validated_data)
+        self._update_run_modes(instance, run_modes)
+        return instance
 
 
 class ProgramSerializer(serializers.ModelSerializer):
@@ -75,7 +215,7 @@ class ProgramSerializer(serializers.ModelSerializer):
         read_only_fields = ('id', 'created', 'modified')
 
     organizations = ProgramOrganizationSerializer(many=True, source='programorganization_set')
-    course_codes = ProgramCourseCodeSerializer(many=True, read_only=True, source='programcoursecode_set')
+    course_codes = ProgramCourseCodeSerializer(many=True, source='programcoursecode_set', required=False)
 
     def create(self, validated_data):
         """
@@ -90,6 +230,19 @@ class ProgramSerializer(serializers.ModelSerializer):
             org_data = organization_data.get('organization')
             organization = models.Organization.objects.get(key=org_data.get('key'))
             models.ProgramOrganization.objects.get_or_create(program=program, organization=organization)
+
+        return program
+
+    def update(self, instance, validated_data):
+        """
+        Handle nested data (program course codes) when processing updates.
+        """
+        program_course_codes = validated_data.pop('programcoursecode_set', None)
+
+        program = super(ProgramSerializer, self).update(instance, validated_data)
+
+        if program_course_codes is not None:
+            self.fields['course_codes'].update(instance.programcoursecode_set.all(), program_course_codes)
 
         return program
 

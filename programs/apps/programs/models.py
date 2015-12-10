@@ -251,7 +251,7 @@ class ProgramCourseRunMode(TimeStampedModel):
                 course_key=self.course_key,
                 mode_slug=self.mode_slug,
                 sku=None,
-        ).exists():
+        ).exclude(id=self.id).exists():  # pylint: disable=no-member
             raise ValidationError(_('Duplicate course run modes are not allowed for course codes in a program.'))
 
         try:
