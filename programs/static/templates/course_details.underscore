@@ -22,11 +22,30 @@
     </button>
   <% } %>
 <% } else { %>
-    <select class="js-course-select">
-        <option><%= gettext('Select a course') %></option>
-        <% _.each( courseList, function( course ) { %>
-            <option value="<%- course.id %>"><%- course.name %></option>
-        <% }); %>
-    </select>
+    <form class="form js-course-form">
+        <fieldset class="form-group">
+            <div class="field">
+                <label class="field-label" for="course-key-<%- cid %>"><%= gettext('Course Code') %></label>
+                <input id="course-key-<%- cid %>" class="field-input input-text course-key" name="key" aria-describedby="course-key-<%- cid %>-desc" maxlength="255" required>
+                <div class="field-message">
+                    <span class="field-message-content"></span>
+                </div>
+                <div class="field-hint" id="course-key-<%- cid %>-desc">
+                    <p><%= gettext('The unique number that identifies your course within your organization, e.g. CS101.') %></p>
+                </div>
+            </div>
+            <div class="field">
+                <label class="field-label" for="display-name-<%- cid %>"><%= gettext('Course Title') %></label>
+                <input id="display-name-<%- cid %>" class="field-input input-text display-name" name="display_name" aria-describedby="display-name-<%- cid %>-desc" maxlength="255" required>
+                <div class="field-message">
+                    <span class="field-message-content"></span>
+                </div>
+                <div class="field-hint" id="display-name-<%- cid %>-desc">
+                    <p><%= gettext('The title entered here will override the title set for the individual run of the course. It will be displayed on the XSeries progress page and in marketing presentations.') %></p>
+                </div>
+            </div>
+            <button class="btn btn-primary js-select-course"><%- gettext('Save Course') %></button>
+        </fieldset>
+    </form>
 <% } %>
 </div>

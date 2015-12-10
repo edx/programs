@@ -52,86 +52,108 @@ define([
                 },
                 testTimeoutInterval = 100,
                 errorClass = 'has-error',
-                editField = function( el, str ) {
-                    var $input = view.$el.find( el ),
-                        $btn = $input.next( '.js-enable-edit' );
+                completeCourseForm,
+                editField,
+                keyPress,
+                openPublishModal,
+                testHidingButtonsAfterPublish,
+                testInvalidUpdate,
+                testUnchangedFieldBlur,
+                testUpdatedFieldBlur;
 
-                    expect( document.activeElement ).not.toEqual( $input[0] );
-                    expect( $input ).not.toHaveClass( 'edit' );
-                    expect( $input ).toHaveClass( 'is-hidden' );
+            completeCourseForm = function() {
+                var $form = view.$('.js-course-form');
 
-                    $btn.click();
+                $form.find('.course-key').val('123');
+                $form.find('.display-name').val('test course 1');
+            };
 
-                    $input.val( str );
+            editField = function( el, str ) {
+                var $input = view.$el.find( el ),
+                    $btn = $input.next( '.js-enable-edit' );
 
-                    // Enable editing
-                    expect( $input ).not.toHaveClass( 'is-hidden' );
-                    expect( $input ).toHaveClass( 'edit' );
-                },
-                keyPress = function( $el, key ) {
-                    $el.trigger({
-                        type: 'keydown',
-                        keyCode: key,
-                        which: key,
-                        charCode: key
-                    });
-                },
-                openPublishModal = function() {
-                    var $publishBtn = view.$el.find('.js-publish-program'),
-                        defaultStatus = programData.status,
-                        publishedStatus = 'active';
+                expect( document.activeElement ).not.toEqual( $input[0] );
+                expect( $input ).not.toHaveClass( 'edit' );
+                expect( $input ).toHaveClass( 'is-hidden' );
 
-                    expect( view.modalView ).not.toBeDefined();
-                    expect( view.model.get( 'status' ) ).toEqual( defaultStatus );
-                    expect( view.model.get( 'status' ) ).not.toEqual( publishedStatus );
+                $btn.click();
 
-                    $publishBtn.click();
-                },
-                testUnchangedFieldBlur = function( el ) {
-                    var $input = view.$el.find( el ),
-                        $btn = view.$el.find( '.js-add-course' ),
-                        title = $input.val(),
-                        update = title;
+                $input.val( str );
 
-                    editField( el, update );
-                    $btn.focus();
-                    $input.blur();
+                // Enable editing
+                expect( $input ).not.toHaveClass( 'is-hidden' );
+                expect( $input ).toHaveClass( 'edit' );
+            };
 
-                    expect( title ).toEqual( update );
-                    expect( view.model.save ).not.toHaveBeenCalled();
-                },
-                testUpdatedFieldBlur = function( el, update ) {
-                    var $input = view.$el.find( el ),
-                        $btn = view.$el.find( '.js-add-course' );
+            keyPress = function( $el, key ) {
+                $el.trigger({
+                    type: 'keydown',
+                    keyCode: key,
+                    which: key,
+                    charCode: key
+                });
+            };
 
-                    expect( $input.val() ).not.toEqual( update );
+            openPublishModal = function() {
+                var $publishBtn = view.$el.find('.js-publish-program'),
+                    defaultStatus = programData.status,
+                    publishedStatus = 'active';
 
-                    editField( el, update );
+                expect( view.modalView ).not.toBeDefined();
+                expect( view.model.get( 'status' ) ).toEqual( defaultStatus );
+                expect( view.model.get( 'status' ) ).not.toEqual( publishedStatus );
 
-                    $btn.focus();
-                    $input.blur();
+                $publishBtn.click();
+            };
 
-                    expect( $input.val() ).toEqual( update );
-                    expect( view.model.save ).toHaveBeenCalled();
-                },
-                testHidingButtonsAfterPublish = function( el ) {
-                    expect( view.$el.find( el ).length ).toBeGreaterThan( 0 );
-                    view.model.set({ status: 'active' });
-                    view.render();
-                    expect( view.$el.find( el ).length ).toEqual( 0 );
-                },
-                testInvalidUpdate = function( el, update ) {
-                    var $input = view.$el.find( el ),
-                        $btn = view.$el.find( '.js-add-course' );
+            testUnchangedFieldBlur = function( el ) {
+                var $input = view.$el.find( el ),
+                    $btn = view.$el.find( '.js-add-course' ),
+                    title = $input.val(),
+                    update = title;
 
-                    editField( el, update );
+                editField( el, update );
+                $btn.focus();
+                $input.blur();
 
-                    $btn.focus();
-                    $input.blur();
+                expect( title ).toEqual( update );
+                expect( view.model.save ).not.toHaveBeenCalled();
+            };
 
-                    expect( $input ).toHaveClass( errorClass );
-                    expect( view.model.save ).not.toHaveBeenCalled();
-                };
+            testUpdatedFieldBlur = function( el, update ) {
+                var $input = view.$el.find( el ),
+                    $btn = view.$el.find( '.js-add-course' );
+
+                expect( $input.val() ).not.toEqual( update );
+
+                editField( el, update );
+
+                $btn.focus();
+                $input.blur();
+
+                expect( $input.val() ).toEqual( update );
+                expect( view.model.save ).toHaveBeenCalled();
+            };
+
+            testHidingButtonsAfterPublish = function( el ) {
+                expect( view.$el.find( el ).length ).toBeGreaterThan( 0 );
+                view.model.set({ status: 'active' });
+                view.render();
+                expect( view.$el.find( el ).length ).toEqual( 0 );
+            };
+
+            testInvalidUpdate = function( el, update ) {
+                var $input = view.$el.find( el ),
+                    $btn = view.$el.find( '.js-add-course' );
+
+                editField( el, update );
+
+                $btn.focus();
+                $input.blur();
+
+                expect( $input ).toHaveClass( errorClass );
+                expect( view.model.save ).not.toHaveBeenCalled();
+            };
 
             beforeEach( function() {
                 // Set the DOM
@@ -219,33 +241,37 @@ define([
                 it( 'should add a new course details view on click of the add course button', function() {
                     var $btn = view.$el.find('.js-add-course').first();
 
-                    expect( view.$el.find('.js-course-select').length ).toEqual( 0 );
+                    expect( view.$('.js-course-form').length ).toEqual( 0 );
                     $btn.click();
-
-                    setTimeout( function() {
-                        var $select = view.$el.find('.js-course-select');
-                        expect( $select.length ).toEqual( 1 );
-                    }, testTimeoutInterval );
-
-                    jasmine.clock().tick( testTimeoutInterval + 1 );
+                    expect( view.$('.js-course-form').length ).toEqual( 1 );
                 });
 
-                it( 'should set course details on change of the course select', function() {
-                    var $btn = view.$el.find('.js-add-course').first();
+                it( 'should add a course when the form is submitted', function() {
+                    var $addCourseBtn = view.$el.find('.js-add-course').first(),
+                        $form,
+                        $submitBtn;
 
                     expect( view.$el.find('.course-details').length ).toEqual( 1 );
-                    $btn.click();
+                    $addCourseBtn.click();
+                    $form = view.$('.js-course-form');
+                    $submitBtn = $form.find('.js-select-course');
+                    completeCourseForm();
+                    $submitBtn.click();
+                    expect( $form.find('.field-message.has-error').length ).toEqual( 0 );
+                });
 
-                    setTimeout( function() {
-                        view.$el.find('.js-course-select').val('002').trigger('change');
-                    }, testTimeoutInterval );
+                it( 'should not submit the course form when it is incomplete', function() {
+                    var $addCourseBtn = view.$el.find('.js-add-course').first(),
+                        $form,
+                        $submitBtn;
 
-                    setTimeout( function() {
-                        expect( view.$el.find('.course-details').length ).toEqual( 2 );
-                    }, testTimeoutInterval * 2 );
-
-                    jasmine.clock().tick( testTimeoutInterval + 1 );
-                    jasmine.clock().tick( ( testTimeoutInterval * 2 ) + 1 );
+                    expect( view.$el.find('.course-details').length ).toEqual( 1 );
+                    $addCourseBtn.click();
+                    $form = view.$('.js-course-form');
+                    expect( $form.find('.field-message.has-error').length ).toEqual( 0 );
+                    $submitBtn = $form.find('.js-select-course');
+                    $submitBtn.click();
+                    expect( $form.find('.field-message.has-error').length ).toEqual( 2 );
                 });
             });
 

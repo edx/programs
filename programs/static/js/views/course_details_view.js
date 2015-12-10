@@ -1,15 +1,18 @@
 define([
         'backbone',
+        'backbone.validation',
         'jquery',
         'underscore',
+        'js/models/course_model',
         'js/models/pagination_model',
         'js/models/program_model',
         'js/views/course_run_view',
         'text!templates/course_details.underscore',
-        'gettext'
+        'gettext',
+        'js/utils/validation_config'
     ],
-    function( Backbone, $, _, ProgramsModel, ProgramModel,
-              CourseRunView, ListTpl ) {
+    function( Backbone, BackboneValidation, $, _, CourseModel, ProgramsModel,
+              ProgramModel, CourseRunView, ListTpl ) {
         'use strict';
 
         return Backbone.View.extend({
@@ -18,8 +21,8 @@ define([
             className: 'course-details',
 
             events: {
-                'change .js-course-select': 'setCourse',
-                'click .js-remove-course': 'destroy'
+                'click .js-remove-course': 'destroy',
+                'click .js-select-course': 'setCourse'
             },
 
             tpl: _.template( ListTpl ),
@@ -28,30 +31,36 @@ define([
             courseRuns: [],
 
             initialize: function( options ) {
-                this.model = new ProgramModel();
+
+                this.programModel = new ProgramModel();
+                this.model = new CourseModel();
+                Backbone.Validation.bind( this );
                 this.$parentEl = $( this.parentEl );
                 this.programStatus = options.programStatus;
 
                 // Data passed in because it is not an actual model
                 if ( options.data ) {
-                    this.model.set( options.data );
+                    this.programModel.set( options.data );
                 } else {
-                    this.courseList = options.courseList.toJSON();
                     this.setDefaultModel();
                 }
 
-                this.model.on('change:display_name', this.update, this);
+                //this.programModel.on('change:display_name', this.update, this);
                 this.render();
             },
 
             render: function() {
-                this.$el.html( this.tpl( this.model.toJSON() ) );
+                var data = _.extend( this.programModel.toJSON(), {
+                    cid: this.programModel.cid
+                });
+
+                this.$el.html( this.tpl( data ) );
                 this.$parentEl.append( this.$el );
                 this.postRender();
             },
 
             postRender: function() {
-                var runs = this.model.get('run_modes');
+                var runs = this.programModel.get('run_modes');
 
                 if ( runs && runs.length > 0 ) {
                     this.addCourseRuns();
@@ -60,12 +69,12 @@ define([
 
             addCourseRuns: function() {
                 // Create run views
-                var runs = this.model.get('run_modes'),
+                var runs = this.programModel.get('run_modes'),
                     $runsContainer = this.$el.find('.js-course-runs');
 
                 _.each( runs, function( run ) {
                     var runView = new CourseRunView({
-                        model: this.model,
+                        model: this.programModel,
                         data: run,
                         $parentEl: $runsContainer
                     });
@@ -78,6 +87,7 @@ define([
 
             // Delete this view
             destroy: function() {
+                Backbone.Validation.unbind(this);
                 this.destroyChildren();
                 this.undelegateEvents();
                 this.remove();
@@ -92,50 +102,72 @@ define([
             },
 
             setCourse: function( event ) {
-                var $select = $(event.currentTarget),
-                    value = $select.val();
+                var $form = this.$('.js-course-form'),
+                    title = $form.find('.display-name').val(),
+                    key = $form.find('.course-key').val();
+
+                event.preventDefault();
 
                 this.model.set({
-                    display_name: value,
-                    key: 'added-course-key',
-                    organization: {
-                        display_name: 'added-course-org-display-name',
-                        key: 'added-course-org-key',
-                    },
-                    run_modes: [
-                        {
-                            course_key: 'course-v1:edX+DemoX+Demo_Course',
-                            mode_slug: 'honor',
-                            sku: null,
-                            start_date: 'May 23, 2015'
-                        }, {
-                            course_key: 'course-v1:edX+DemoX+Demo_Course',
-                            mode_slug: 'honor',
-                            sku: null,
-                            start_date: 'August 01, 2015'
-                        }, {
-                            course_key: 'course-v1:edX+DemoX+Demo_Course',
-                            mode_slug: 'honor',
-                            sku: null,
-                            start_date: 'December 11, 2015'
-                        }
-                    ]
+                    display_name: title,
+                    key: key,
+                    // TODO: Update after next PR which changes this code
+                    organization: {}
                 });
 
-                this.addCourseRuns();
+                if ( this.model.isValid(true) ) {
+                    return true;
+                    // Get course runs
+                    // this.programModel.fetch();
+                    
+                    // With the response set org 
+                    // this.programModel.set({
+                    //     display_name: title,
+                    //     key: key,
+                    //     organization: {
+                    //         display_name: 'added-course-org-display-name',
+                    //         key: 'added-course-org-key',
+                    //     },
+                    //     run_modes: [
+                    //         {
+                    //             course_key: 'course-v1:edX+DemoX+Demo_Course',
+                    //             mode_slug: 'honor',
+                    //             sku: null,
+                    //             start_date: 'May 23, 2015'
+                    //         }, {
+                    //             course_key: 'course-v1:edX+DemoX+Demo_Course',
+                    //             mode_slug: 'honor',
+                    //             sku: null,
+                    //             start_date: 'August 01, 2015'
+                    //         }, {
+                    //             course_key: 'course-v1:edX+DemoX+Demo_Course',
+                    //             mode_slug: 'honor',
+                    //             sku: null,
+                    //             start_date: 'December 11, 2015'
+                    //         }
+                    //     ]
+                    // });
+                    //this.addCourseRuns();
+                }
             },
 
             setDefaultModel: function() {
-                this.model.set({
+                this.programModel.set({
                     display_name: false,
-                    courseList: this.courseList,
-                    programStatus: 'unpublished'
+                    programStatus: 'unpublished',
+                    // TODO: Update after next PR which changes this code
+                    organization: {}
                 });
-            },
-
-            update: function() {
-                this.$el.html( this.tpl( this.model.toJSON() ) );
             }
+
+            // TODO: Determine whether this is still needed
+            // update: function() {
+            //     var data = _.extend( this.programModel.toJSON(), {
+            //         cid: this.programModel.cid
+            //     });
+
+            //     this.$el.html( this.tpl( data ) );
+            // }
         });
     }
 );
