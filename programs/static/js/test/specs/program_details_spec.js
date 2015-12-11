@@ -1,15 +1,90 @@
 define([
         'jquery',
+        'js/collections/course_runs_collection',
         'js/models/program_model',
+        'js/views/course_run_view',
         'js/views/program_details_view',
         'js/utils/constants'
     ],
-    function( $, ProgramModel, ProgramDetailsView, constants ) {
+    function( $, CourseRunsCollection, ProgramModel, CourseRunView,
+              ProgramDetailsView, constants ) {
         'use strict';
 
+        /* jshint maxlen: 300 */
         describe('ProgramDetailsView', function () {
             var view = {},
                 model = {},
+                courseRunsList = [
+                    {
+                        course_id: 'course-v1:edX+DemoX+Demo_Course',
+                        name: 'edX Demonstration Course',
+                        number: 'DemoX',
+                        org: 'edX',
+                        short_description: null,
+                        effort: null,
+                        media: {
+                            course_image: {
+                                uri: '/asset-v1:edX+DemoX+Demo_Course+type@asset+block@images_course_image.jpg'
+                            },
+                            course_video: {
+                                uri: null
+                            }
+                        },
+                        start: 'May 23, 2015',
+                        start_type: 'timestamp',
+                        start_display: 'Feb. 5, 2013',
+                        end: null,
+                        enrollment_start: null,
+                        enrollment_end: null,
+                        blocks_url: 'http://127.0.0.1:8000/api/courses/v1/blocks/?course_id=course-v1%3AedX%2BDemoX%2BDemo_Course'
+                    },
+                    {
+                        course_id: 'course-v1:edx+Krampus25+2015_12_05',
+                        name: 'Krampusnacht',
+                        number: 'Krampus25',
+                        org: 'edx',
+                        short_description: null,
+                        effort: null,
+                        media: {
+                            course_image: {
+                                uri: '/asset-v1:edx+Krampus25+2015_12_05+type@asset+block@images_course_image.jpg'
+                            },
+                            course_video: {
+                                uri: null
+                            }
+                        },
+                        start: '2030-01-01T00:00:00Z',
+                        start_type: 'empty',
+                        start_display: null,
+                        end: null,
+                        enrollment_start: null,
+                        enrollment_end: null,
+                        blocks_url: 'http://127.0.0.1:8000/api/courses/v1/blocks/?course_id=course-v1%3Aedx%2BKrampus25%2B2015_12_05'
+                    },
+                    {
+                        course_id: 'course-v1:edx+shiaLB101+2016_01',
+                        name: 'Shia "The Beef"',
+                        number: 'shiaLB101',
+                        org: 'edx',
+                        short_description: null,
+                        effort: null,
+                        media: {
+                            course_image: {
+                                uri: '/asset-v1:edx+shiaLB101+2016_01+type@asset+block@images_course_image.jpg'
+                            },
+                            course_video: {
+                                uri: null
+                            }
+                        },
+                        start: '2030-01-01T00:00:00Z',
+                        start_type: 'empty',
+                        start_display: null,
+                        end: null,
+                        enrollment_start: null,
+                        enrollment_end: null,
+                        blocks_url: 'http://127.0.0.1:8000/api/courses/v1/blocks/?course_id=course-v1%3Aedx%2BshiaLB101%2B2016_01'
+                    }
+                ],
                 programData = {
                     category: 'xseries',
                     course_codes: [{
@@ -24,17 +99,17 @@ define([
                                 course_key: 'course-v1:edX+DemoX+Demo_Course',
                                 mode_slug: 'honor',
                                 sku: null,
-                                start_date: 'May 23, 2015'
+                                start: 'May 23, 2015'
                             }, {
                                 course_key: 'course-v1:edX+DemoX+Demo_Course',
                                 mode_slug: 'honor',
                                 sku: null,
-                                start_date: 'August 01, 2015'
+                                start: 'August 01, 2015'
                             }, {
                                 course_key: 'course-v1:edX+DemoX+Demo_Course',
                                 mode_slug: 'honor',
                                 sku: null,
-                                start_date: 'December 11, 2015'
+                                start: 'December 11, 2015'
                             }
                         ]
                     }],
@@ -52,7 +127,9 @@ define([
                 },
                 testTimeoutInterval = 100,
                 errorClass = 'has-error',
+                addCourse,
                 completeCourseForm,
+                dropdownSelect,
                 editField,
                 keyPress,
                 openPublishModal,
@@ -61,11 +138,34 @@ define([
                 testUnchangedFieldBlur,
                 testUpdatedFieldBlur;
 
+            addCourse = function() {
+                var $addCourseBtn = view.$el.find('.js-add-course').first(),
+                    $form,
+                    $submitBtn;
+
+                expect( view.$el.find('.course-details').length ).toEqual( 1 );
+                $addCourseBtn.click();
+                $form = view.$('.js-course-form');
+                $submitBtn = $form.find('.js-select-course');
+                completeCourseForm();
+                $submitBtn.click();
+                expect( $form.find('.field-message.has-error').length ).toEqual( 0 );
+            };
+
             completeCourseForm = function() {
                 var $form = view.$('.js-course-form');
 
                 $form.find('.course-key').val('123');
                 $form.find('.display-name').val('test course 1');
+            };
+
+            dropdownSelect = function( $select, value ) {
+                // $select.val(value);
+                // $select.trigger('change');
+
+                $select.find('option:selected').prop('selected', false);
+                $select.val(value).prop('selected', true);
+                $select.trigger('change');
             };
 
             editField = function( el, str ) {
@@ -163,6 +263,7 @@ define([
 
                 spyOn( ProgramModel.prototype, 'set' ).and.callThrough();
                 spyOn( ProgramModel.prototype, 'save' );
+                spyOn( CourseRunsCollection.prototype, 'fetch' );
 
                 model = new ProgramModel();
                 model.set( programData );
@@ -170,6 +271,10 @@ define([
                 view = new ProgramDetailsView({
                     model: model
                 });
+
+                view.courseRuns.set( courseRunsList );
+                view.courseRuns.parse({ results: courseRunsList });
+
             });
 
             afterEach( function() {
@@ -184,12 +289,18 @@ define([
                     expect( view ).toBeDefined();
                 });
 
-                it( 'should render all of the run_modes from the model', function () {
+                it( 'should render all of the run_modes from the model', function() {
                    var $runs = view.$el.find('.js-course-runs'),
                        domLength = $runs.find('.js-remove-run').length,
                        objLength = programData.course_codes[0].run_modes.length;
 
                     expect( domLength ).toEqual( objLength );
+                });
+
+                it( 'should get a list of course runs from the course runs collection', function() {
+                    view.courseRuns.trigger('sync');
+                    // TODO: Add real test conditions when working on ECOM-3046
+                    expect(1).toEqual(1);
                 });
             });
 
@@ -247,17 +358,7 @@ define([
                 });
 
                 it( 'should add a course when the form is submitted', function() {
-                    var $addCourseBtn = view.$el.find('.js-add-course').first(),
-                        $form,
-                        $submitBtn;
-
-                    expect( view.$el.find('.course-details').length ).toEqual( 1 );
-                    $addCourseBtn.click();
-                    $form = view.$('.js-course-form');
-                    $submitBtn = $form.find('.js-select-course');
-                    completeCourseForm();
-                    $submitBtn.click();
-                    expect( $form.find('.field-message.has-error').length ).toEqual( 0 );
+                    addCourse();
                 });
 
                 it( 'should not submit the course form when it is incomplete', function() {
@@ -272,6 +373,47 @@ define([
                     $submitBtn = $form.find('.js-select-course');
                     $submitBtn.click();
                     expect( $form.find('.field-message.has-error').length ).toEqual( 2 );
+                });
+
+                it( 'should allow a user to add a course run', function() {
+                    var runSelect = '.js-course-run-select',
+                        $runSelect,
+                        savedRunCount = programData.course_codes[0].run_modes.length;
+
+                    addCourse();
+                    expect( view.$(runSelect).length ).toEqual(0);
+                    view.$('.js-add-course-run').first().click();
+                    
+                    $runSelect = view.$(runSelect);
+                    expect( $runSelect.length ).toEqual(1);
+                    expect( view.$('.js-remove-run').length ).toEqual(savedRunCount);
+                    dropdownSelect($runSelect, courseRunsList[0].course_id);
+                    expect( view.$(runSelect).length ).toEqual(0);
+                    expect( view.$('.js-remove-run').length ).toEqual(savedRunCount + 1);
+                });
+
+                it( 'should update the course run dropdown if multiple are open and one is selected', function() {
+                    var runSelect = '.js-course-run-select',
+                        $addRunBtn,
+                        $courseView,
+                        courseRunOptionsCount = courseRunsList.length + 1;
+
+                    addCourse();
+                    expect( view.$(runSelect).length ).toEqual(0);
+
+                    $courseView = view.$('.course-container').last();
+                    $addRunBtn = $courseView.find('.js-add-course-run');
+                    $addRunBtn.click();
+                    
+                    expect( view.$(runSelect).length ).toEqual(1);
+                    expect( view.$(runSelect).find('option').length ).toEqual(courseRunOptionsCount);
+
+                    $addRunBtn.click();
+                    expect( view.$(runSelect).length ).toEqual(2);
+
+                    dropdownSelect(view.$(runSelect).first(), courseRunsList[0].course_id);
+                    expect( view.$(runSelect).length ).toEqual(1);
+                    expect( view.$(runSelect).find('option').length ).toEqual(courseRunOptionsCount - 1);
                 });
             });
 

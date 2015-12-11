@@ -4,6 +4,7 @@ define([
         'jquery',
         'underscore',
         'js/models/course_model',
+        'js/models/course_run_model',
         'js/models/pagination_model',
         'js/models/program_model',
         'js/views/course_run_view',
@@ -11,8 +12,8 @@ define([
         'gettext',
         'js/utils/validation_config'
     ],
-    function( Backbone, BackboneValidation, $, _, CourseModel, ProgramsModel,
-              ProgramModel, CourseRunView, ListTpl ) {
+    function( Backbone, BackboneValidation, $, _, CourseModel, CourseRunModel,
+              ProgramsModel, ProgramModel, CourseRunView, ListTpl ) {
         'use strict';
 
         return Backbone.View.extend({
@@ -22,64 +23,92 @@ define([
 
             events: {
                 'click .js-remove-course': 'destroy',
-                'click .js-select-course': 'setCourse'
+                'click .js-select-course': 'setCourse',
+                'click .js-add-course-run': 'addCourseRun'
             },
 
             tpl: _.template( ListTpl ),
 
             // For managing subViews
-            courseRuns: [],
+            courseRunViews: [],
 
             initialize: function( options ) {
-
-                this.programModel = new ProgramModel();
                 this.model = new CourseModel();
                 Backbone.Validation.bind( this );
                 this.$parentEl = $( this.parentEl );
-                this.programStatus = options.programStatus;
 
-                // Data passed in because it is not an actual model
-                if ( options.data ) {
-                    this.programModel.set( options.data );
+                this.courseRuns = options.courseRuns;
+                this.programModel = options.programModel;
+                
+                if ( options.courseData ) {
+                    this.model.set(options.courseData);
                 } else {
-                    this.setDefaultModel();
+                    /**
+                     * TODO: Debug why a new model is inheriting the run_modes from
+                     * the program's first course. It will be much easier to debug
+                     * during ECOM-3046 so I will tackle it then
+                     */
+                    this.model.set({run_modes: []});
                 }
+                // Need a unique value for field ids so using model cid
+                this.model.set({cid: this.model.cid});
 
-                //this.programModel.on('change:display_name', this.update, this);
                 this.render();
             },
 
             render: function() {
-                var data = _.extend( this.programModel.toJSON(), {
-                    cid: this.programModel.cid
-                });
-
-                this.$el.html( this.tpl( data ) );
+                this.$el.html( this.tpl( this.formatData() ) );
                 this.$parentEl.append( this.$el );
                 this.postRender();
             },
 
             postRender: function() {
-                var runs = this.programModel.get('run_modes');
-
+                var runs = this.model.get('run_modes');
                 if ( runs && runs.length > 0 ) {
                     this.addCourseRuns();
                 }
             },
 
+            addCourseRun: function(event) {
+                var $runsContainer = this.$el.find('.js-course-runs'),
+                    runModel = new CourseRunModel(),
+                    runView;
+
+                event.preventDefault();
+
+                runModel.set({course_key: undefined});
+
+                runView = new CourseRunView({
+                    model: runModel,
+                    course: this.model,
+                    courseRuns: this.courseRuns,
+                    programStatus: this.programModel.get('status'),
+                    $parentEl: $runsContainer
+                });
+
+                this.courseRunViews.push( runView );
+            },
+
             addCourseRuns: function() {
                 // Create run views
-                var runs = this.programModel.get('run_modes'),
+                var runs = this.model.get('run_modes'),
                     $runsContainer = this.$el.find('.js-course-runs');
 
                 _.each( runs, function( run ) {
-                    var runView = new CourseRunView({
-                        model: this.programModel,
-                        data: run,
+                    var runModel = new CourseRunModel(),
+                        runView;
+
+                    runModel.set(run);
+
+                    runView = new CourseRunView({
+                        model: runModel,
+                        course: this.model,
+                        courseRuns: this.courseRuns,
+                        programStatus: this.programModel.get('status'),
                         $parentEl: $runsContainer
                     });
 
-                    this.courseRuns.push( runView );
+                    this.courseRunViews.push( runView );
 
                     return runView;
                 }.bind(this) );
@@ -94,11 +123,22 @@ define([
             },
 
             destroyChildren: function() {
-                var runs = this.courseRuns;
+                var runs = this.courseRunViews;
 
                 _.each( runs, function( run ) {
-                    run.destroy();
+                    run.removeRun();
                 });
+            },
+
+            // Format data to be passed to the template
+            formatData: function() {
+                var data = $.extend( {}, 
+                    { courseRuns: this.courseRuns.models },
+                    _.omit( this.programModel.toJSON(), 'run_modes'),
+                    this.model.toJSON()
+                );
+
+                return data;
             },
 
             setCourse: function( event ) {
@@ -111,63 +151,18 @@ define([
                 this.model.set({
                     display_name: title,
                     key: key,
-                    // TODO: Update after next PR which changes this code
-                    organization: {}
+                    organization: this.programModel.get('organizations')[0]
                 });
 
                 if ( this.model.isValid(true) ) {
-                    return true;
-                    // Get course runs
-                    // this.programModel.fetch();
-                    
-                    // With the response set org 
-                    // this.programModel.set({
-                    //     display_name: title,
-                    //     key: key,
-                    //     organization: {
-                    //         display_name: 'added-course-org-display-name',
-                    //         key: 'added-course-org-key',
-                    //     },
-                    //     run_modes: [
-                    //         {
-                    //             course_key: 'course-v1:edX+DemoX+Demo_Course',
-                    //             mode_slug: 'honor',
-                    //             sku: null,
-                    //             start_date: 'May 23, 2015'
-                    //         }, {
-                    //             course_key: 'course-v1:edX+DemoX+Demo_Course',
-                    //             mode_slug: 'honor',
-                    //             sku: null,
-                    //             start_date: 'August 01, 2015'
-                    //         }, {
-                    //             course_key: 'course-v1:edX+DemoX+Demo_Course',
-                    //             mode_slug: 'honor',
-                    //             sku: null,
-                    //             start_date: 'December 11, 2015'
-                    //         }
-                    //     ]
-                    // });
-                    //this.addCourseRuns();
+                    this.update();
+                    this.addCourseRuns();
                 }
             },
 
-            setDefaultModel: function() {
-                this.programModel.set({
-                    display_name: false,
-                    programStatus: 'unpublished',
-                    // TODO: Update after next PR which changes this code
-                    organization: {}
-                });
+            update: function() {
+                this.$el.html( this.tpl( this.formatData()  ) );
             }
-
-            // TODO: Determine whether this is still needed
-            // update: function() {
-            //     var data = _.extend( this.programModel.toJSON(), {
-            //         cid: this.programModel.cid
-            //     });
-
-            //     this.$el.html( this.tpl( data ) );
-            // }
         });
     }
 );

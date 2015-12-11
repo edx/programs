@@ -1,7 +1,7 @@
 <div class="card course-container">
 <% if ( display_name ) {  %>
     <span class="copy copy-large emphasized"><%- display_name %></span>
-  <% if ( programStatus === 'unpublished' ) { %>
+  <% if ( status === 'unpublished' ) { %>
     <button class="js-remove-course btn btn-delete right">
         <span class="icon-fallback icon-fallback-text">
             <span class="icon icon-trash-o" aria-hidden="true"></span>
@@ -15,7 +15,7 @@
   <% } %>
     <p class="copy copy-base subtitle"><%- organization.display_name %> / <%- key %>
     <div class="js-course-runs"></div>
-  <% if ( run_modes.length > -1 ) { %>
+  <% if ( courseRuns.length > -1 ) { %>
     <button class="js-add-course-run btn btn-default btn-base full">
         <span class="icon icon-plus" aria-hidden="true"></span>
         <span class="text"><%= gettext('Add another run') %></span>

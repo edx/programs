@@ -5,6 +5,6 @@ define([
     function( Backbone, auth ) {
         'use strict';
 
-        return Backbone.Model.extend(auth.autoSync);
+        return Backbone.Collection.extend(auth.autoSync);
     }
 );
