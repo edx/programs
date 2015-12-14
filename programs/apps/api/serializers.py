@@ -10,6 +10,7 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext as _
 from rest_framework import fields, exceptions, serializers
 
+
 from programs.apps.programs import models, constants
 
 
@@ -101,6 +102,21 @@ class ProgramCourseRunModeSerializer(serializers.ModelSerializer):
             raise exceptions.ValidationError(exc.message)
 
 
+class DefaultOrganizationFromContext(object):
+    """
+    This is here because we need a workaround to prevent ValidationErrors
+    in the special case where a CourseCode instance is created on the fly
+    while processing nested updates to a Program.  It's based on the
+    implementation of `rest_framework.fields.CurrentUserDefault`.  See
+    also the inline comments in `ProgramCourseCodeSerializer._get_course_code`.
+    """
+    def set_context(self, serializer_field):  # pylint: disable=missing-docstring
+        self.organization = serializer_field.context['organization']  # pylint: disable=attribute-defined-outside-init
+
+    def __call__(self):  # pylint: disable=missing-docstring
+        return self.organization
+
+
 class CourseCodeSerializer(serializers.ModelSerializer):
     """Serializer for the course code model."""
 
@@ -108,7 +124,10 @@ class CourseCodeSerializer(serializers.ModelSerializer):
         model = models.CourseCode
         fields = ('display_name', 'key', 'organization')
 
-    organization = OrganizationSerializer(read_only=True)
+    organization = OrganizationSerializer(
+        read_only=True,
+        default=fields.CreateOnlyDefault(DefaultOrganizationFromContext()),
+    )
 
 
 class ProgramCourseCodeSerializer(serializers.ModelSerializer):
@@ -134,23 +153,56 @@ class ProgramCourseCodeSerializer(serializers.ModelSerializer):
         else:
             return obj['course_code'].organization.key, obj['course_code'].key
 
+    def _get_course_code(self, data):
+        '''
+        Determine the correct CourseCode instance to associate based on
+        inbound request data.  This method also handles creating CourseCodes
+        on-the-fly when no existing match was found, or updating existing
+        instances' display names when they have changed.
+        '''
+        if 'key' not in data:
+            raise ValidationError('Missing course code key.')
+        elif 'organization' not in data or 'key' not in data['organization']:
+            raise ValidationError('Missing organization information.')
+
+        # find the organization, without which we can't do anything useful.
+        try:
+            organization = models.Organization.objects.get(key=data[u'organization'][u'key'])
+        except models.Organization.DoesNotExist:
+            raise ValidationError('Invalid organization key.')
+        # extract request data we intend to pass to the serializer
+        serializer_data = {k: data[k] for k in ('key', 'display_name') if k in data}
+        serializer_data['organization'] = organization
+
+        # try to find an existing course code instance, based on the keys we have.
+        try:
+            course_code = models.CourseCode.objects.get(key=data[u'key'], organization=organization)
+        except models.CourseCode.DoesNotExist:
+            course_code = None
+
+        # note that we are passing the organization in the context, because
+        # while it's a read-only field on the CourseCodeSerializer, it's needed
+        # at create time (and there seems to be no other way to pass it through
+        # to the serializer's UniqueTogether validator, which requires its
+        # presence).
+        #
+        # see also: DefaultOrganizationFromContext (in this module)
+        # and: http://www.django-rest-framework.org/api-guide/validators/#advanced-default-argument-usage
+        cc_serializer = CourseCodeSerializer(
+            instance=course_code,
+            data=serializer_data,
+            partial=True,
+            context={'organization': organization},
+        )
+        cc_serializer.is_valid(raise_exception=True)
+        return cc_serializer.save()
+
     def to_internal_value(self, data):
         """
         Overrides the default deserialization to look up related objects that
         are needed to create/update the correct models.
         """
-        # use 'key' and 'organization.key' to find the course code we need
-        try:
-            cc = models.CourseCode.objects.get(
-                key=data[u'key'],
-                organization__key=data[u'organization'][u'key'],
-            )
-        except models.CourseCode.DoesNotExist:
-            # avoid errors when working with incomplete/invalid nested data
-            raise ValidationError('Unknown course code.')
-        # get rid of extraneous fields, as they can confuse DRF internals
-        # which assume that further nested writing is intended.
-        out_data = {'program': self.root.instance, 'course_code': cc}
+        out_data = {'program': self.root.instance, 'course_code': self._get_course_code(data)}
 
         # handle run_modes if present
         if 'run_modes' in data:

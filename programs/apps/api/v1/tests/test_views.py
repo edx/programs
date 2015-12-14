@@ -14,7 +14,7 @@ from programs.apps.api.v1.tests.mixins import AuthClientMixin, JwtMixin
 from programs.apps.core.constants import Role
 from programs.apps.core.tests.factories import UserFactory
 from programs.apps.programs.constants import ProgramCategory, ProgramStatus
-from programs.apps.programs.models import Program, ProgramCourseCode, ProgramCourseRunMode
+from programs.apps.programs.models import CourseCode, Program, ProgramCourseCode, ProgramCourseRunMode
 from programs.apps.programs.tests.factories import (
     CourseCodeFactory,
     OrganizationFactory,
@@ -427,6 +427,83 @@ class ProgramsViewTests(JwtMixin, TestCase):
             sorted([pcc.course_code.key for pcc in db_course_codes])
         )
 
+    def test_create_course_codes(self):
+        """
+        Ensure that course codes can be created on the fly from request data
+        when referenced as part of nested program updates.
+        """
+        org = OrganizationFactory.create(key='test-org-key')
+        program = ProgramFactory.create()
+        ProgramOrganizationFactory.create(program=program, organization=org)
+
+        patch_data = {
+            u'course_codes': [
+                {
+                    u'key': 'test-course-code-key',
+                    u'display_name': 'test-course-code-name',
+                    u'organization': {
+                        u'key': 'test-org-key',
+                    },
+                },
+            ],
+        }
+        response = self._make_request(program_id=program.id, admin=True, method='patch', data=patch_data)
+        self.assertEqual(response.status_code, 200)
+
+        # check response data
+        response_course_code = response.data['course_codes'][0]
+        self.assertEqual(response_course_code['key'], 'test-course-code-key')
+        self.assertEqual(response_course_code['display_name'], 'test-course-code-name')
+        self.assertEqual(response_course_code['organization']['key'], 'test-org-key')
+
+        # check models (ensure things were saved properly)
+        db_course_code = CourseCode.objects.get(
+            key='test-course-code-key',
+            display_name='test-course-code-name',
+            organization__key='test-org-key',
+        )
+        self.assertEqual(db_course_code.programs.count(), 1)
+        self.assertEqual(db_course_code.programs.all()[0], program)
+
+    def test_update_course_code_display_name(self):
+        """
+        Ensure that course codes' display names can be updated on the fly from
+        request data when referenced as part of nested program updates.
+        """
+        org = OrganizationFactory.create(key='test-org-key')
+        program = ProgramFactory.create()
+        ProgramOrganizationFactory.create(program=program, organization=org)
+        CourseCodeFactory.create(
+            key='test-course-code-key',
+            display_name='original-display-name',
+            organization=org,
+        )
+
+        patch_data = {
+            u'course_codes': [
+                {
+                    u'key': 'test-course-code-key',
+                    u'display_name': 'changed-display-name',
+                    u'organization': {
+                        u'key': 'test-org-key',
+                    },
+                },
+            ],
+        }
+        response = self._make_request(program_id=program.id, admin=True, method='patch', data=patch_data)
+        self.assertEqual(response.status_code, 200)
+
+        # check response data
+        response_course_code = response.data['course_codes'][0]
+        self.assertEqual(response_course_code['display_name'], 'changed-display-name')
+
+        # check models (ensure things were saved properly)
+        CourseCode.objects.get(
+            key='test-course-code-key',
+            display_name='changed-display-name',
+            organization__key='test-org-key',
+        )
+
     def test_update_run_modes(self):
         """
         Ensure that nested run modes can be updated.
@@ -553,7 +630,6 @@ class ProgramsViewTests(JwtMixin, TestCase):
 
     @ddt.data(
         {
-            u'key': 'unknown-key',
             u'organization': {
                 u'key': 'test-org-key',
             },
@@ -563,6 +639,13 @@ class ProgramsViewTests(JwtMixin, TestCase):
             u'organization': {
                 u'key': 'unknown-org-key',
             },
+        },
+        {
+            u'key': 'test-course-key',
+            u'organization': {},
+        },
+        {
+            u'key': 'test-course-key',
         },
     )
     def test_invalid_nested_course_codes(self, invalid_code):
