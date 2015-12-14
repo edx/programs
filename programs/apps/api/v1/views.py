@@ -1,6 +1,7 @@
 """
 Programs API views (v1).
 """
+from django.db.models import Prefetch
 from rest_framework import mixins, viewsets, parsers as drf_parsers
 
 from programs.apps.programs import models
@@ -56,7 +57,6 @@ class ProgramsViewSet(
 
     """
     permission_classes = (permissions.IsAdminGroupOrReadOnly, )
-    queryset = models.Program.objects.all()
     filter_backends = (
         filters.ProgramStatusRoleFilterBackend,
         filters.ProgramStatusQueryFilterBackend,
@@ -64,6 +64,29 @@ class ProgramsViewSet(
     )
     serializer_class = serializers.ProgramSerializer
     parser_classes = (edx_parsers.MergePatchParser, drf_parsers.JSONParser)
+
+    def get_queryset(self):
+        """Perform eager loading of data to prevent a cascade of performance-degrading queries."""
+        queryset = models.Program.objects.all()
+
+        # Database queries which have already been run are never updated automatically
+        # by the Django ORM. As a result, updates to prefetched related objects are not
+        # reflected in responses.
+        # See: https://github.com/tomchristie/django-rest-framework/issues/2442.
+        if self.request.method != 'GET':
+            return queryset
+
+        return queryset.prefetch_related(
+            Prefetch(
+                'programorganization_set',
+                queryset=models.ProgramOrganization.objects.select_related('organization')
+            ),
+            Prefetch(
+                'programcoursecode_set',
+                queryset=models.ProgramCourseCode.objects.select_related()
+            ),
+            'programcoursecode_set__run_modes',
+        )
 
 
 class CourseCodesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -92,9 +115,14 @@ class CourseCodesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 
     """
     permission_classes = (permissions.IsAdminGroup, )
-    queryset = models.CourseCode.objects.all()
     serializer_class = serializers.CourseCodeSerializer
     filter_backends = (filters.CourseCodeOrgKeyFilterBackend, )
+
+    def get_queryset(self):
+        """Perform eager loading of data to prevent a cascade of performance-degrading queries."""
+        queryset = models.CourseCode.objects.all()
+
+        return queryset.select_related('organization')
 
 
 class OrganizationsViewSet(mixins.CreateModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
