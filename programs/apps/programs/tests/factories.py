@@ -1,8 +1,11 @@
 """
 Factories for tests of Programs.
 """
+from datetime import datetime
+
 from django.utils.crypto import get_random_string
 import factory
+import pytz
 
 from programs.apps.programs import models
 from programs.apps.programs.constants import ProgramCategory, ProgramStatus
@@ -58,4 +61,4 @@ class ProgramCourseRunModeFactory(factory.django.DjangoModelFactory):
 
     id = factory.Sequence(lambda n: n)
     mode_slug = "verified"
-    sku = ''
+    start_date = datetime.now(tz=pytz.UTC)

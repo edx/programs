@@ -14,7 +14,7 @@ from programs.apps.api.v1.tests.mixins import AuthClientMixin, JwtMixin
 from programs.apps.core.constants import Role
 from programs.apps.core.tests.factories import UserFactory
 from programs.apps.programs.constants import ProgramCategory, ProgramStatus
-from programs.apps.programs.models import Program
+from programs.apps.programs.models import Program, ProgramCourseCode, ProgramCourseRunMode
 from programs.apps.programs.tests.factories import (
     CourseCodeFactory,
     OrganizationFactory,
@@ -77,11 +77,7 @@ class ProgramsViewTests(JwtMixin, TestCase):
 
         response = self._make_request(method='post', data=request_data, admin=True)
         self.assertEqual(response.status_code, 400)
-        response_data = json.loads(response.content)
-        self.assertEqual(
-            response_data['organizations'],
-            [validation_error]
-        )
+        self.assertEqual(response.data['organizations'], [validation_error])
 
     def test_authentication(self):
         """
@@ -110,7 +106,7 @@ class ProgramsViewTests(JwtMixin, TestCase):
 
         response = self._make_request(admin=True)
         self.assertEqual(response.status_code, 200)
-        results = json.loads(response.content)['results']
+        results = response.data['results']
         self.assertEqual(len(results), 3)
         self.assertNotIn(ProgramStatus.DELETED, set(obj["status"] for obj in results))
 
@@ -124,7 +120,7 @@ class ProgramsViewTests(JwtMixin, TestCase):
 
         response = self._make_request()
         self.assertEqual(response.status_code, 200)
-        results = json.loads(response.content)['results']
+        results = response.data['results']
         self.assertEqual(len(results), 2)
         statuses = set(obj["status"] for obj in results)
         self.assertNotIn(ProgramStatus.DELETED, statuses)
@@ -141,7 +137,7 @@ class ProgramsViewTests(JwtMixin, TestCase):
 
         response = self._make_request(admin=True, data={'status': query_status})
         self.assertEqual(response.status_code, 200)
-        results = json.loads(response.content)['results']
+        results = response.data['results']
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0]['status'], query_status)
 
@@ -158,7 +154,7 @@ class ProgramsViewTests(JwtMixin, TestCase):
         for org_key in org_keys:
             response = self._make_request(admin=True, data={'organization': org_key})
             self.assertEqual(response.status_code, 200)
-            results = json.loads(response.content)['results']
+            results = response.data['results']
             self.assertEqual(len(results), 1)
             self.assertEqual(results[0]['organizations'][0]['key'], org_key)
 
@@ -176,7 +172,7 @@ class ProgramsViewTests(JwtMixin, TestCase):
 
         self.assertEqual(response.status_code, 201)
         self.assertEqual(
-            json.loads(response.content),
+            response.data,
             {
                 u"name": data["name"],
                 u"subtitle": data["subtitle"],
@@ -272,7 +268,7 @@ class ProgramsViewTests(JwtMixin, TestCase):
         self.assertEqual(response.status_code, 404 if status == ProgramStatus.DELETED else 200)
         if status != ProgramStatus.DELETED:
             self.assertEqual(
-                json.loads(response.content),
+                response.data,
                 {
                     u"name": program.name,
                     u"subtitle": program.subtitle,
@@ -299,7 +295,7 @@ class ProgramsViewTests(JwtMixin, TestCase):
         self.assertEqual(response.status_code, 404 if status in filtered_statuses else 200)
         if status not in filtered_statuses:
             self.assertEqual(
-                json.loads(response.content),
+                response.data,
                 {
                     u"name": program.name,
                     u"subtitle": program.subtitle,
@@ -342,7 +338,7 @@ class ProgramsViewTests(JwtMixin, TestCase):
         response = self._make_request(program_id=program.id, admin=True)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
-            json.loads(response.content),
+            response.data,
             {
                 u"name": program.name,
                 u"subtitle": program.subtitle,
@@ -367,7 +363,7 @@ class ProgramsViewTests(JwtMixin, TestCase):
                                 u"course_key": course_key,
                                 u"run_key": run_key,
                                 u"mode_slug": "verified",
-                                u"sku": '',
+                                u"sku": None,
                                 u"start_date": start_date.strftime(DRF_DATE_FORMAT)
                             }
                         ],
@@ -379,6 +375,254 @@ class ProgramsViewTests(JwtMixin, TestCase):
                 u'marketing_slug': program.marketing_slug,
             }
         )
+
+    def test_update_course_codes(self):
+        """
+        Ensure that nested program course codes can be updated.
+        """
+        org = OrganizationFactory.create(key='test-org-key')
+        program = ProgramFactory.create()
+        ProgramOrganizationFactory.create(program=program, organization=org)
+        for n in range(3):
+            course_code = CourseCodeFactory.create(
+                key='test-course-key-{}'.format(n),
+                display_name='test-course-display_name-{}'.format(n),
+                organization=org,
+            )
+            # associate the first and second course codes, not the third.
+            if n < 2:
+                ProgramCourseCodeFactory.create(program=program, course_code=course_code)
+
+        # PATCH the course codes: send one already associated, and another not yet associated
+        patch_data = {
+            u'course_codes': [
+                {
+                    u'key': 'test-course-key-0',
+                    u'organization': {
+                        u'key': 'test-org-key',
+                    },
+                },
+                {
+                    u'key': 'test-course-key-2',
+                    u'organization': {
+                        u'key': 'test-org-key',
+                    },
+                },
+            ],
+        }
+        response = self._make_request(program_id=program.id, admin=True, method='patch', data=patch_data)
+        self.assertEqual(response.status_code, 200)
+
+        # check response data
+        patched_course_codes = response.data['course_codes']
+        self.assertEqual(
+            [u'test-course-key-0', u'test-course-key-2'],
+            sorted([cc[u'key'] for cc in patched_course_codes])
+        )
+
+        # check models (ensure things were saved properly)
+        db_course_codes = ProgramCourseCode.objects.filter(program__id=program.id)
+        self.assertEqual(
+            [u'test-course-key-0', u'test-course-key-2'],
+            sorted([pcc.course_code.key for pcc in db_course_codes])
+        )
+
+    def test_update_run_modes(self):
+        """
+        Ensure that nested run modes can be updated.
+        """
+        org = OrganizationFactory.create()
+        program = ProgramFactory.create()
+        ProgramOrganizationFactory.create(program=program, organization=org)
+        course_code = CourseCodeFactory.create(organization=org)
+        program_course_code = ProgramCourseCodeFactory.create(program=program, course_code=course_code)
+
+        for n in range(2):
+            ProgramCourseRunModeFactory.create(
+                program_course_code=program_course_code,
+                course_key='course-v1:org+course+run-{}'.format(n)
+            )
+
+        # PATCH the course code's run modes: send one matching an existing record and a second new one
+        patch_data = {
+            u'course_codes': [
+                {
+                    u'key': course_code.key,
+                    u'organization': {
+                        u'key': course_code.organization.key,
+                    },
+                    u'run_modes': [
+                        {
+                            u'course_key': u'course-v1:org+course+run-0',
+                            u'mode_slug': u'verified',
+                        },
+                        {
+                            u'course_key': u'course-v1:org+course+run-2',
+                            u'mode_slug': u'verified',
+                            u'start_date': u'2015-12-09T21:20:26.491639Z',
+                        },
+                    ],
+                },
+            ],
+        }
+        response = self._make_request(program_id=program.id, admin=True, method='patch', data=patch_data)
+        self.assertEqual(response.status_code, 200)
+
+        # check response data
+        patched_run_modes = response.data['course_codes'][0]['run_modes']
+        self.assertEqual(
+            [u'course-v1:org+course+run-0', u'course-v1:org+course+run-2'],
+            sorted([rm[u'course_key'] for rm in patched_run_modes])
+        )
+
+        # check models (ensure things were saved properly)
+        db_run_modes = ProgramCourseRunMode.objects.filter(program_course_code=program_course_code)
+        self.assertEqual(
+            [u'course-v1:org+course+run-0', u'course-v1:org+course+run-2'],
+            sorted([rm.course_key for rm in db_run_modes])
+        )
+
+    def test_create_course_code_with_run_modes(self):
+        """
+        Ensure that nested program course codes and run modes can be correctly
+        created during updates.
+        """
+        org = OrganizationFactory.create()
+        program = ProgramFactory.create()
+        ProgramOrganizationFactory.create(program=program, organization=org)
+
+        course_codes = [CourseCodeFactory.create(organization=org, key='test-cc-{}'.format(i)) for i in range(2)]
+
+        # associate two course codes with two run modes each, in one PATCH request.
+        patch_data = {
+            u'course_codes': [
+                {
+                    u'key': course_codes[0].key,
+                    u'organization': {
+                        u'key': course_codes[0].organization.key,
+                    },
+                    u'run_modes': [
+                        {
+                            u'course_key': u'course-v1:org+{}+run-0'.format(course_codes[0].key),
+                            u'mode_slug': u'verified',
+                            u'start_date': u'2015-12-09T21:20:26.491639Z',
+                        },
+                        {
+                            u'course_key': u'course-v1:org+{}+run-1'.format(course_codes[0].key),
+                            u'mode_slug': u'verified',
+                            u'start_date': u'2015-12-09T21:20:26.491639Z',
+                        },
+                    ],
+                },
+                {
+                    u'key': course_codes[1].key,
+                    u'organization': {
+                        u'key': course_codes[1].organization.key,
+                    },
+                    u'run_modes': [
+                        {
+                            u'course_key': u'course-v1:org+{}+run-0'.format(course_codes[1].key),
+                            u'mode_slug': u'verified',
+                            u'start_date': u'2015-12-09T21:20:26.491639Z',
+                        },
+                        {
+                            u'course_key': u'course-v1:org+{}+run-1'.format(course_codes[1].key),
+                            u'mode_slug': u'verified',
+                            u'start_date': u'2015-12-09T21:20:26.491639Z',
+                        },
+                    ],
+                },
+            ],
+        }
+        response = self._make_request(program_id=program.id, admin=True, method='patch', data=patch_data)
+        self.assertEqual(response.status_code, 200)
+
+        # check response data
+        response_course_codes = response.data['course_codes']
+        response_course_codes = sorted(response_course_codes, key=lambda d: d['key'])
+        for course_code, response_course_code in zip(course_codes, response_course_codes):
+            self.assertEqual(response_course_code['key'], course_code.key)
+            self.assertEqual(response_course_code['organization']['key'], course_code.organization.key)
+            self.assertEqual(len(response_course_code['run_modes']), 2)
+
+            # check db values. the following call should throw DoesNotExist if things didn't go as expected
+            db_program_course_code = ProgramCourseCode.objects.get(program=program, course_code=course_code)
+            run_modes = sorted(db_program_course_code.run_modes.all(), key=lambda o: o.course_key)
+            for i, run_mode in enumerate(run_modes):
+                self.assertEqual('course-v1:org+{}+run-{}'.format(course_code.key, i), run_mode.course_key)
+
+    @ddt.data(
+        {
+            u'key': 'unknown-key',
+            u'organization': {
+                u'key': 'test-org-key',
+            },
+        },
+        {
+            u'key': 'test-course-key',
+            u'organization': {
+                u'key': 'unknown-org-key',
+            },
+        },
+    )
+    def test_invalid_nested_course_codes(self, invalid_code):
+        """
+        Ensure that invalid nested course code data causes a 400 response.
+        """
+        org = OrganizationFactory.create(key='test-org-key')
+        program = ProgramFactory.create()
+        ProgramOrganizationFactory.create(program=program, organization=org)
+        CourseCodeFactory.create(key='test-course-key', organization=org)
+
+        patch_data = {
+            u'course_codes': [invalid_code],
+        }
+        response = self._make_request(program_id=program.id, admin=True, method='patch', data=patch_data)
+        self.assertEqual(response.status_code, 400)
+
+    @ddt.data(
+        {
+            u'course_key': u'not-a-valid-course-key',
+            u'mode_slug': u'verified',
+            u'start_date': u'2015-12-09T21:20:26.491639Z',
+        },
+        {
+            u'course_key': u'course-v1:org+code+run',
+            u'start_date': u'2015-12-09T21:20:26.491639Z',
+        },
+        {
+            u'mode_slug': u'verified',
+            u'start_date': u'2015-12-09T21:20:26.491639Z',
+        },
+        {
+            u'course_key': u'course-v1:org+code+run',
+            u'mode_slug': u'verified',
+            u'start_date': u'not a valid date',
+        },
+        {},
+    )
+    def test_invalid_nested_run_modes(self, invalid_mode):
+        """
+        Ensure that invalid nested run mode data causes a 400 response.
+        """
+        org = OrganizationFactory.create()
+        program = ProgramFactory.create()
+        ProgramOrganizationFactory.create(program=program, organization=org)
+        course_code = CourseCodeFactory.create(organization=org)
+
+        patch_data = {
+            u'course_codes': [
+                {
+                    u'key': course_code.key,
+                    u'organization': {
+                        u'key': course_code.organization.key,
+                    },
+                    u'run_modes': [invalid_mode],
+                },
+            ],
+        }
+        response = self._make_request(program_id=program.id, admin=True, method='patch', data=patch_data)
+        self.assertEqual(response.status_code, 400)
 
     @ddt.data(*POST_FIELDS)
     def test_missing_fields(self, field):
@@ -404,11 +648,10 @@ class ProgramsViewTests(JwtMixin, TestCase):
 
         response = self._make_request(method='post', data=data, admin=True)
         self.assertEqual(response.status_code, expected_status)
-        content = json.loads(response.content)
         if expected_status == 201:
-            self.assertEqual(content[field], defaults[field])
+            self.assertEqual(response.data[field], defaults[field])
         else:
-            self.assertIn("field is required", content[field][0])
+            self.assertIn("field is required", response.data[field][0])
 
     @ddt.data(ProgramStatus.ACTIVE, ProgramStatus.RETIRED, ProgramStatus.DELETED, "", " ", "unrecognized")
     def test_create_with_invalid_status(self, status):
@@ -418,8 +661,7 @@ class ProgramsViewTests(JwtMixin, TestCase):
         data = self._build_post_data(status=status)
         response = self._make_request(method='post', data=data, admin=True)
         self.assertEqual(response.status_code, 400)
-        content = json.loads(response.content)
-        self.assertIn("not a valid choice", content["status"][0])
+        self.assertIn("not a valid choice", response.data["status"][0])
 
     @ddt.data("", "unrecognized")
     def test_create_with_invalid_category(self, category):
@@ -429,8 +671,7 @@ class ProgramsViewTests(JwtMixin, TestCase):
         data = self._build_post_data(category=category)
         response = self._make_request(method='post', data=data, admin=True)
         self.assertEqual(response.status_code, 400)
-        content = json.loads(response.content)
-        self.assertIn("not a valid choice", content["category"][0])
+        self.assertIn("not a valid choice", response.data["category"][0])
 
     def test_create_duplicated_name(self):
         """
@@ -440,8 +681,7 @@ class ProgramsViewTests(JwtMixin, TestCase):
         data = self._build_post_data(name="duplicated name")
         response = self._make_request(method='post', data=data, admin=True)
         self.assertEqual(response.status_code, 400)
-        content = json.loads(response.content)
-        self.assertIn("must be unique", content["name"][0])
+        self.assertIn("must be unique", response.data["name"][0])
 
 
 class OrganizationViewTests(AuthClientMixin, TestCase):
