@@ -463,7 +463,7 @@ class ProgramsViewTests(JwtMixin, TestCase):
             organization__key='test-org-key',
         )
         self.assertEqual(db_course_code.programs.count(), 1)
-        self.assertEqual(db_course_code.programs.all()[0], program)
+        self.assertEqual(db_course_code.programs.first(), program)
 
     def test_update_course_code_display_name(self):
         """

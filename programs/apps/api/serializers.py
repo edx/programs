@@ -10,7 +10,6 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext as _
 from rest_framework import fields, exceptions, serializers
 
-
 from programs.apps.programs import models, constants
 
 
@@ -154,12 +153,12 @@ class ProgramCourseCodeSerializer(serializers.ModelSerializer):
             return obj['course_code'].organization.key, obj['course_code'].key
 
     def _get_course_code(self, data):
-        '''
+        """
         Determine the correct CourseCode instance to associate based on
         inbound request data.  This method also handles creating CourseCodes
         on-the-fly when no existing match was found, or updating existing
         instances' display names when they have changed.
-        '''
+        """
         if 'key' not in data:
             raise ValidationError('Missing course code key.')
         elif 'organization' not in data or 'key' not in data['organization']:
