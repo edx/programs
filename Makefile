@@ -30,7 +30,7 @@ help:
 clean:
 	find . -name '*.pyc' -delete
 	coverage erase
-	rm -rf programs/assets programs/static/build coverage htmlcov
+	rm -rf programs/assets programs/static/css programs/static/build coverage htmlcov
 
 requirements.js:
 	npm install
@@ -48,14 +48,10 @@ quality:
 	pylint --rcfile=pylintrc programs *.py
 
 static:
+	$(NODE_BIN)/gulp css
 	$(NODE_BIN)/r.js -o build.js
 	python manage.py collectstatic --noinput -v0
 	python manage.py compress -v0
-
-bundle:
-	$(NODE_BIN)/r.js -o build.js
-	$(NODE_BIN)/gulp css
-	python manage.py collectstatic --noinput -v0
 
 serve:
 	python manage.py runserver 0.0.0.0:8004
