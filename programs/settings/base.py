@@ -268,4 +268,10 @@ CORS_ALLOW_HEADERS = (
     'x-csrftoken',
     'x-http-method-override',
 )
+
+# Controls whether CORS requests can be made using credentials such as cookies,
+# *authorization headers* or TLS client certificates. The authoring app requires
+# this in order to make requests with JWTs on the Authorization header.
+# See: https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS#Access-Control-Allow-Credentials
+CORS_ALLOW_CREDENTIALS = True
 # END CORS
