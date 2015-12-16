@@ -56,6 +56,7 @@ define([
                     Authorization: 'JWT ' + apiConfig.get( 'idToken' )
                 });
                 ajaxOptions.xhrFields = _.extend( ajaxOptions.xhrFields || {}, {
+                    // See: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/withCredentials
                     withCredentials: true
                 });
             },
@@ -69,6 +70,7 @@ define([
                 $.ajax({
                     url: apiConfig.get('authUrl'),
                     xhrFields: {
+                        // See: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/withCredentials
                         withCredentials: true
                     },
                     crossDomain: true
