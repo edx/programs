@@ -103,7 +103,7 @@ define([
             },
 
             saveSuccess: function() {
-                this.goToView( 'program/' + this.model.get( 'id' ) );
+                this.goToView( String( this.model.get( 'id' ) ) );
             }
         });
     }
