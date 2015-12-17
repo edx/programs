@@ -70,6 +70,7 @@ define([
                 jasmine.clock().install();
 
                 spyOn( ProgramCreatorView.prototype, 'saveSuccess' ).and.callThrough();
+                spyOn( ProgramCreatorView.prototype, 'goToView' ).and.callThrough();
                 spyOn( ProgramCreatorView.prototype, 'saveError' ).and.callThrough();
                 spyOn( Router.prototype, 'goHome' );
 
@@ -105,16 +106,19 @@ define([
             });
 
             it( 'should submit the form when the user clicks submit', function() {
+                var programId = 123;
+
                 completeForm( sampleInput );
 
                 spyOn( $, 'ajax' ).and.callFake( function( event ) {
-                    event.success({ id: 10001110101 });
+                    event.success({ id: programId });
                 });
 
                 view.$el.find('.js-create-program').click();
 
                 expect( $.ajax ).toHaveBeenCalled();
                 expect( view.saveSuccess ).toHaveBeenCalled();
+                expect( view.goToView ).toHaveBeenCalledWith( String( programId ) );
                 expect( view.saveError ).not.toHaveBeenCalled();
             });
 
