@@ -19,6 +19,13 @@ define([
                     required: true,
                     maxLength: 128
                 }
+            },
+
+            defaults: {
+                display_name: false,
+                key: false,
+                organization: [],
+                run_modes: []
             }
         });
     }

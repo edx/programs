@@ -3,16 +3,17 @@ define([
         'backbone.validation',
         'jquery',
         'underscore',
-        'js/models/course_list_model',
+        'js/collections/course_runs_collection',
         'js/models/pagination_model',
+        'js/models/program_model',
         'js/views/confirm_modal_view',
         'js/views/course_details_view',
         'text!templates/program_details.underscore',
         'gettext',
         'js/utils/validation_config'
     ],
-    function( Backbone, BackboneValidation, $, _, CourseListModel, ProgramsModel,
-              ModalView, CourseView, ListTpl ) {
+    function( Backbone, BackboneValidation, $, _, CourseRunsCollection,
+            ProgramsModel, ProgramModel, ModalView, CourseView, ListTpl ) {
         'use strict';
 
         return Backbone.View.extend({
@@ -29,7 +30,12 @@ define([
 
             initialize: function() {
                 Backbone.Validation.bind( this );
-                this.courseList = new CourseListModel();
+
+                this.courseRuns = new CourseRunsCollection([], {
+                    organization: this.model.get('organizations')[0]
+                });
+                this.courseRuns.fetch();
+                this.courseRuns.on('sync', this.setAvailableCourseRuns, this);
                 this.render();
             },
 
@@ -42,12 +48,12 @@ define([
                 var courses = this.model.get( 'course_codes' );
 
                 _.each( courses, function( course ) {
-                    var title = course.key + 'Course',
-                        data = $.extend( course, { programStatus: this.model.get( 'status' ) });
+                    var title = course.key + 'Course';
 
                     this[ title ] = new CourseView({
-                        collection: courses,
-                        data: data
+                        courseRuns: this.courseRuns,
+                        programModel: this.model,
+                        courseData: course
                     });
                 }.bind(this) );
 
@@ -57,8 +63,8 @@ define([
 
             addCourse: function() {
                 return new CourseView({
-                    collection: this.model.get('course_codes'),
-                    courseList: this.courseList
+                    courseRuns: this.courseRuns,
+                    programModel: this.model
                 });
             },
 
@@ -148,6 +154,11 @@ define([
                 this.model.set( data, { silent: true } );
                 this.model.on( 'sync', this.render, this );
                 this.model.patch( data );
+            },
+
+            setAvailableCourseRuns: function() {
+                // TODO: Once API is saving data update to remove any runs already saved
+                return true;
             },
 
             validateMarketingSlug: function() {

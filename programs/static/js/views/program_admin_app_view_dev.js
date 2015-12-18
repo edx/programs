@@ -8,17 +8,14 @@ define([
 
         return ProgramAdminAppCore.extend({
             initialize: function() {
-                var apiUrl = this.$el.data('api-url'),
-                    authUrl = this.$el.data('auth-url'),
-                    homeUrl = this.$el.data('home-url');
-
                 apiConfig.set({
-                    baseUrl: apiUrl,
-                    authUrl: authUrl
+                    lmsBaseUrl: this.$el.data('lms-base-url'),
+                    programsBaseUrl: this.$el.data('programs-base-url'),
+                    authUrl: this.$el.data('auth-url')
                 });
 
                 this.app = new ProgramRouter({
-                    homeUrl: homeUrl
+                    homeUrl: this.$el.data('home-url')
                 });
                 this.app.start();
             }
