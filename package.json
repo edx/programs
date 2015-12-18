@@ -7,16 +7,16 @@
   },
   "dependencies": {
     "bower": "^1.4.1",
-    "requirejs": "^2.1.18"
-  },
-  "devDependencies": {
+    "requirejs": "^2.1.18",
     "del": "*",
     "gulp": "^3.9.0",
     "gulp-jscs": "^3.0.1",
     "gulp-jshint": "^1.11.2",
     "gulp-sass": "*",
+    "karma": "^0.13.2"
+  },
+  "devDependencies": {
     "jasmine-core": "^2.3.4",
-    "karma": "^0.13.2",
     "karma-coverage": "^0.5.2",
     "karma-firefox-launcher": "^0.1.6",
     "karma-jasmine": "^0.3.6",
