@@ -95,7 +95,7 @@ class ProgramCourseRunModeSerializer(serializers.ModelSerializer):
             if isinstance(obj, models.ProgramCourseRunMode):
                 return obj.course_key, obj.mode_slug, obj.sku
             else:
-                return obj['course_key'], obj['mode_slug'], obj.get('sku')
+                return obj['course_key'], obj['mode_slug'], obj.get('sku', '')
         except (AttributeError, KeyError) as exc:
             # avoid errors when working with incomplete/invalid nested data
             raise exceptions.ValidationError(exc.message)

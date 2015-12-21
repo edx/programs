@@ -183,7 +183,7 @@ class ProgramsViewTests(JwtMixin, TestCase):
                 u"id": ANY,
                 u"created": ANY,
                 u"modified": ANY,
-                u'marketing_slug': None,
+                u'marketing_slug': '',
             }
         )
 
@@ -363,7 +363,7 @@ class ProgramsViewTests(JwtMixin, TestCase):
                                 u"course_key": course_key,
                                 u"run_key": run_key,
                                 u"mode_slug": "verified",
-                                u"sku": None,
+                                u"sku": '',
                                 u"start_date": start_date.strftime(DRF_DATE_FORMAT)
                             }
                         ],
@@ -713,15 +713,15 @@ class ProgramsViewTests(JwtMixin, TestCase):
         Ensure that missing fields cause validation errors if required, and create with correct defaults otherwise.
         """
         defaults = {
-            "subtitle": None,
-            "status": ProgramStatus.UNPUBLISHED,
+            'subtitle': '',
+            'status': ProgramStatus.UNPUBLISHED,
         }
         # Create a valid organization
-        OrganizationFactory.create(key="test-org-key", display_name="test-org-display_name")
+        OrganizationFactory.create(key='test-org-key', display_name='test-org-display_name')
 
         data = self._build_post_data()
         # Add the valid organization in POST data while creating a Program
-        data["organizations"] = [{"key": "test-org-key"}]
+        data['organizations'] = [{'key': 'test-org-key'}]
 
         del data[field]
         if field in defaults:
@@ -734,7 +734,7 @@ class ProgramsViewTests(JwtMixin, TestCase):
         if expected_status == 201:
             self.assertEqual(response.data[field], defaults[field])
         else:
-            self.assertIn("field is required", response.data[field][0])
+            self.assertIn('field is required', response.data[field][0])
 
     @ddt.data(ProgramStatus.ACTIVE, ProgramStatus.RETIRED, ProgramStatus.DELETED, "", " ", "unrecognized")
     def test_create_with_invalid_status(self, status):

@@ -15,67 +15,51 @@ from programs.apps.programs.tests import factories
 
 
 class TestProgram(TestCase):
-    """
-    Test for Program model
-    """
-
-    def serialize_program(self, program):
-        """Serialize the the data for the program provided"""
-        return {
-            'name': program.name,
-            'subtitle': program.subtitle,
-            'category': program.category,
-            'status': program.status,
-            'marketing_slug': program.marketing_slug
-        }
-
+    """Tests of the Program model."""
     def test_empty_marketing_slug(self):
-        """
-        Ensure that the program could be saved without marketing slug
-        if program category is not xseries or status is UNPUBLISHED. Also
-        verify that marketing slug is required in other case.
-        """
-
-        with self.assertRaises(ValidationError) as context:
+        """Verify that multiple Programs can be saved with an empty marketing slug."""
+        for i in range(2):
             Program.objects.create(
-                name='test-program',
-                subtitle="test-subtitle",
+                name='test-program-{}'.format(i),
+                subtitle='test-subtitle',
                 category=ProgramCategory.XSERIES,
-                status=ProgramStatus.ACTIVE,
+                status=ProgramStatus.UNPUBLISHED,
+                marketing_slug='',
             )
 
-        self.assertEqual(
-            "Active XSeries Programs must have a valid marketing slug.",
-            context.exception.message
-        )
+            # Verify that the program was created successfully.
+            self.assertEqual(Program.objects.count(), i + 1)
 
-        program = {
-            'name': 'test-program',
+    def test_marketing_slug_uniqueness(self):
+        """Verify that multiple Programs can share a non-empty marketing slug."""
+        kwargs = {
+            'name': 'primary-program',
             'subtitle': 'test-subtitle',
             'category': ProgramCategory.XSERIES,
             'status': ProgramStatus.UNPUBLISHED,
-            'marketing_slug': None
-
+            'marketing_slug': 'test-slug',
         }
-        Program.objects.create(**program)
 
-        programs = Program.objects.all()
-        self.assertEqual(len(programs), 1)
-        self.assertEqual(self.serialize_program(programs.first()), program)
+        Program.objects.create(**kwargs)
 
-        program = {
-            'name': 'test-program-2',
-            'subtitle': 'test-subtitle-2',
-            'category': ProgramCategory.XSERIES,
-            'status': ProgramStatus.ACTIVE,
-            'marketing_slug': 'test-slug'
+        kwargs['name'] = 'alternate-program',
+        Program.objects.create(**kwargs)
 
-        }
-        Program.objects.create(**program)
+        self.assertEqual(len(Program.objects.filter(marketing_slug='test-slug')), 2)
 
-        programs = Program.objects.all()
-        self.assertEqual(len(programs), 2)
-        self.assertEqual(self.serialize_program(programs[1]), program)
+    def test_xseries_activation(self):
+        """Verify that an XSeries Program can't be activated with an empty marketing slug."""
+        with self.assertRaisesRegexp(
+            ValidationError,
+            'Active XSeries Programs must have a valid marketing slug.'
+        ):
+            Program.objects.create(
+                name='test-program',
+                subtitle='test-subtitle',
+                category=ProgramCategory.XSERIES,
+                status=ProgramStatus.ACTIVE,
+                marketing_slug='',
+            )
 
 
 class TestProgramOrganization(TestCase):
@@ -194,41 +178,38 @@ class TestProgramCourseRunMode(TestCase):
         self.course_key = 'edX/DemoX/Demo_Course'
         super(TestProgramCourseRunMode, self).setUp()
 
-    def test_unique_null_sku(self):
+    def test_duplicate_course_run_mode(self):
         """
-        Ensure that ValidationErrors are raised for an attempt to put multiple
-        instances of (course_key, mode_slug, sku=NULL) in a program for the
-        same course code.
+        Verify that duplicate course run modes are not allowed for course codes
+        in a program.
         """
-        factories.ProgramCourseRunModeFactory.create(
-            program_course_code=self.program_course,
-            course_key=self.course_key,
-            mode_slug='test-mode-slug',
-            sku=None,
-            start_date=self.start_date
-        )
+        kwargs = {
+            'program_course_code': self.program_course,
+            'course_key': self.course_key,
+            'mode_slug': 'test-mode-slug',
+            'sku': '',
+            'start_date': self.start_date
+        }
+
+        factories.ProgramCourseRunModeFactory.create(**kwargs)
 
         with self.assertRaises(ValidationError) as context:
-            factories.ProgramCourseRunModeFactory.create(
-                program_course_code=self.program_course,
-                course_key=self.course_key,
-                mode_slug='test-mode-slug',
-                sku=None,
-                start_date=self.start_date
-            )
+            factories.ProgramCourseRunModeFactory.create(**kwargs)
+
         self.assertEqual(
             'Duplicate course run modes are not allowed for course codes in a program.',
             context.exception.message
         )
 
-        # this should not cause an error, because the sku has a different non-empty value
-        factories.ProgramCourseRunModeFactory.create(
-            program_course_code=self.program_course,
-            course_key=self.course_key,
-            mode_slug='test-mode-slug',
-            sku='test-sku',
-            start_date=self.start_date
-        )
+        kwargs['sku'] = 'test-sku'
+        factories.ProgramCourseRunModeFactory.create(**kwargs)
+
+        # Verify that IntegrityErrors aren't raised when someone attempts to create
+        # a duplicate course run mode with a non-empty SKU. Previously, the uniqueness
+        # constraint across 'program_course_code', 'course_key', 'mode_slug', and 'sku'
+        # wasn't manually enforced when a non-empty SKU was provided.
+        with self.assertRaises(ValidationError):
+            factories.ProgramCourseRunModeFactory.create(**kwargs)
 
     @ddt.data(
         ('edx/demo/course1', 'course1'),
@@ -245,7 +226,7 @@ class TestProgramCourseRunMode(TestCase):
             program_course_code=self.program_course,
             course_key=course_key,
             mode_slug='test-mode-slug',
-            sku=None,
+            sku='',
             start_date=self.start_date
         )
         self.assertEqual(prog_course_run_mode.run_key, run_key)
@@ -258,7 +239,7 @@ class TestProgramCourseRunMode(TestCase):
                 program_course_code=self.program_course,
                 course_key=course_key,
                 mode_slug='test-mode-slug',
-                sku=None,
+                sku='',
                 start_date=self.start_date
             )
 

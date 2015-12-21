@@ -7,7 +7,7 @@
         "name": "Test Program A",
         "created": "2015-10-26T17:52:32.861Z",
         "modified": "2015-10-26T19:59:22.716Z",
-        "marketing_slug": null
+        "marketing_slug": ""
     },
     "model": "programs.program",
     "pk": 1
@@ -20,7 +20,7 @@
         "name": "Test Program B",
         "created": "2015-10-26T19:59:03.064Z",
         "modified": "2015-10-26T19:59:18.536Z",
-        "marketing_slug": null
+        "marketing_slug": ""
     },
     "model": "programs.program",
     "pk": 2

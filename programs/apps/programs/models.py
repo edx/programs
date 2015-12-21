@@ -32,7 +32,6 @@ class Program(TimeStampedModel):
     subtitle = models.CharField(
         help_text=_('A brief, descriptive subtitle for the Program.'),
         max_length=255,
-        null=True,
         blank=True,
     )
 
@@ -60,23 +59,20 @@ class Program(TimeStampedModel):
 
     marketing_slug = models.CharField(
         help_text=_('Slug used to generate links to the marketing site'),
-        unique=True,
-        null=True,
         blank=True,
         max_length=255
     )
 
     def save(self, *a, **kw):
-        """Validate that the marketing slug is not null if program category is
-        xseries and program status is active.
         """
-        # Checks if the program category is xseries and program status is active.
+        Verify that the marketing slug is not empty if the user has attempted
+        to activate an XSeries.
+        """
         if self.category == constants.ProgramCategory.XSERIES and self.status == constants.ProgramStatus.ACTIVE:
-            # Validate that marketing slug is not null.
             if not self.marketing_slug:
-                raise ValidationError(
-                    _("Active XSeries Programs must have a valid marketing slug.")
-                )
+                raise ValidationError(_(
+                    "Active XSeries Programs must have a valid marketing slug."
+                ))
 
         return super(Program, self).save(*a, **kw)
 
@@ -129,9 +125,10 @@ class ProgramOrganization(TimeStampedModel):
         This is a temporary, application-level constraint.
         """
         if not self.id:  # pylint: disable=no-member
-            # before creating, check program is not already associated with some organization
+            # Before creating, check program is not already associated with some organization
             if ProgramOrganization.objects.filter(program=self.program).exists():
                 raise ValidationError(_('Cannot associate multiple organizations with a program.'))
+
         return super(ProgramOrganization, self).save(*a, **kw)
 
 
@@ -205,7 +202,6 @@ class ProgramCourseRunMode(TimeStampedModel):
     lms_url = models.CharField(
         help_text=_("The URL of the LMS where this course run / mode is being offered."),
         max_length=1024,
-        null=True,
         blank=True,
     )
     course_key = models.CharField(
@@ -219,7 +215,6 @@ class ProgramCourseRunMode(TimeStampedModel):
     sku = models.CharField(
         help_text=_("The sku associated with this run/mode in the ecommerce system working with the target LMS."),
         max_length=255,
-        null=True,
         blank=True,
     )
 
@@ -237,20 +232,22 @@ class ProgramCourseRunMode(TimeStampedModel):
 
     def save(self, *_a, **__kw):
         """
-        The database will not enforce a unique constraint over NULL values in
-        the sku column.  So this is manually enforced in code - for a given
-        course code in a program, course_key and mode_slug, only one row with
-        NULL should be allowed.
-
-        TODO (jsa): I'm now convinced that multiple table inheritance is better
-        - one table without SKUs and one table with NOT NULL / UNIQUE SKUs.
-        This compromise should suffice initially.
+        The unique_together constraint only gives us free validation when using
+        Django's ModelForm. Attempts to directly save a model object violating
+        this constraint will raise an IntegrityError. That being the case, the
+        constraint is manually enforced here. Attempts to violate it will be met
+        with a ValidationError.
         """
-        if self.sku is None and ProgramCourseRunMode.objects.filter(
+
+        # TODO (jsa): I'm now convinced that multiple table inheritance is better
+        # - one table without SKUs and one table with NOT NULL / UNIQUE SKUs.
+        # This compromise should suffice initially.
+
+        if ProgramCourseRunMode.objects.filter(
                 program_course_code=self.program_course_code,
                 course_key=self.course_key,
                 mode_slug=self.mode_slug,
-                sku=None,
+                sku=self.sku,
         ).exclude(id=self.id).exists():  # pylint: disable=no-member
             raise ValidationError(_('Duplicate course run modes are not allowed for course codes in a program.'))
 
