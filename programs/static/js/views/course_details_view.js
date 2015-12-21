@@ -29,30 +29,25 @@ define([
 
             tpl: _.template( ListTpl ),
 
-            // For managing subViews
-            courseRunViews: [],
-
             initialize: function( options ) {
                 this.model = new CourseModel();
                 Backbone.Validation.bind( this );
                 this.$parentEl = $( this.parentEl );
 
+                // For managing subViews
+                this.courseRunViews = [];
                 this.courseRuns = options.courseRuns;
                 this.programModel = options.programModel;
                 
                 if ( options.courseData ) {
                     this.model.set(options.courseData);
                 } else {
-                    /**
-                     * TODO: Debug why a new model is inheriting the run_modes from
-                     * the program's first course. It will be much easier to debug
-                     * during ECOM-3046 so I will tackle it then
-                     */
                     this.model.set({run_modes: []});
                 }
+
                 // Need a unique value for field ids so using model cid
                 this.model.set({cid: this.model.cid});
-
+                this.model.on('change:run_modes', this.updateRuns, this);
                 this.render();
             },
 
@@ -80,7 +75,7 @@ define([
 
                 runView = new CourseRunView({
                     model: runModel,
-                    course: this.model,
+                    courseModel: this.model,
                     courseRuns: this.courseRuns,
                     programStatus: this.programModel.get('status'),
                     $parentEl: $runsContainer
@@ -102,7 +97,7 @@ define([
 
                     runView = new CourseRunView({
                         model: runModel,
-                        course: this.model,
+                        courseModel: this.model,
                         courseRuns: this.courseRuns,
                         programStatus: this.programModel.get('status'),
                         $parentEl: $runsContainer
@@ -114,11 +109,22 @@ define([
                 }.bind(this) );
             },
 
+            addCourseToProgram: function() {
+                var courseCodes = this.programModel.get('course_codes'),
+                    courseData = this.model.toJSON();
+
+                if ( this.programModel.isValid( true ) ) {
+                    // We don't want to save the cid so omit it
+                    courseCodes.push( _.omit(courseData, 'cid') );
+                    this.programModel.patch({ course_codes: courseCodes });
+                }
+            },
             // Delete this view
             destroy: function() {
                 Backbone.Validation.unbind(this);
                 this.destroyChildren();
                 this.undelegateEvents();
+                this.removeCourseFromProgram();
                 this.remove();
             },
 
@@ -141,6 +147,19 @@ define([
                 return data;
             },
 
+            removeCourseFromProgram: function() {
+                var courseCodes = this.programModel.get('course_codes'),
+                    key = this.model.get('key'),
+                    name = this.model.get('display_name'),
+                    update = [];
+
+                update = _.reject( courseCodes, function(course) {
+                    return course.key === key && course.display_name === name;
+                });
+
+                this.programModel.patch({ course_codes: update });
+            },
+
             setCourse: function( event ) {
                 var $form = this.$('.js-course-form'),
                     title = $form.find('.display-name').val(),
@@ -155,13 +174,30 @@ define([
                 });
 
                 if ( this.model.isValid(true) ) {
-                    this.update();
+                    this.addCourseToProgram();
+                    this.updateDOM();
                     this.addCourseRuns();
                 }
             },
 
-            update: function() {
+            updateDOM: function() {
                 this.$el.html( this.tpl( this.formatData()  ) );
+            },
+
+            updateRuns: function() {
+                var courseCodes = this.programModel.get('course_codes'),
+                    key = this.model.get('key'),
+                    name = this.model.get('display_name'),
+                    index;
+
+                if ( this.programModel.isValid( true ) ) {
+                    index = _.findIndex( courseCodes, function(course) {
+                        return course.key === key && course.display_name === name;
+                    });
+                    courseCodes[index] = this.model.toJSON();
+
+                    this.programModel.patch({ course_codes: courseCodes });
+                }
             }
         });
     }

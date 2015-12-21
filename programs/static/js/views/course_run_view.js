@@ -21,7 +21,7 @@ define([
                  * Need the run model for the template, and the courseModel
                  * to keep parent view up to date with run changes
                  */
-                this.courseModel = options.course;
+                this.courseModel = options.courseModel;
                 this.courseRuns = options.courseRuns;
                 this.programStatus = options.programStatus;
 
@@ -34,6 +34,7 @@ define([
 
             render: function() {
                 var data = this.model.attributes;
+
                 data.programStatus = this.programStatus;
 
                 if ( !!this.courseRuns ) {
@@ -50,16 +51,29 @@ define([
                 this.remove();
             },
 
+            // Data returned from courseList API is not the correct format
+            formatData: function( data ) {
+                return {
+                    course_key: data.course_id,
+                    mode_slug: 'verified',
+                    start_date: data.start
+                };
+            },
+
             removeRun: function() {
                 // Update run_modes array on programModel
-                var startDate = this.model.get('start'),
+                var startDate = this.model.get('start_date'),
                     courseKey = this.model.get('course_key'),
-                    runs = this.courseModel.get('run_modes'),
+                    /**
+                     *  NB: cloning the array so the model will fire a change event when
+                     *  the updated version is saved back to the model
+                     */
+                    runs = _.clone(this.courseModel.get('run_modes')),
                     updatedRuns = [];
 
-                updatedRuns = _.filter( runs, function( obj ) {
-                    return obj.start !== startDate &&
-                           obj.course_key !== courseKey;
+                updatedRuns = _.reject( runs, function( obj ) {
+                    return obj.start_date === startDate &&
+                           obj.course_key === courseKey;
                 });
 
                 this.courseModel.set({
@@ -73,11 +87,15 @@ define([
 
             selectRun: function(event) {
                 var id = $(event.currentTarget).val(),
-                    data = _.findWhere(this.courseRuns.allRuns, {course_id: id}),
-                    runs = this.courseModel.get('run_modes');
+                    runObj = _.findWhere(this.courseRuns.allRuns, {course_id: id}),
+                    /**
+                     *  NB: cloning the array so the model will fire a change event when
+                     *  the updated version is saved back to the model
+                     */
+                    runs = _.clone(this.courseModel.get('run_modes')),
+                    data = this.formatData(runObj);
 
-                data.course_key = id;
-                this.model.set(data);
+                this.model.set( data );
                 runs.push(data);
                 this.courseModel.set({run_modes: runs});
                 this.courseRuns.removeRun(id);

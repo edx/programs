@@ -157,8 +157,26 @@ define([
             },
 
             setAvailableCourseRuns: function() {
-                // TODO: Once API is saving data update to remove any runs already saved
-                return true;
+                var allRuns = this.courseRuns.toJSON(),
+                    courses = this.model.get('course_codes'),
+                    selectedRuns,
+                    availableRuns = allRuns;
+
+                if (courses.length) {
+                    selectedRuns = _.pluck( courses, 'run_modes' );
+                    selectedRuns = _.flatten( selectedRuns );
+                }
+
+                availableRuns = _.reject(allRuns, function(run) {
+                    var selectedCourseRun = _.findWhere( selectedRuns, {
+                        course_key: run.course_id,
+                        start_date: run.start
+                    });
+
+                    return !_.isUndefined(selectedCourseRun);
+                });
+
+                this.courseRuns.set(availableRuns);
             },
 
             validateMarketingSlug: function() {
