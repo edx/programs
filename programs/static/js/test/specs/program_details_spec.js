@@ -133,6 +133,7 @@ define([
                 editField,
                 keyPress,
                 openPublishModal,
+                resetCourseCodes,
                 testHidingButtonsAfterPublish,
                 testInvalidUpdate,
                 testUnchangedFieldBlur,
@@ -206,6 +207,12 @@ define([
                 $publishBtn.click();
             };
 
+            resetCourseCodes = function() {
+                var originalRun = programData.course_codes[0];
+
+                programData.course_codes = [originalRun];
+            };
+
             testUnchangedFieldBlur = function( el ) {
                 var $input = view.$el.find( el ),
                     $btn = view.$el.find( '.js-add-course' ),
@@ -274,10 +281,10 @@ define([
 
                 view.courseRuns.set( courseRunsList );
                 view.courseRuns.parse({ results: courseRunsList });
-
             });
 
             afterEach( function() {
+                resetCourseCodes();
                 view.undelegateEvents();
                 view.remove();
 

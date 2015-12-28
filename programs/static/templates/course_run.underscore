@@ -19,7 +19,7 @@
     <% } %>
     <p class="copy copy-base subtitle"><%= interpolate(
         gettext('Start Date: %(date)s'),
-        { date: start },
+        { date: start_date },
         true
     ) %></p>
   <% } else { %>
