@@ -17,7 +17,7 @@
                 initialize: function() {
                     apiConfig.set({
                         lmsBaseUrl: this.$el.data('lms-base-url'),
-                        programsBaseUrl: this.$el.data('programs-base-url'),
+                        programsApiUrl: this.$el.data('programs-api-url'),
                         authUrl: this.$el.data('auth-url')
                     });
 

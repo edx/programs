@@ -6,7 +6,7 @@ define([
         'use strict';
 
         return AutoAuthModel.extend({
-            urlRoot: apiConfig.get('programsBaseUrl') + 'api/v1/organizations/'
+            urlRoot: apiConfig.get('programsApiUrl') + 'organizations/'
         });
     }
 );

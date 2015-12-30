@@ -33,7 +33,7 @@ define([
             },
 
             initialize: function() {
-                this.url = apiConfig.get('programsBaseUrl') + 'api/v1/programs/' + this.id + '/';
+                this.url = apiConfig.get('programsApiUrl') + 'programs/' + this.id + '/';
             },
 
             validateOrganizations: function( orgArray ) {
@@ -57,7 +57,7 @@ define([
                     params = patch ? this.get('id') + '/' : '',
                     config = _.extend({ validate: true, parse: true }, {
                         type: patch ? 'PATCH' : 'POST',
-                        url: apiConfig.get('programsBaseUrl') + 'api/v1/programs/' + params,
+                        url: apiConfig.get('programsApiUrl') + 'programs/' + params,
                         contentType: patch ? 'application/merge-patch+json' : 'application/json',
                         context: this,
                         // NB: setting context fails in tests
