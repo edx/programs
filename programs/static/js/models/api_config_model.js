@@ -7,7 +7,7 @@ define([
         return Backbone.Model.extend({
             defaults: {
                 lmsBaseUrl: 'http://127.0.0.1:8001/',
-                programsBaseUrl: 'http://127.0.0.1:8004/',
+                programsApiUrl: 'http://127.0.0.1:8004/',
                 authUrl: 'http://127.0.0.1:8001/programs/id_token/',
                 idToken: ''
             }
