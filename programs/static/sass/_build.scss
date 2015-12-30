@@ -25,18 +25,12 @@ $scope-class: 'program-app';
 // ------------------------------
 // #EXTENSIONS
 // ------------------------------
-/*
-Default views to add - being commented out and kept =
-until app styles are finalized (in case we need the partials)
-@import 'utilities';
-*/
 .#{$scope-class} {
     @import 'components';
     @import 'layouts';
     @import 'views';
     @import 'modals';
 }
-/*
-@import 'print';
-@import 'overrides';
-*/
+
+@import 'app-container';
+@import 'app-typography';
