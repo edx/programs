@@ -18,6 +18,7 @@ module.exports = function(config) {
       {pattern: 'programs/static/vendor/**/*.js', included: false},
       {pattern: 'programs/static/bower_components/**/*.js', included: false},
       {pattern: 'programs/static/js/**/*.js', included: false},
+      {pattern: 'programs/static/css/*.css', included: false},
       {pattern: 'programs/static/templates/**/*.underscore', included: false},
       {pattern: 'programs/static/templates/**/*.html', included: false},
       'programs/static/js/config.js',
@@ -30,7 +31,7 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-        'programs/static/js/!(test)/**/*.js': ['coverage']
+        'programs/static/js/!(test|shims)/**/*.js': ['coverage']
     },
 
     // enabled plugins

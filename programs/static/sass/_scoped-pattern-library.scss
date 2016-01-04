@@ -16,7 +16,9 @@
     @import '../bower_components/edx-pattern-library/pattern-library/sass/utilities/variables-ltr';
 }
 
-@import '../bower_components/edx-pattern-library/pattern-library/sass/utilities/variables';
+// Manually copied version of pattern library's variables to remove fonts
+@import 'uxpl-variables-sans-fonts';
+
 @import '../bower_components/edx-pattern-library/pattern-library/sass/utilities/mixins';
 @import '../bower_components/edx-pattern-library/pattern-library/sass/utilities/helpers';
 
@@ -24,8 +26,6 @@
     @import '../bower_components/edx-pattern-library/pattern-library/sass/utilities/normalize';
 }
 
-// TODO: Test this on studio, may need to create a custom reset for the app
-// to get the fonts to work (i.e. body and html level resets don't work when scoped)
 @import '../bower_components/edx-pattern-library/pattern-library/sass/utilities/reset';
 
 .#{$scope-class} {
@@ -49,4 +49,5 @@
 @import '../bower_components/edx-pattern-library/pattern-library/sass/patterns/layouts';
 @import '../bower_components/edx-pattern-library/pattern-library/sass/patterns/depth';
 
-@import '../bower_components/edx-pattern-library/pattern-library/sass/patterns/icons';
+// Updated to use .uxpl-icons class to avoid conflicts with current edx-icons class in studio
+@import 'uxpl-icons';
