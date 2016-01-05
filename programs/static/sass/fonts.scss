@@ -1,0 +1,28 @@
+// ------------------------------
+// Programs: External Fonts Compile
+
+// About: Sass compile for the Pattern Library font files.
+
+// #CONFIG:         app-centric configuration/overrides
+// #LIB:            third party libraries and dependencies
+// #EXTENSIONS:     add-ons and further customizations
+
+
+// ------------------------------
+// #CONFIG
+// ------------------------------
+@import 'config';
+// Not important for font-files so just set to ltr
+$layout-direction: ltr;
+
+
+// ------------------------------
+// #LIB
+// ------------------------------
+@import 'lib';
+@import 'font-files';
+
+
+// ------------------------------
+// #EXTENSIONS
+// ------------------------------
