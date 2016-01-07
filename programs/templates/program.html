@@ -5,8 +5,8 @@
 {% load staticfiles %}
 
 {% block content %}
-    <!-- N.B. Authentication requires a running instance of Studio. -->
-    <div id="content" class="js-program-admin program-app layout-1q3q layout-reversed" data-home-url="/program" data-lms-base-url="http://127.0.0.1:8000/" data-programs-api-url="http://127.0.0.1:8004/api/v1/" data-auth-url="http://127.0.0.1:8001/programs/id_token/"></div>
+    <!-- N.B. Authentication requires a running instance of Studio, and requires the use of user account "staff". -->
+    <div id="content" class="js-program-admin program-app layout-1q3q layout-reversed" data-home-url="/program" data-lms-base-url="http://127.0.0.1:8000/" data-programs-api-url="http://127.0.0.1:8004/api/v1/" data-auth-url="http://127.0.0.1:8001/programs/id_token/" data-username="staff"></div>
 {% endblock content %}
 
 {% block javascript %}
