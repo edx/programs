@@ -26,12 +26,15 @@ define([
 
                     this._setHeaders( options );
 
+                    options.notifyOnError = false;  // suppress Studio error pop-up that will happen if we get a 401
+
                     options.error = function(xhr, textStatus, errorThrown) {
                         if (xhr && xhr.status === 401) {
                             // attempt auth and retry
                             this._updateToken(function() {
                                 // restore the original error handler
                                 options.error = oldError;
+                                options.notifyOnError = true;  // if it fails again, let Studio notify.
                                 delete options.xhr;  // remove the failed (401) xhr from the last try.
 
                                 // update authorization header
