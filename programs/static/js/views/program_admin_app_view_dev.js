@@ -11,7 +11,8 @@ define([
                 apiConfig.set({
                     lmsBaseUrl: this.$el.data('lms-base-url'),
                     programsApiUrl: this.$el.data('programs-api-url'),
-                    authUrl: this.$el.data('auth-url')
+                    authUrl: this.$el.data('auth-url'),
+                    username: this.$el.data('username')
                 });
 
                 this.app = new ProgramRouter({
