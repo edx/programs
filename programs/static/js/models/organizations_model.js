@@ -6,7 +6,11 @@ define([
         'use strict';
 
         return AutoAuthModel.extend({
-            urlRoot: apiConfig.get('programsApiUrl') + 'organizations/'
+
+            initialize: function() {
+                this.urlRoot = apiConfig.get('programsApiUrl') + 'organizations/';
+            }
+
         });
     }
 );
