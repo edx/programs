@@ -1,6 +1,6 @@
 <h3 class="hd-3 emphasized"><%= gettext('Create a New Program') %></h3>
 <form class="form">
-    <fieldset class="form-group">
+    <fieldset class="form-group bg-white">
         <div class="field">
             <label class="field-label" for="program-type"><%= gettext('Program type') %></label>
             <select id="program-type" class="field-input input-select program-type" name="category" disabled>
@@ -59,7 +59,7 @@
 
         <div class="field">
             <button class="btn btn-primary btn-base js-create-program"><%= gettext('Create') %></button>
-            <button class="btn btn-primary btn-base js-abort-view"><%= gettext('Cancel') %></button>
+            <button class="btn btn-secondary btn-base js-abort-view"><%= gettext('Cancel') %></button>
         </div>
     </fieldset>
 </form>

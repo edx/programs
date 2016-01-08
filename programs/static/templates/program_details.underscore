@@ -5,7 +5,7 @@
                 <span class="js-model-value copy copy-large emphasized"><%- name %></span>
                 <label for="program-name" class="sr-only"><%= gettext('Name') %></label>
                 <input type="text" value="<%- name %>" id="program-name" class="program-name field-input is-hidden" name="name" data-field="name" maxlength="64" required>
-                <button class="js-enable-edit btn btn-edit">
+                <button class="js-enable-edit btn btn-edit" data-tooltip="<%= gettext('Edit program title') %>">
                     <span class="icon-fallback icon-fallback-text">
                         <span class="icon icon-pencil" aria-hidden="true"></span>
                         <span class="text"><%= gettext('Edit the program\'s name.') %></span>
@@ -20,7 +20,7 @@
                 <span class="js-model-value copy copy-base subtitle"><%- subtitle %></span>
                 <label for="program-subtitle" class="sr-only"><%= gettext('Subtitle') %></label>
                 <input type="text" value="<%- subtitle %>" id="program-subtitle" class="program-subtitle field-input is-hidden" name="subtitle" data-field="subtitle" maxlength="255">
-                <button class="js-enable-edit btn btn-edit">
+                <button class="js-enable-edit btn btn-edit" data-tooltip="<%= gettext('Edit program subtitle') %>">
                     <span class="icon-fallback icon-fallback-text">
                         <span class="icon icon-pencil" aria-hidden="true"></span>
                         <span class="text"><%= gettext('Edit the program\'s subtitle.') %></span>
@@ -35,7 +35,7 @@
                 <span class="js-model-value copy copy-base subtitle"><%- marketing_slug %></span>
                 <label for="program-subtitle" class="sr-only"><%= gettext('Marketing Slug') %></label>
                 <input type="text" value="<%- marketing_slug %>" id="program-marketing-slug" class="program-marketing-slug field-input is-hidden" name="marketing_slug" data-field="marketing_slug" maxlength="255">
-                <button class="js-enable-edit btn btn-edit">
+                <button class="js-enable-edit btn btn-edit" data-tooltip="<%= gettext('Edit program marketingslug') %>">
                     <span class="icon-fallback icon-fallback-text">
                         <span class="icon icon-pencil" aria-hidden="true"></span>
                         <span class="text"><%= gettext('Edit the program\'s marketing slug.') %></span>
