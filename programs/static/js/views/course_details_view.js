@@ -184,6 +184,27 @@ define([
                 this.$el.html( this.tpl( this.formatData()  ) );
             },
 
+            /**
+             * This is a stripped-down backport of the findIndex function
+             * in underscorejs >= 1.8.0.
+             *
+             * When this app runs within Studio, underscore 1.4.4 is loaded (as
+             * of this writing), so the underscore implementation is not available.
+             *
+             * TODO: use underscore's implementation instead, once Studio has been
+             * updated to use a new-enough version, or the version conflict has
+             * otherwise been resolved.
+             */
+            _findIndex: function(array, predicate) {
+                var length = array.length;
+                var index = 0;
+                for (; index >= 0 && index < length; index += 1) {
+                    if (predicate(array[index], index, array)) {
+                        return index;
+                    }
+                }
+            },
+
             updateRuns: function() {
                 var courseCodes = this.programModel.get('course_codes'),
                     key = this.model.get('key'),
@@ -191,7 +212,7 @@ define([
                     index;
 
                 if ( this.programModel.isValid( true ) ) {
-                    index = _.findIndex( courseCodes, function(course) {
+                    index = this._findIndex( courseCodes, function(course) {
                         return course.key === key && course.display_name === name;
                     });
                     courseCodes[index] = this.model.toJSON();
