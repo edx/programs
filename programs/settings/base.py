@@ -254,6 +254,9 @@ JWT_AUTH = {
 PLATFORM_NAME = 'Your Platform Name Here'
 # END OPENEDX-SPECIFIC CONFIGURATION
 
+# CREDENTIALS CONFIGURATION
+CREDENTIALS_SERVICE_USERNAME = 'credentials_service_user'
+# END CREDENTIALS CONFIGURATION
 
 # CORS
 # See: https://github.com/ottoyiu/django-cors-headers/.
