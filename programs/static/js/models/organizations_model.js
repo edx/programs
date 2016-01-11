@@ -7,8 +7,8 @@ define([
 
         return AutoAuthModel.extend({
 
-            initialize: function() {
-                this.urlRoot = apiConfig.get('programsApiUrl') + 'organizations/';
+            url: function() {
+                return apiConfig.get('programsApiUrl') + 'organizations/?page_size=1000';
             }
 
         });
