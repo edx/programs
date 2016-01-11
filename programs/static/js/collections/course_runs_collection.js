@@ -19,6 +19,21 @@ define([
                 this.url = apiConfig.get('lmsBaseUrl') + 'api/courses/v1/courses/' + queries;
             },
 
+            /*
+             *  Abridged version of Backbone.Collection.Create that does not
+             *  save the updated Collection back to the server
+             *  (code based on original function - http://backbonejs.org/docs/backbone.html#section-134)
+             */
+            create: function(model, options) {
+                options = options ? _.clone(options) : {};
+                model = this._prepareModel(model, options);
+
+                if (!!model) {
+                    this.add(model, options);
+                    return model;
+                }
+            },
+
             parse: function(data) {
                 this.allRuns = data.results;
 
