@@ -56,7 +56,8 @@ define([
                 return {
                     course_key: data.course_id,
                     mode_slug: 'verified',
-                    start_date: data.start
+                    start_date: data.start,
+                    sku: ''
                 };
             },
 
