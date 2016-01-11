@@ -2,7 +2,7 @@
 <% if ( display_name ) {  %>
     <span class="copy copy-large emphasized"><%- display_name %></span>
   <% if ( status === 'unpublished' ) { %>
-    <button class="js-remove-course btn btn-delete right">
+    <button class="js-remove-course btn btn-delete right" data-tooltip="<%= gettext('Delete course') %>">
         <span class="icon-fallback icon-fallback-text">
             <span class="icon icon-trash-o" aria-hidden="true"></span>
             <span class="text"><%= interpolate(

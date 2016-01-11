@@ -3,7 +3,8 @@ define([
         'jquery',
         'js/utils/api_config',
         'js/models/auto_auth_model',
-        'jquery-cookie'
+        'jquery-cookie',
+        'gettext'
     ],
     function( Backbone, $, apiConfig, AutoAuthModel ) {
         'use strict';
@@ -19,6 +20,11 @@ define([
                     required: true,
                     maxLength: 128
                 }
+            },
+
+            labels: {
+                key: gettext('Course Code'),
+                display_name: gettext('Course Title')
             },
 
             defaults: {

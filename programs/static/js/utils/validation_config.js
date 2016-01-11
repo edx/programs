@@ -62,5 +62,9 @@ define([
                         .html( $input.data('error') );
             }
         });
+
+        Backbone.Validation.configure({
+            labelFormatter: 'label'
+        });
     }
 );

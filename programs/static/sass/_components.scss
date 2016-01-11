@@ -87,3 +87,9 @@
         vertical-align: middle;
     }
 }
+
+.form-group {
+    &.bg-white {
+        background-color: palette(grayscale, white);
+    }
+}

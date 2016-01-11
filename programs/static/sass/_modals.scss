@@ -9,7 +9,8 @@
     bottom: 0;
     left: 0;
     background-color: palette(grayscale-cool, x-dark);
-    opacity: 0.6;
+    opacity: 0.5;
+    z-index: 1000;
 }
 
 .modal-window {
@@ -18,6 +19,7 @@
     width: 80%;
     left: 10%;
     top: 40%;
+    z-index: 1001;
 }
 
 .modal-content {
