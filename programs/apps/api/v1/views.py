@@ -2,6 +2,7 @@
 Programs API views (v1).
 """
 from django.db.models import Prefetch
+from django.db.models.functions import Lower
 from rest_framework import mixins, viewsets, parsers as drf_parsers
 
 from programs.apps.programs import models
@@ -148,5 +149,5 @@ class OrganizationsViewSet(mixins.CreateModelMixin, mixins.ListModelMixin, views
 
     """
     permission_classes = (permissions.IsAdminGroup, )
-    queryset = models.Organization.objects.all()
+    queryset = models.Organization.objects.all().order_by(Lower('key'))
     serializer_class = serializers.OrganizationSerializer
