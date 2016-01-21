@@ -13,7 +13,7 @@ define([
 
             initialize: function(models, options) {
                 // Ignore pagination and give me everything
-                var orgStr = options.organization.display_name,
+                var orgStr = options.organization.key,
                     queries = '?org=' + orgStr + '&username=' + apiConfig.get('username') + '&page_size=1000';
 
                 this.url = apiConfig.get('lmsBaseUrl') + 'api/courses/v1/courses/' + queries;
