@@ -3,10 +3,21 @@ Programs API views (v1).
 """
 from django.db.models import Prefetch
 from django.db.models.functions import Lower
-from rest_framework import mixins, viewsets, parsers as drf_parsers
+from rest_framework import (
+    decorators,
+    mixins,
+    parsers as drf_parsers,
+    response,
+    viewsets,
+)
 
 from programs.apps.programs import models
-from programs.apps.api import filters, permissions, serializers, parsers as edx_parsers
+from programs.apps.api import (
+    filters,
+    parsers as edx_parsers,
+    permissions,
+    serializers,
+)
 
 
 class ProgramsViewSet(
@@ -88,6 +99,16 @@ class ProgramsViewSet(
             ),
             'programcoursecode_set__run_modes',
         )
+
+    @decorators.list_route(methods=['post'])
+    def complete(self, request):
+        """Given a set of course certificates, find completed programs."""
+        course_certs = request.data.get('course_certs')  # pylint: disable=unused-variable
+
+        # TODO: Replace with logic to determine completion.
+        program_ids = [program.id for program in self.get_queryset()]
+
+        return response.Response({'program_ids': program_ids})
 
 
 class CourseCodesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):

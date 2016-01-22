@@ -41,7 +41,6 @@ AUTH_URLS = [
 ]
 
 urlpatterns = [
-
     url(r'^accounts/', include(AUTH_URLS)),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^api/', include('programs.apps.api.urls', namespace='api')),

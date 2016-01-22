@@ -45,22 +45,25 @@ class ProgramsViewTests(JwtMixin, TestCase):
         instance = ProgramFactory.build(**kwargs)
         return {k: getattr(instance, k) for k in POST_FIELDS}
 
-    def _make_request(self, method='get', program_id=None, data=None, admin=False):
+    def _make_request(self, method='get', program_id=None, complete=False, data=None, admin=False):
         """
         DRY helper.
         """
         token = self.generate_id_token(UserFactory(), admin=admin)
         auth = 'JWT {0}'.format(token)
+
         if program_id is not None:
-            url = reverse("api:v1:programs-detail", kwargs={'pk': program_id})
+            url = reverse('api:v1:programs-detail', kwargs={'pk': program_id})
+        elif complete:
+            url = reverse('api:v1:programs-complete')
         else:
-            url = reverse("api:v1:programs-list")
+            url = reverse('api:v1:programs-list')
 
         content_type = 'application/json'
         if method == 'patch':
             data = json.dumps(data)
             content_type = 'application/merge-patch+json'
-        elif method == 'post':
+        elif method in ['post', 'put']:
             data = json.dumps(data)
 
         return getattr(self.client, method)(
@@ -765,6 +768,30 @@ class ProgramsViewTests(JwtMixin, TestCase):
         response = self._make_request(method='post', data=data, admin=True)
         self.assertEqual(response.status_code, 400)
         self.assertIn("must be unique", response.data["name"][0])
+
+    @ddt.data('get', 'put', 'delete')
+    def test_program_completion_get_put_delete_prohibited(self, method):
+        """Verify that the view does not allow GET, PUT, or DELETE."""
+        response = self._make_request(method=method, complete=True, admin=True)
+        self.assertEqual(response.status_code, 405)
+
+    def test_program_completion_post_allowed(self):
+        """Verify the interface implemented by the view."""
+        ProgramFactory.create()
+
+        data = {'course_certs': [
+            {'course_id': 'foo', 'mode': 'bar'},
+            {'course_id': 'baz', 'mode': 'qux'}
+        ]}
+        response = self._make_request(method='post', complete=True, data=data, admin=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('program_ids', response.data)
+
+    def test_program_completion_admin_required(self):
+        """Verify that the view is not accessible to non-admins."""
+        response = self._make_request(method='post', complete=True)
+        self.assertEqual(response.status_code, 403)
 
 
 class OrganizationViewTests(AuthClientMixin, TestCase):
