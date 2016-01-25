@@ -2,6 +2,7 @@
 Tests for Programs API views (v1).
 """
 import datetime
+import itertools
 import json
 
 import ddt
@@ -772,26 +773,46 @@ class ProgramsViewTests(JwtMixin, TestCase):
     @ddt.data('get', 'put', 'delete')
     def test_program_completion_get_put_delete_prohibited(self, method):
         """Verify that the view does not allow GET, PUT, or DELETE."""
-        response = self._make_request(method=method, complete=True, admin=True)
+        response = self._make_request(method=method, complete=True)
         self.assertEqual(response.status_code, 405)
 
-    def test_program_completion_post_allowed(self):
-        """Verify the interface implemented by the view."""
-        ProgramFactory.create()
+    @ddt.data(*itertools.product(
+        STATUSES,
+        [True, False]
+    ))
+    @ddt.unpack
+    def test_program_completion_filtering(self, status, is_admin):
+        """Verify that program candidates for completion are filtered."""
+        program = ProgramFactory.create(status=status)
+        org = OrganizationFactory.create()
+        ProgramOrganizationFactory.create(program=program, organization=org)
 
-        data = {'course_certs': [
-            {'course_id': 'foo', 'mode': 'bar'},
-            {'course_id': 'baz', 'mode': 'qux'}
+        course_code = CourseCodeFactory.create(organization=org)
+        program_course_code = ProgramCourseCodeFactory.create(
+            program=program,
+            course_code=course_code
+        )
+
+        course_key = 'org/code/run'
+        ProgramCourseRunModeFactory.create(
+            course_key=course_key,
+            program_course_code=program_course_code,
+        )
+
+        complete_run_modes = {'completed_courses': [
+            {'course_id': course_key, 'mode': 'verified'},
         ]}
-        response = self._make_request(method='post', complete=True, data=data, admin=True)
+
+        response = self._make_request(method='post', complete=True, data=complete_run_modes, admin=is_admin)
 
         self.assertEqual(response.status_code, 200)
-        self.assertIn('program_ids', response.data)
 
-    def test_program_completion_admin_required(self):
-        """Verify that the view is not accessible to non-admins."""
-        response = self._make_request(method='post', complete=True)
-        self.assertEqual(response.status_code, 403)
+        program_ids = response.data['program_ids']
+        if status in [ProgramStatus.ACTIVE, ProgramStatus.RETIRED]:
+            self.assertEqual(program_ids, [1])
+        else:
+            # No one should be able to complete deleted or unpublished programs.
+            self.assertEqual(program_ids, [])
 
 
 class OrganizationViewTests(AuthClientMixin, TestCase):

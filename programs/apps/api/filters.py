@@ -23,6 +23,17 @@ class ProgramStatusRoleFilterBackend(filters.BaseFilterBackend):
         return queryset.filter(status__in=allowed_status)
 
 
+class ProgramCompletionFilterBackend(filters.BaseFilterBackend):
+    """
+    Only active and retired programs should be candidates for completion. Deleted
+    and unpublished programs should not be candidates for completion.
+    """
+
+    def filter_queryset(self, request, queryset, view):
+        allowed_status = [ProgramStatus.ACTIVE, ProgramStatus.RETIRED]
+        return queryset.filter(status__in=allowed_status)
+
+
 class BaseQueryFilterBackend(filters.BaseFilterBackend):
     """
     A reusable base class for filtering querysets based on a GET parameter.

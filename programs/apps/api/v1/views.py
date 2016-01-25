@@ -7,15 +7,16 @@ from rest_framework import (
     decorators,
     mixins,
     parsers as drf_parsers,
+    permissions as drf_permissions,
     response,
     viewsets,
 )
 
-from programs.apps.programs import models
+from programs.apps.programs import models, utils
 from programs.apps.api import (
     filters,
     parsers as edx_parsers,
-    permissions,
+    permissions as edx_permissions,
     serializers,
 )
 
@@ -27,7 +28,7 @@ class ProgramsViewSet(
 
     **Use Cases**
 
-        List and update existing Programs, and create new ones.
+        List and update existing Programs, create new Programs, and find completed Programs.
 
     **Example Requests**
 
@@ -43,7 +44,7 @@ class ProgramsViewSet(
         If the request is successful, the HTTP status will be 201 and the response body will
         contain a JSON-formatted representation of the newly-created program.
 
-        Only users with global administrative rights may create programs.  POST requests from non-
+        Only users with global administrative rights may create programs. POST requests from non-
         admins will result in status 403.
 
         # Update existing Program.
@@ -52,8 +53,23 @@ class ProgramsViewSet(
         If the request is successful, the HTTP status will be 200 and the response body will
         contain a JSON-formatted representation of the newly-updated program.
 
-        Only users with global administrative rights may update programs.  PATCH requests from non-
+        Only users with global administrative rights may update programs. PATCH requests from non-
         admins will result in status 403.
+
+        # Find completed programs.
+        POST /api/v1/programs/complete/
+
+        Request body must include a serialized representation of completed course runs, including
+        the modes in which the runs were completed. Expected to be of the form:
+
+        {'completed_courses': [
+            {'course_id': 'foo', 'mode': 'bar'},
+            ...
+            {'course_id': 'baz', 'mode': 'qux'}
+        ]}
+
+        If the request is successful, the HTTP status will be 200 and the response body will
+        include JSON containing the IDs of the completed programs.
 
     **Response Values**
 
@@ -68,7 +84,7 @@ class ProgramsViewSet(
         * modified: The date/time this Program was last modified.
 
     """
-    permission_classes = (permissions.IsAdminGroupOrReadOnly, )
+    permission_classes = (edx_permissions.IsAdminGroupOrReadOnly, )
     filter_backends = (
         filters.ProgramStatusRoleFilterBackend,
         filters.ProgramStatusQueryFilterBackend,
@@ -100,15 +116,18 @@ class ProgramsViewSet(
             'programcoursecode_set__run_modes',
         )
 
-    @decorators.list_route(methods=['post'])
+    @decorators.list_route(
+        methods=['post'],
+        permission_classes=[drf_permissions.IsAuthenticated],
+        filter_backends=[filters.ProgramCompletionFilterBackend],
+    )
     def complete(self, request):
-        """Given a set of course certificates, find completed programs."""
-        course_certs = request.data.get('course_certs')  # pylint: disable=unused-variable
+        """Identify completed programs."""
+        programs = self.filter_queryset(self.get_queryset())
+        complete_run_modes = request.data.get('completed_courses')
+        completion_checker = utils.ProgramCompletionChecker(programs, complete_run_modes)
 
-        # TODO: Replace with logic to determine completion.
-        program_ids = [program.id for program in self.get_queryset()]
-
-        return response.Response({'program_ids': program_ids})
+        return response.Response({'program_ids': completion_checker.completed_programs})
 
 
 class CourseCodesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -136,7 +155,7 @@ class CourseCodesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
             * display_name: the display title of the organization.
 
     """
-    permission_classes = (permissions.IsAdminGroup, )
+    permission_classes = (edx_permissions.IsAdminGroup, )
     serializer_class = serializers.CourseCodeSerializer
     filter_backends = (filters.CourseCodeOrgKeyFilterBackend, )
 
@@ -169,6 +188,6 @@ class OrganizationsViewSet(mixins.CreateModelMixin, mixins.ListModelMixin, views
         * display_name: the display title of the organization.
 
     """
-    permission_classes = (permissions.IsAdminGroup, )
+    permission_classes = (edx_permissions.IsAdminGroup, )
     queryset = models.Organization.objects.all().order_by(Lower('key'))
     serializer_class = serializers.OrganizationSerializer
