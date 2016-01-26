@@ -162,7 +162,7 @@ define([
                 verifyValidation( invalidInput, 'name' );
 
                 // Name is too long.
-                invalidInput.name = 'x'.repeat(100);
+                invalidInput.name = 'x'.repeat(256);
                 verifyValidation( invalidInput, 'name' );
             });
 

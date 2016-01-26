@@ -15,7 +15,7 @@ define([
             validation: {
                 name: {
                     required: true,
-                    maxLength: 64
+                    maxLength: 255
                 },
                 subtitle: {
                     // The underlying Django model does not require a subtitle.
