@@ -448,10 +448,9 @@ define([
                 });
 
                 it( 'should show error messaging if the updated field value is too long', function() {
-                    var chars65 = 'x'.repeat(256),
-                        chars256 = 'x'.repeat(256);
+                    var chars256 = 'x'.repeat(256);
 
-                    testInvalidUpdate( '.program-name',  chars65 );
+                    testInvalidUpdate( '.program-name',  chars256 );
                     testInvalidUpdate( '.program-subtitle',  chars256 );
                     testInvalidUpdate( '.program-marketing-slug',  chars256 );
                 });
