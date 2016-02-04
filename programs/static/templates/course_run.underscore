@@ -26,7 +26,7 @@
     <select class="js-course-run-select">
         <option><%- gettext('Please select a Course Run') %></option>
         <% _.each(courseRuns, function(run) { %>
-            <option value="<%- run.course_id %>"><%- run.name %>: <%- run.course_id %></option>
+            <option value="<%- run.id %>"><%- run.name %>: <%- run.id %></option>
         <% }); %>
     </select>
   <% } %>

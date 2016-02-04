@@ -16,7 +16,7 @@ define([
                 model = {},
                 courseRunsList = [
                     {
-                        course_id: 'course-v1:edX+DemoX+Demo_Course',
+                        id: 'course-v1:edX+DemoX+Demo_Course',
                         name: 'edX Demonstration Course',
                         number: 'DemoX',
                         org: 'edX',
@@ -39,7 +39,7 @@ define([
                         blocks_url: 'http://127.0.0.1:8000/api/courses/v1/blocks/?course_id=course-v1%3AedX%2BDemoX%2BDemo_Course'
                     },
                     {
-                        course_id: 'course-v1:edx+Krampus25+2015_12_05',
+                        id: 'course-v1:edx+Krampus25+2015_12_05',
                         name: 'Krampusnacht',
                         number: 'Krampus25',
                         org: 'edx',
@@ -62,7 +62,7 @@ define([
                         blocks_url: 'http://127.0.0.1:8000/api/courses/v1/blocks/?course_id=course-v1%3Aedx%2BKrampus25%2B2015_12_05'
                     },
                     {
-                        course_id: 'course-v1:edx+shiaLB101+2016_01',
+                        id: 'course-v1:edx+shiaLB101+2016_01',
                         name: 'Shia "The Beef"',
                         number: 'shiaLB101',
                         org: 'edx',
@@ -394,7 +394,7 @@ define([
                     $runSelect = view.$(runSelect);
                     expect( $runSelect.length ).toEqual(1);
                     expect( view.$('.js-remove-run').length ).toEqual(savedRunCount);
-                    dropdownSelect($runSelect, courseRunsList[0].course_id);
+                    dropdownSelect($runSelect, courseRunsList[0].id);
                     expect( view.$(runSelect).length ).toEqual(0);
                     expect( view.$('.js-remove-run').length ).toEqual(savedRunCount + 1);
                 });
@@ -418,7 +418,7 @@ define([
                     $addRunBtn.click();
                     expect( view.$(runSelect).length ).toEqual(2);
 
-                    dropdownSelect(view.$(runSelect).first(), courseRunsList[0].course_id);
+                    dropdownSelect(view.$(runSelect).first(), courseRunsList[0].id);
                     expect( view.$(runSelect).length ).toEqual(1);
                     expect( view.$(runSelect).find('option').length ).toEqual(courseRunOptionsCount - 1);
                 });

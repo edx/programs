@@ -43,14 +43,14 @@ define([
 
             // Adds a run back into the model for selection
             addRun: function(id) {
-                var courseRun = _.findWhere( this.allRuns, { course_id: id });
+                var courseRun = _.findWhere( this.allRuns, { id: id });
 
                 this.create(courseRun);
             },
 
             // Removes a run from the model for selection
             removeRun: function(id) {
-                var courseRun = this.where({course_id: id});
+                var courseRun = this.where({id: id});
 
                 this.remove(courseRun);
             }

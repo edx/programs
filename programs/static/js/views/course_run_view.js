@@ -54,7 +54,7 @@ define([
             // Data returned from courseList API is not the correct format
             formatData: function( data ) {
                 return {
-                    course_key: data.course_id,
+                    course_key: data.id,
                     mode_slug: 'verified',
                     start_date: data.start,
                     sku: ''
@@ -88,7 +88,7 @@ define([
 
             selectRun: function(event) {
                 var id = $(event.currentTarget).val(),
-                    runObj = _.findWhere(this.courseRuns.allRuns, {course_id: id}),
+                    runObj = _.findWhere(this.courseRuns.allRuns, {id: id}),
                     /**
                      *  NB: cloning the array so the model will fire a change event when
                      *  the updated version is saved back to the model
