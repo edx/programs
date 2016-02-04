@@ -169,7 +169,7 @@ define([
 
                 availableRuns = _.reject(allRuns, function(run) {
                     var selectedCourseRun = _.findWhere( selectedRuns, {
-                        course_key: run.course_id,
+                        course_key: run.id,
                         start_date: run.start
                     });
 
