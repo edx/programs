@@ -8,5 +8,6 @@ omit =
     *wsgi.py
     *migrations*
     *admin.py
+    *test*
     *static*
     *templates*

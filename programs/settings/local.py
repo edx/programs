@@ -55,6 +55,8 @@ SOCIAL_AUTH_EDX_OIDC_URL_ROOT = OAUTH2_PROVIDER_URL
 
 ENABLE_AUTO_AUTH = True
 
+ORGANIZATIONS_API_URL_ROOT = 'http://127.0.0.1:8000/api/organizations/v0/'
+
 # LOGGING
 LOGGING = get_logger_config(debug=DEBUG, dev_env=True, local_loglevel='DEBUG')
 
