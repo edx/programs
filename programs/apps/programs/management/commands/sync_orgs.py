@@ -12,6 +12,10 @@ from programs.apps.programs.models import Organization
 logger = logging.getLogger(__name__)
 
 
+class ForcedRollback(Exception):
+    pass
+
+
 class Command(BaseCommand):
     help = 'Sync organization data from the LMS.'
     client = None
@@ -21,7 +25,12 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument(
-            '--commit',
+            'access_token',
+            help='OAuth 2.0 access token used to authenticate against LMS APIs.'
+        )
+
+        parser.add_argument(
+            '-c', '--commit',
             action='store_true',
             dest='commit',
             default=False,
@@ -55,9 +64,10 @@ class Command(BaseCommand):
                 self.page = None
 
     def handle(self, *args, **options):
+        access_token = options.get('access_token')
         commit = options.get('commit')
-        # TODO: Configure client authentication.
-        self.client = EdxRestApiClient(settings.ORGANIZATIONS_API_URL_ROOT)
+
+        self.client = EdxRestApiClient(settings.ORGANIZATIONS_API_URL_ROOT, oauth_access_token=access_token)
 
         logger.info('Retrieving organization data from %s.', settings.ORGANIZATIONS_API_URL_ROOT)
 
@@ -73,6 +83,6 @@ class Command(BaseCommand):
                 )
 
                 if not commit:
-                    raise Exception('Forced rollback.')
-        except Exception:   # pylint: disable=broad-except
-            logger.exception('No data has been saved. To save data, pass the --commit option.')
+                    raise ForcedRollback('No data has been saved. To save data, pass the -c or --commit flags.')
+        except ForcedRollback as e:
+            logger.info(e)
