@@ -17,11 +17,16 @@
             </span>
         </button>
     <% } %>
-    <p class="copy copy-base subtitle"><%= interpolate(
+    <div class="copy copy-base subtitle"><%= interpolate(
         gettext('Start Date: %(date)s'),
         { date: start_date },
         true
-    ) %></p>
+    ) %></div>
+    <div class="copy copy-base subtitle"><%= interpolate(
+        gettext('Mode: %(mode)s'),
+        { mode: mode_slug },
+        true
+    ) %></div>
   <% } else { %>
     <select class="js-course-run-select">
         <option><%- gettext('Please select a Course Run') %></option>
