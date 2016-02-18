@@ -2,7 +2,7 @@
 import ddt
 from django.test import TestCase
 
-from programs.apps.programs.models import Program
+from programs.apps.programs.models import Program, ProgramCourseRunMode
 from programs.apps.programs.tests import factories
 from programs.apps.programs.utils import ProgramCompletionChecker
 
@@ -90,3 +90,96 @@ class ProgramCompletionTests(TestCase):
     def test_find_completed_programs(self, complete_run_modes, expected_program_ids):
         completion_checker = ProgramCompletionChecker(self.programs, complete_run_modes)
         self.assertEqual(completion_checker.completed_programs, expected_program_ids)
+
+    def test_complete_with_honor_mode(self):
+        """
+        Explicitly validates that program completion returns a correct result
+        for a program with heterogeneous modes across course runs.
+        """
+        # Update the first run of the first course in the first program,
+        # changing it from 'verified' to 'honor'
+        run_mode = ProgramCourseRunMode.objects.get(course_key='org_0/code_0/run_0')
+        run_mode.mode_slug = 'honor'
+        run_mode.save()
+
+        self.assertEqual(
+            ProgramCompletionChecker(self.programs, [
+                {'course_id': 'org_0/code_0/run_0', 'mode': 'verified'},
+                {'course_id': 'org_0/code_1/run_0', 'mode': 'verified'},
+                {'course_id': 'org_0/code_2/run_0', 'mode': 'verified'},
+            ]).completed_programs,
+            []
+        )
+        self.assertEqual(
+            ProgramCompletionChecker(self.programs, [
+                {'course_id': 'org_0/code_0/run_0', 'mode': 'honor'},
+                {'course_id': 'org_0/code_1/run_0', 'mode': 'verified'},
+                {'course_id': 'org_0/code_2/run_0', 'mode': 'verified'},
+            ]).completed_programs,
+            [1]
+        )
+
+    def test_complete_with_mixed_modes(self):
+        """
+        Explicitly validates that program completion returns a correct result
+        for a program with multiple modes for the same course run.
+        """
+        # Add a second mode for a course run in the first program,
+        # so that either the 'verified' or 'honor' mode will count towards
+        # completion.
+        program_course_code = ProgramCourseRunMode.objects.get(course_key='org_0/code_0/run_0').program_course_code
+        factories.ProgramCourseRunModeFactory.create(
+            course_key='org_0/code_0/run_0',
+            program_course_code=program_course_code,
+            mode_slug='honor',
+        )
+
+        self.assertEqual(
+            ProgramCompletionChecker(self.programs, [
+                {'course_id': 'org_0/code_0/run_0', 'mode': 'verified'},
+                {'course_id': 'org_0/code_1/run_0', 'mode': 'verified'},
+                {'course_id': 'org_0/code_2/run_0', 'mode': 'verified'},
+            ]).completed_programs,
+            [1]
+        )
+
+        self.assertEqual(
+            ProgramCompletionChecker(self.programs, [
+                {'course_id': 'org_0/code_0/run_0', 'mode': 'honor'},
+                {'course_id': 'org_0/code_1/run_0', 'mode': 'verified'},
+                {'course_id': 'org_0/code_2/run_0', 'mode': 'verified'},
+            ]).completed_programs,
+            [1]
+        )
+
+    def test_different_modes_in_different_programs(self):
+        """
+        Explicitly validates that program completion returns a correct result
+        when two programs contain different modes of the same course run.
+        """
+        # Set all of the second program's course runs to match those of the
+        # first, and change the mode of one of those runs from 'verified' to
+        # 'honor' in the second program.
+        for run_mode in ProgramCourseRunMode.objects.filter(program_course_code__program__id=2):
+            run_mode.course_key = run_mode.course_key.replace('org_1', 'org_0')
+            if run_mode.course_key == 'org_0/code_0/run_0':
+                run_mode.mode_slug = 'honor'
+            run_mode.save()
+
+        self.assertEqual(
+            ProgramCompletionChecker(self.programs, [
+                {'course_id': 'org_0/code_0/run_0', 'mode': 'verified'},
+                {'course_id': 'org_0/code_1/run_0', 'mode': 'verified'},
+                {'course_id': 'org_0/code_2/run_0', 'mode': 'verified'},
+            ]).completed_programs,
+            [1]
+        )
+
+        self.assertEqual(
+            ProgramCompletionChecker(self.programs, [
+                {'course_id': 'org_0/code_0/run_0', 'mode': 'honor'},
+                {'course_id': 'org_0/code_1/run_0', 'mode': 'verified'},
+                {'course_id': 'org_0/code_2/run_0', 'mode': 'verified'},
+            ]).completed_programs,
+            [2]
+        )
