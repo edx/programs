@@ -237,6 +237,9 @@ class ProgramsViewTests(JwtMixin, TestCase):
         {'subtitle': 'dummy-subtitle'},
         {'marketing_slug': 'dummy-marketing-slug'},
         {'subtitle': 'dummy-subtitle', 'marketing_slug': 'dummy-marketing-slug'},
+        {'status': 'unpublished'},
+        {'status': 'active'},
+        {'status': 'deleted'},
     )
     def test_patch(self, patch_data):
         """

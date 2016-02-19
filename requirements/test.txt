@@ -15,3 +15,5 @@ nose-ignore-docstring==0.2
 pep8==1.6.2
 pylint==1.4.4
 testfixtures==4.4.0
+bok-choy==0.4.10
+selenium==2.52.0
