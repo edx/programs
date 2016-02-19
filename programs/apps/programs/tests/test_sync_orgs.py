@@ -4,10 +4,9 @@ import math
 
 import ddt
 from django.conf import settings
-from django.core.management import call_command
+from django.core.management import call_command, CommandError
 from django.test import TestCase
 import httpretty
-import mock
 
 from programs.apps.programs.models import Organization
 
@@ -63,11 +62,15 @@ class SyncOrgsTests(TestCase):
             ]
         )
 
+    def test_handle_access_token_missing(self):
+        with self.assertRaises(CommandError):
+            call_command('sync_orgs')
+
     @ddt.data(True, False)
     @httpretty.activate
-    def test_handle(self, commit):
+    def test_handle_commit(self, commit):
         self._mock_organizations_api()
-        call_command('sync_orgs', commit=commit)
+        call_command('sync_orgs', 'fake-access-token', commit=commit)
 
         # Odd-numbered resources are active.
         expected = math.ceil(self.RESULT_COUNT / 2.0) if commit else 0
@@ -81,12 +84,10 @@ class SyncOrgsTests(TestCase):
                 display_name=self.DISPLAY_NAME.format(i)
             )
 
-        self._mock_organizations_api()
+        initial_count = Organization.objects.count()
 
-        with mock.patch(
-            'programs.apps.programs.management.commands.sync_orgs.Organization.objects.create'
-        ) as mock_create:
-            call_command('sync_orgs', commit=True)
+        self._mock_organizations_api()
+        call_command('sync_orgs', 'fake-access-token', commit=True)
 
         # Verify that no new orgs were created.
-        self.assertEqual(mock_create.called, False)
+        self.assertEqual(initial_count, Organization.objects.count())
