@@ -25,7 +25,10 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument(
-            'access_token',
+            '-a', '--access_token',
+            action='store',
+            dest='access_token',
+            default=None,
             help='OAuth 2.0 access token used to authenticate against LMS APIs.'
         )
 
@@ -66,6 +69,23 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         access_token = options.get('access_token')
         commit = options.get('commit')
+
+        if access_token is None:
+            try:
+                access_token_url = '{}/access_token'.format(
+                    settings.SOCIAL_AUTH_EDX_OIDC_URL_ROOT.strip('/')
+                )
+                client_id = settings.SOCIAL_AUTH_EDX_OIDC_KEY
+                client_secret = settings.SOCIAL_AUTH_EDX_OIDC_SECRET
+
+                access_token, __ = EdxRestApiClient.get_oauth_access_token(
+                    access_token_url,
+                    client_id,
+                    client_secret
+                )
+            except:  # pylint: disable=bare-except
+                logger.exception('Unable to exchange client credentials grant for an access token.')
+                return
 
         self.client = EdxRestApiClient(settings.ORGANIZATIONS_API_URL_ROOT, oauth_access_token=access_token)
 

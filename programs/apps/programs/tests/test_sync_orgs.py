@@ -1,10 +1,11 @@
 # pylint: disable=missing-docstring
+import itertools
 import json
 import math
 
 import ddt
 from django.conf import settings
-from django.core.management import call_command, CommandError
+from django.core.management import call_command
 from django.test import TestCase
 import httpretty
 
@@ -12,6 +13,7 @@ from programs.apps.programs.models import Organization
 
 
 @ddt.ddt
+@httpretty.activate
 class SyncOrgsTests(TestCase):
     """Tests for the sync_orgs management command."""
     ORGANIZATIONS_API_URL = settings.ORGANIZATIONS_API_URL_ROOT.strip('/') + '/organizations/'
@@ -62,21 +64,48 @@ class SyncOrgsTests(TestCase):
             ]
         )
 
-    def test_handle_access_token_missing(self):
-        with self.assertRaises(CommandError):
-            call_command('sync_orgs')
+    def _mock_oauth2_provider(self, data=None):
+        self.assertTrue(httpretty.is_enabled(), 'httpretty must be enabled to mock API calls.')
 
-    @ddt.data(True, False)
-    @httpretty.activate
-    def test_handle_commit(self, commit):
+        access_token_url = '{}/access_token'.format(
+            settings.SOCIAL_AUTH_EDX_OIDC_URL_ROOT.strip('/')
+        )
+
+        if data is None:
+            data = {
+                'access_token': 'fake-access-token',
+                'expires_in': 100
+            }
+
+        httpretty.register_uri(
+            httpretty.POST,
+            access_token_url,
+            body=json.dumps(data),
+            content_type='application/json'
+        )
+
+    @ddt.data(*itertools.product(
+        ('fake-access-token', None),
+        (True, False)
+    ))
+    @ddt.unpack
+    def test_handle(self, access_token, commit):
+        self._mock_oauth2_provider()
         self._mock_organizations_api()
-        call_command('sync_orgs', 'fake-access-token', commit=commit)
+
+        call_command('sync_orgs', access_token=access_token, commit=commit)
 
         # Odd-numbered resources are active.
         expected = math.ceil(self.RESULT_COUNT / 2.0) if commit else 0
         self.assertEqual(Organization.objects.count(), expected)
 
-    @httpretty.activate
+    def test_handle_access_token_unavailable(self):
+        self._mock_oauth2_provider(data={})
+
+        call_command('sync_orgs', access_token=None, commit=True)
+
+        self.assertEqual(Organization.objects.count(), 0)
+
     def test_handle_with_existing_records(self):
         for i in range(1, self.RESULT_COUNT + 1):
             Organization.objects.create(
@@ -86,8 +115,10 @@ class SyncOrgsTests(TestCase):
 
         initial_count = Organization.objects.count()
 
+        self._mock_oauth2_provider()
         self._mock_organizations_api()
-        call_command('sync_orgs', 'fake-access-token', commit=True)
+
+        call_command('sync_orgs', commit=True)
 
         # Verify that no new orgs were created.
         self.assertEqual(initial_count, Organization.objects.count())
