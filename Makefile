@@ -18,6 +18,7 @@ help:
 	@echo "  pull_translations          pull translations from Transifex"
 	@echo "  push_translations          push source translation files (.po) from Transifex"
 	@echo "  quality                    run PEP8 and Pylint"
+	@echo "  make accept                run acceptance tests"
 	@echo "  requirements               install requirements for local development"
 	@echo "  requirements.js            install JavaScript requirements for local development"
 	@echo "  serve                      serve Programs at 0.0.0.0:8004"
@@ -44,8 +45,8 @@ test: clean
 	coverage report
 
 quality:
-	pep8 --config=.pep8 programs *.py
-	pylint --rcfile=pylintrc programs *.py
+	pep8 --config=.pep8 programs *.py acceptance_tests
+	pylint --rcfile=pylintrc programs *.py acceptance_tests
 
 static:
 	$(NODE_BIN)/gulp css
@@ -61,6 +62,9 @@ validate_js:
 	$(NODE_BIN)/gulp test
 	$(NODE_BIN)/gulp lint
 	$(NODE_BIN)/gulp jscs
+
+accept:
+	nosetests --with-ignore-docstrings -v acceptance_tests
 
 validate: test quality validate_js
 
