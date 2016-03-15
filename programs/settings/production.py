@@ -21,10 +21,17 @@ COMPRESS_CSS_FILTERS += [
 
 LOGGING = get_logger_config()
 
+# This may be overridden by the yaml in PROGRAMS_CFG, but it should
+# be here as a default.
+MEDIA_STORAGE_BACKEND = {}
+
 CONFIG_FILE = get_env_setting('PROGRAMS_CFG')
 with open(CONFIG_FILE) as f:
     config_from_yaml = yaml.load(f)
     vars().update(config_from_yaml)
+
+    # Load settings for media storage
+    vars().update(MEDIA_STORAGE_BACKEND)
 
 DB_OVERRIDES = dict(
     PASSWORD=environ.get('DB_MIGRATION_PASS', DATABASES['default']['PASSWORD']),
