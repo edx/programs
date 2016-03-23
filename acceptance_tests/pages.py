@@ -56,8 +56,7 @@ class StudioLoginPage(StudioPage):
         self.q(css='input#password').fill(password)
         self.q(css='button.action-primary').click()
 
-        # Wait for LMS to redirect to the dashboard
-        EmptyPromise(self._is_browser_on_studio_home, "Studio login redirected to dashboard").fulfill()
+        EmptyPromise(self._is_browser_on_studio_home, "Studio login redirected to Studio home").fulfill()
 
 
 class StudioHomePage(StudioPage):
