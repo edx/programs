@@ -1,14 +1,17 @@
 """
 Tests for Programs API views (v1).
 """
+from cStringIO import StringIO
 import datetime
 import itertools
 import json
 
 import ddt
 from django.core.urlresolvers import reverse
-from django.test import TestCase
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.test import override_settings, TestCase
 from mock import ANY
+from PIL import Image
 import pytz
 
 from programs.apps.api.v1.tests.mixins import AuthClientMixin, JwtMixin
@@ -188,6 +191,7 @@ class ProgramsViewTests(JwtMixin, TestCase):
                 u"created": ANY,
                 u"modified": ANY,
                 u'marketing_slug': '',
+                u'banner_image_urls': {}
             }
         )
 
@@ -287,6 +291,7 @@ class ProgramsViewTests(JwtMixin, TestCase):
                     u"created": program.created.strftime(DRF_DATE_FORMAT),
                     u"modified": program.modified.strftime(DRF_DATE_FORMAT),
                     u'marketing_slug': program.marketing_slug,
+                    u'banner_image_urls': {}
                 }
             )
 
@@ -314,8 +319,52 @@ class ProgramsViewTests(JwtMixin, TestCase):
                     u"created": program.created.strftime(DRF_DATE_FORMAT),
                     u"modified": program.modified.strftime(DRF_DATE_FORMAT),
                     u'marketing_slug': program.marketing_slug,
+                    u'banner_image_urls': {}
                 }
             )
+
+    def make_banner_image_file(self, name):
+        """
+        Helper to generate values for Program.banner_image
+        """
+        image = Image.new('RGB', (1440, 900), 'green')
+        sio = StringIO()
+        image.save(sio, format='JPEG')
+        return SimpleUploadedFile(name, sio.getvalue(), content_type='image/jpeg')
+
+    def assert_correct_banner_image_urls(self, url_prepend=''):
+        """
+        DRY test helper.  Ensure that the serializer generates a complete set
+        of absolute URLs for the banner_image when one is set.
+        """
+        program = ProgramFactory.create(status=ProgramStatus.ACTIVE)
+        program.banner_image = self.make_banner_image_file('test_filename.jpg')
+        program.save()
+
+        response = self._make_request(program_id=program.id)
+        self.assertEqual(response.status_code, 200)
+
+        expected_urls = {
+            '{}x{}'.format(*size): '{}{}__{}x{}.jpg'.format(url_prepend, program.banner_image.url, *size)
+            for size in program.banner_image.field.sizes
+        }
+        self.assertEqual(response.data[u'banner_image_urls'], expected_urls)
+
+    @override_settings(MEDIA_URL='/test/media/url/')
+    def test_banner_image_urls(self):
+        """
+        Ensure that the request is used to generate absolute URLs for banner
+        images, when MEDIA_ROOT does not specify an explicit host.
+        """
+        self.assert_correct_banner_image_urls(url_prepend='http://testserver')
+
+    @override_settings(MEDIA_URL='https://example.com/test/media/url/')
+    def test_banner_image_urls_with_absolute_media_url(self):
+        """
+        Ensure that banner image URLs are correctly presented when storage
+        is configured to use absolute URLs.
+        """
+        self.assert_correct_banner_image_urls()
 
     def test_view_with_nested(self):
         """
@@ -380,6 +429,7 @@ class ProgramsViewTests(JwtMixin, TestCase):
                 u"created": program.created.strftime(DRF_DATE_FORMAT),
                 u"modified": program.modified.strftime(DRF_DATE_FORMAT),
                 u'marketing_slug': program.marketing_slug,
+                u'banner_image_urls': {}
             }
         )
 

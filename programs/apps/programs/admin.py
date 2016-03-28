@@ -27,7 +27,7 @@ class ProgramAdmin(admin.ModelAdmin):
     list_display = ('name', 'status', 'category')
     list_filter = ('status', 'category')
     search_fields = ('name',)
-    fields = ('name', 'category', 'status', 'subtitle', 'marketing_slug',)
+    fields = ('name', 'category', 'status', 'subtitle', 'marketing_slug', 'banner_image')
     inlines = (ProgramOrganizationInline,)
 
 

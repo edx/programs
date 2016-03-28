@@ -73,8 +73,9 @@ coverage/
 override.cfg
 private.py
 
-# JetBrains
+# IDEs
 .idea
+.ropeproject
 
 # OS X
 .DS_Store
@@ -87,3 +88,4 @@ private.py
 docs/_build/
 node_modules/
 programs/static/bower_components/
+programs/media/

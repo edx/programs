@@ -1,6 +1,8 @@
 """
 Models for the programs app.
 """
+from uuid import uuid4
+
 from django.db import models
 from django.core.exceptions import ValidationError
 from django_extensions.db.models import TimeStampedModel
@@ -9,6 +11,7 @@ from opaque_keys import InvalidKeyError
 from opaque_keys.edx.keys import CourseKey
 
 from programs.apps.programs import constants
+from programs.apps.programs.fields import ResizingImageField
 
 
 def _choices(*values):
@@ -22,6 +25,12 @@ class Program(TimeStampedModel):
     """
     Representation of a Program.
     """
+
+    uuid = models.UUIDField(
+        blank=True,
+        default=uuid4,
+        editable=False,
+    )
 
     name = models.CharField(
         help_text=_('The user-facing display name for this Program.'),
@@ -61,6 +70,13 @@ class Program(TimeStampedModel):
         help_text=_('Slug used to generate links to the marketing site'),
         blank=True,
         max_length=255
+    )
+
+    banner_image = ResizingImageField(
+        path_template='program/banner/{uuid}',
+        sizes=[(1440, 480), (480, 160), (360, 120), (180, 60)],
+        null=True,
+        blank=True,
     )
 
     def save(self, *a, **kw):

@@ -17,6 +17,7 @@ import os
 
 from django.conf import settings
 from django.conf.urls import include, url
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth.views import logout
 from django.core.urlresolvers import reverse_lazy
@@ -60,7 +61,7 @@ if settings.DEBUG:  # pragma: no cover
     urlpatterns += [
         # Drops into the Programs authoring app, which handles its own routing.
         url(r'^program/*', program_view, name='program'),
-    ]
+    ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
     if os.environ.get('ENABLE_DJANGO_TOOLBAR', False):
         import debug_toolbar  # pylint: disable=import-error

@@ -261,12 +261,22 @@ class ProgramSerializer(serializers.ModelSerializer):
         model = models.Program
         fields = (
             'id', 'name', 'subtitle', 'category', 'status', 'marketing_slug', 'organizations', 'course_codes',
-            'created', 'modified'
+            'created', 'modified', 'banner_image_urls'
         )
-        read_only_fields = ('id', 'created', 'modified')
+        read_only_fields = ('id', 'created', 'modified', 'banner_image_urls')
 
+    banner_image_urls = serializers.SerializerMethodField()
     organizations = ProgramOrganizationSerializer(many=True, source='programorganization_set')
     course_codes = ProgramCourseCodeSerializer(many=True, source='programcoursecode_set', required=False)
+
+    def get_banner_image_urls(self, instance):
+        """
+        Render public-facing URLs for the available banner images.
+        """
+        url_items = instance.banner_image.resized_urls.items()
+        # in case MEDIA_URL does not include scheme+host, ensure that the URLs are absolute and not relative
+        url_items = [[size, self.context['request'].build_absolute_uri(url)] for size, url in url_items]
+        return {'{}x{}'.format(*size): url for size, url in url_items}
 
     def create(self, validated_data):
         """
