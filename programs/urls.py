@@ -21,6 +21,7 @@ from django.contrib import admin
 from django.contrib.auth.views import logout
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic import RedirectView, TemplateView
+from django.views.i18n import javascript_catalog
 
 from programs.apps.core import views as core_views
 
@@ -49,7 +50,7 @@ urlpatterns = [
     url(r'^docs/', include('rest_framework_swagger.urls')),
     url(r'^health/$', core_views.health, name='health'),
     url(r'^i18n/', include('django.conf.urls.i18n')),
-    url(r'^jsi18n/$', 'django.views.i18n.javascript_catalog', js_info_dict),
+    url(r'^jsi18n/$', javascript_catalog, js_info_dict),
     url('', include('social.apps.django_app.urls', namespace='social')),
 ]
 
