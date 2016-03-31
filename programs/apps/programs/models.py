@@ -1,12 +1,11 @@
-"""
-Models for the programs app.
-"""
+"""Models for the programs app."""
+# pylint: disable=model-missing-unicode,no-member
 from uuid import uuid4
 
 from django.db import models
 from django.core.exceptions import ValidationError
-from django_extensions.db.models import TimeStampedModel
 from django.utils.translation import ugettext_lazy as _
+from django_extensions.db.models import TimeStampedModel
 from opaque_keys import InvalidKeyError
 from opaque_keys.edx.keys import CourseKey
 

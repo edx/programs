@@ -1,8 +1,8 @@
 # pylint: disable=missing-docstring
 import logging
-import requests
 import uuid
 
+import requests
 from edx_rest_api_client.client import EdxRestApiClient
 
 from acceptance_tests.config import (
