@@ -12,7 +12,6 @@ Including another URLconf
     1. Add an import:  from blog import urls as blog_urls
     2. Add a URL to urlpatterns:  url(r'^blog/', include(blog_urls))
 """
-
 import os
 
 from django.conf import settings
@@ -64,7 +63,7 @@ if settings.DEBUG:  # pragma: no cover
     ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
     if os.environ.get('ENABLE_DJANGO_TOOLBAR', False):
-        import debug_toolbar  # pylint: disable=import-error
+        import debug_toolbar  # pylint: disable=import-error,wrong-import-position,wrong-import-order
         urlpatterns.append(
             url(r'^__debug__/', include(debug_toolbar.urls))
         )

@@ -1,19 +1,16 @@
 # Packages required for testing
 -r base.txt
 
-# Required by pylint. astroid 1.4.1 and pylint 1.5.0 both have bugs preventing quality checks from completing.
-astroid==1.3.8
 coverage==4.1b2
 ddt==1.0.0
 django-dynamic-fixture==1.8.5
 django-nose==1.4.1
-edx-lint==0.2.7
+edx-lint==0.5.1
 factory-boy==2.5.2
 httpretty==0.8.10
 mock==1.3.0
 nose-ignore-docstring==0.2
 pep8==1.6.2
-pylint==1.4.4
 testfixtures==4.4.0
 bok-choy==0.4.10
 selenium==2.52.0

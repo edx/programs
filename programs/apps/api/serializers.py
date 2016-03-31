@@ -201,7 +201,7 @@ class ProgramCourseCodeSerializer(serializers.ModelSerializer):
         Overrides the default deserialization to look up related objects that
         are needed to create/update the correct models.
         """
-        out_data = {'program': self.root.instance, 'course_code': self._get_course_code(data)}
+        out_data = {'program': self.root.instance, 'course_code': self._get_course_code(data)}  # pylint: disable=no-member
 
         # handle run_modes if present
         if 'run_modes' in data:
