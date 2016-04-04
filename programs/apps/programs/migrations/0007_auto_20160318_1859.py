@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='program',
             name='banner_image',
-            field=programs.apps.programs.fields.ResizingImageField(path_template=b'program/banner/{uuid}', null=True, upload_to=b'', sizes=[(1440, 480), (480, 160), (360, 120), (180, 60)], blank=True),
+            field=programs.apps.programs.fields.ResizingImageField(path_template=b'program/banner/{uuid}', null=True, upload_to=b'', sizes=[(1440, 480), (726, 242), (435, 145), (348, 116)], blank=True),
         ),
         migrations.AddField(
             model_name='program',
