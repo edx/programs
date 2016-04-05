@@ -73,7 +73,7 @@ class Program(TimeStampedModel):
 
     banner_image = ResizingImageField(
         path_template='program/banner/{uuid}',
-        sizes=[(1440, 480), (480, 160), (360, 120), (180, 60)],
+        sizes=[(1440, 480), (726, 242), (435, 145), (348, 116)],
         null=True,
         blank=True,
     )
