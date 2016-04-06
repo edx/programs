@@ -123,7 +123,6 @@ class CourseCodeSerializer(serializers.ModelSerializer):
         model = models.CourseCode
         fields = ('display_name', 'key', 'organization')
 
-    # This breaks django-rest-swagger. See https://github.com/marcgibbons/django-rest-swagger/issues/417.
     organization = OrganizationSerializer(
         read_only=True,
         default=fields.CreateOnlyDefault(DefaultOrganizationFromContext()),
