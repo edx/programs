@@ -345,7 +345,7 @@ class ProgramsViewTests(JwtMixin, TestCase):
         self.assertEqual(response.status_code, 200)
 
         expected_urls = {
-            '{}x{}'.format(*size): '{}{}__{}x{}.jpg'.format(url_prepend, program.banner_image.url, *size)
+            'w{}h{}'.format(*size): '{}{}__{}x{}.jpg'.format(url_prepend, program.banner_image.url, *size)
             for size in program.banner_image.field.sizes
         }
         self.assertEqual(response.data[u'banner_image_urls'], expected_urls)
