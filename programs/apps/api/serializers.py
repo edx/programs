@@ -276,7 +276,7 @@ class ProgramSerializer(serializers.ModelSerializer):
         url_items = instance.banner_image.resized_urls.items()
         # in case MEDIA_URL does not include scheme+host, ensure that the URLs are absolute and not relative
         url_items = [[size, self.context['request'].build_absolute_uri(url)] for size, url in url_items]
-        return {'{}x{}'.format(*size): url for size, url in url_items}
+        return {'w{}h{}'.format(*size): url for size, url in url_items}
 
     def create(self, validated_data):
         """
