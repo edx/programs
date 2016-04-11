@@ -38,6 +38,7 @@ htmlcov
 .tox
 nosetests.xml
 unittests.xml
+acceptance_tests/xunit.xml
 
 ### Internationalization artifacts
 *.mo
