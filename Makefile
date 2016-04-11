@@ -64,7 +64,7 @@ validate_js:
 	$(NODE_BIN)/gulp jscs
 
 accept:
-	nosetests --with-ignore-docstrings -v acceptance_tests
+	nosetests --with-ignore-docstrings -v acceptance_tests --with-xunit --xunit-file=acceptance_tests/xunit.xml
 
 validate: test quality validate_js
 
