@@ -7,12 +7,12 @@ import ddt
 from django.contrib.auth.models import Group
 from django.db import IntegrityError
 from django.test import TestCase
+from edx_rest_framework_extensions.utils import api_settings as drf_jwt_settings
 import mock
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.test import APIRequestFactory
 
 from programs.apps.api.authentication import JwtAuthentication, pipeline_set_user_roles
-from programs.apps.api.jwt_decode_handler import api_settings as drf_jwt_settings
 from programs.apps.api.v1.tests.mixins import JwtMixin
 from programs.apps.core.constants import Role
 from programs.apps.core.models import User
