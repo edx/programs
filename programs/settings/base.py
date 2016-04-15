@@ -245,7 +245,7 @@ JWT_AUTH = {
     'JWT_PAYLOAD_GET_USERNAME_HANDLER': lambda d: d.get('preferred_username'),
     'JWT_AUDIENCE': None,
     'JWT_LEEWAY': 1,
-    'JWT_DECODE_HANDLER': 'programs.apps.api.jwt_decode_handler.decode',
+    'JWT_DECODE_HANDLER': 'edx_rest_framework_extensions.utils.jwt_decode_handler',
 }
 # END AUTHENTICATION CONFIGURATION
 
