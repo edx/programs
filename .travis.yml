@@ -1,27 +1,23 @@
 language: python
 python:
-    - "2.7"
+  - "2.7"
 sudo: false
 
-# Cache the pip directory. "cache: pip" doesn't work due to install override. See https://github.com/travis-ci/travis-ci/issues/3239.
 cache:
+  - pip
   - directories:
-    - $HOME/.cache/pip
     - node_modules
     - programs/static/bower_components
 before_install:
-    - "export DISPLAY=:99.0"
-    - "sh -e /etc/init.d/xvfb start"
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
 install:
-    - pip install -U pip wheel codecov
-    - pip install -r requirements/test.txt
-    - make requirements.js
+  - pip install -U pip wheel codecov
+  - pip install -r requirements/test.txt
+  - make requirements.js
 script:
     # Compile assets and run validation
-    - make static -e DJANGO_SETTINGS_MODULE="programs.settings.test"
-    - make validate
-branches:
-    only:
-        - master
+  - make static -e DJANGO_SETTINGS_MODULE="programs.settings.test"
+  - make validate
 after_success:
-    - codecov
+  - codecov
