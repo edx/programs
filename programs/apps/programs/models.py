@@ -76,6 +76,7 @@ class Program(TimeStampedModel):
         sizes=[(1440, 480), (726, 242), (435, 145), (348, 116)],
         null=True,
         blank=True,
+        max_length=1000,
     )
 
     def save(self, *a, **kw):
