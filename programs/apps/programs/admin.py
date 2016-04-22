@@ -5,6 +5,7 @@ from opaque_keys import InvalidKeyError
 from opaque_keys.edx.keys import CourseKey
 
 from programs.apps.programs import models
+from programs.apps.programs.image_helpers import validate_image_type, validate_image_size
 
 
 class ProgramOrganizationInline(admin.TabularInline):
@@ -22,8 +23,24 @@ class ProgramCourseCodeInline(admin.TabularInline):
     extra = 0
 
 
+class ProgramForm(forms.ModelForm):
+    """
+    Customizes the django admin form for Programs.
+    """
+
+    def clean_banner_image(self):
+        """
+        Avoid server errors if an uploaded banner image is going to fail validation checks.
+        """
+        if 'banner_image' in self.files:
+            validate_image_type(self.files['banner_image'])
+            validate_image_size(self.files['banner_image'], *self.instance.banner_image.minimum_original_size)
+        return self.cleaned_data['banner_image']
+
+
 class ProgramAdmin(admin.ModelAdmin):
     """Admin for the Program model."""
+    form = ProgramForm
     list_display = ('name', 'status', 'category')
     list_filter = ('status', 'category')
     search_fields = ('name',)
