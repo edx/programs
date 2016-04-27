@@ -52,14 +52,16 @@ class Command(BaseCommand):
 
             for org in orgs:
                 if org['active']:
-                    fields = {
-                        'key': org['short_name'],
-                        'display_name': org['name']
-                    }
+                    obj, created = Organization.objects.get_or_create(
+                        key=org['short_name'],
+                        defaults={'display_name': org['name']}
+                    )
 
-                    __, created = Organization.objects.get_or_create(**fields)
                     if created:
                         self.new_org_count += 1
+                    elif obj.display_name != org['name']:
+                        obj.display_name = org['name']
+                        obj.save()
 
             if data['next']:
                 self.page += 1

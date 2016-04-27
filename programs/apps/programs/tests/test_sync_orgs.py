@@ -2,6 +2,7 @@
 import itertools
 import json
 import math
+import random
 
 import ddt
 from django.conf import settings
@@ -114,6 +115,14 @@ class SyncOrgsTests(TestCase):
             )
 
         initial_count = Organization.objects.count()
+
+        # Change the display name of an existing record to verify that modified
+        # display names can by synced without issue.
+        org = Organization.objects.get(key=self.KEY.format(1))
+        exploded = list(org.display_name)
+        random.shuffle(exploded)
+        org.display_name = ''.join(exploded)
+        org.save()
 
         self._mock_oauth2_provider()
         self._mock_organizations_api()
