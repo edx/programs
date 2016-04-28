@@ -29,6 +29,7 @@ class Program(TimeStampedModel):
         blank=True,
         default=uuid4,
         editable=False,
+        unique=True,
     )
 
     name = models.CharField(
