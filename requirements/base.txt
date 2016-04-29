@@ -19,6 +19,4 @@ libsass==0.10.0
 Markdown==2.6.2
 piexif==1.0.3
 Pillow==3.1.1
-# Remove once https://github.com/omab/python-social-auth/pull/897 is merged/released.
-python-social-auth==0.2.14
 pytz==2015.4
