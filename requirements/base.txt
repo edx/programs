@@ -9,7 +9,7 @@ django-waffle==0.10.1
 djangorestframework==3.2.3
 djangorestframework-jwt==1.8.0
 django-rest-swagger==0.3.4
-edx-auth-backends==0.2.1
+edx-auth-backends==0.2.3
 edx-drf-extensions==0.4.1
 edx-opaque-keys==0.2.1
 edx-rest-api-client==1.5.0
