@@ -1,17 +1,14 @@
 """
 Tests for Programs API views (v1).
 """
-from cStringIO import StringIO
 import datetime
 import itertools
 import json
 
 import ddt
 from django.core.urlresolvers import reverse
-from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import override_settings, TestCase
 from mock import ANY
-from PIL import Image
 import pytz
 
 from programs.apps.api.v1.tests.mixins import AuthClientMixin, JwtMixin
@@ -19,6 +16,7 @@ from programs.apps.core.constants import Role
 from programs.apps.core.tests.factories import UserFactory
 from programs.apps.programs.constants import ProgramCategory, ProgramStatus
 from programs.apps.programs.models import CourseCode, Program, ProgramCourseCode, ProgramCourseRunMode
+from programs.apps.programs.tests.helpers import make_banner_image_file
 from programs.apps.programs.tests.factories import (
     CourseCodeFactory,
     OrganizationFactory,
@@ -26,6 +24,7 @@ from programs.apps.programs.tests.factories import (
     ProgramFactory,
     ProgramOrganizationFactory,
     ProgramCourseRunModeFactory,
+    ProgramDefaultFactory
 )
 
 
@@ -323,22 +322,13 @@ class ProgramsViewTests(JwtMixin, TestCase):
                 }
             )
 
-    def make_banner_image_file(self, name):
-        """
-        Helper to generate values for Program.banner_image
-        """
-        image = Image.new('RGB', (1440, 900), 'green')
-        sio = StringIO()
-        image.save(sio, format='JPEG')
-        return SimpleUploadedFile(name, sio.getvalue(), content_type='image/jpeg')
-
     def assert_correct_banner_image_urls(self, url_prepend=''):
         """
         DRY test helper.  Ensure that the serializer generates a complete set
         of absolute URLs for the banner_image when one is set.
         """
         program = ProgramFactory.create(status=ProgramStatus.ACTIVE)
-        program.banner_image = self.make_banner_image_file('test_filename.jpg')
+        program.banner_image = make_banner_image_file('test_filename.jpg')
         program.save()
 
         response = self._make_request(program_id=program.id)
@@ -347,6 +337,38 @@ class ProgramsViewTests(JwtMixin, TestCase):
         expected_urls = {
             'w{}h{}'.format(*size): '{}{}__{}x{}.jpg'.format(url_prepend, program.banner_image.url, *size)
             for size in program.banner_image.field.sizes
+        }
+        self.assertEqual(response.data[u'banner_image_urls'], expected_urls)
+
+    def assert_correct_default_banner_image_urls(self, url_prepend='', set_program_banner=False):
+        """
+        DRY test helper.  Ensure that the serializer generates a complete set
+        of absolute URLs for the default banner_image when the banner image on program is not set.
+        If the flag set_program_banner is defined, then make sure the banner image for program is set
+        and returned
+        """
+        default_program_value = ProgramDefaultFactory.create()
+        default_program_value.banner_image = make_banner_image_file('default_test_filename.jpg')
+        default_program_value.save()
+
+        program = ProgramFactory.create(status=ProgramStatus.ACTIVE)
+        if set_program_banner:
+            program.banner_image = make_banner_image_file('test_filename.jpg')
+            program.save()
+
+        response = self._make_request(program_id=program.id)
+        self.assertEqual(response.status_code, 200)
+
+        banner_image_instance = default_program_value.banner_image
+        if set_program_banner:
+            banner_image_instance = program.banner_image
+
+        expected_urls = {
+            'w{}h{}'.format(*size): '{}{}__{}x{}.jpg'.format(
+                url_prepend,
+                banner_image_instance.url,
+                *size)
+            for size in banner_image_instance.field.sizes
         }
         self.assertEqual(response.data[u'banner_image_urls'], expected_urls)
 
@@ -365,6 +387,29 @@ class ProgramsViewTests(JwtMixin, TestCase):
         is configured to use absolute URLs.
         """
         self.assert_correct_banner_image_urls()
+
+    @override_settings(MEDIA_URL='/test/media/url/')
+    def test_default_banner_image_urls(self):
+        """
+        Ensure that the request is used to generate absolute URLs for the default banner
+        images, when MEDIA_ROOT does not specify an explicit host.
+        """
+        self.assert_correct_default_banner_image_urls(url_prepend='http://testserver')
+
+    @override_settings(MEDIA_URL='https://example.com/test/media/url/')
+    def test_default_banner_image_urls_with_absolute_media_url(self):
+        """
+        Ensure that default banner image URLs are correctly presented when storage
+        is configured to use absolute URLs.
+        """
+        self.assert_correct_default_banner_image_urls()
+
+    @override_settings(MEDIA_URL='https://example.com/test/media/url/')
+    def test_program_banner_image_url_with_default_defined(self):
+        """
+        Ensure the program defined banner image url is returned even if default banner image url is defined
+        """
+        self.assert_correct_default_banner_image_urls(set_program_banner=True)
 
     def test_view_with_nested(self):
         """

@@ -62,3 +62,10 @@ class ProgramCourseRunModeFactory(factory.django.DjangoModelFactory):
     id = factory.Sequence(lambda n: n)
     mode_slug = "verified"
     start_date = datetime.now(tz=pytz.UTC)
+
+
+class ProgramDefaultFactory(factory.django.DjangoModelFactory):
+    class Meta(object):
+        model = models.ProgramDefault
+
+    id = factory.Sequence(lambda n: n)

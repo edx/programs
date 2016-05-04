@@ -3,6 +3,7 @@ from django import forms
 from django.contrib import admin
 from opaque_keys import InvalidKeyError
 from opaque_keys.edx.keys import CourseKey
+from solo.admin import SingletonModelAdmin
 
 from programs.apps.programs import models
 from programs.apps.programs.image_helpers import validate_image_type, validate_image_size
@@ -83,6 +84,7 @@ class ProgramCourseRunModeForm(forms.ModelForm):
     """Model form for ProgramCourseCode model. Adding custom validation for
     course key format at form level.
     """
+
     def clean_course_key(self):
         """Clean the course key to make sure format is valid."""
         course_key = self.cleaned_data['course_key']
@@ -117,3 +119,4 @@ admin.site.register(models.ProgramOrganization, ProgramOrganizationAdmin)
 admin.site.register(models.CourseCode, CourseCodeAdmin)
 admin.site.register(models.ProgramCourseCode, ProgramCourseCodeAdmin)
 admin.site.register(models.ProgramCourseRunMode, ProgramCourseRunModeAdmin)
+admin.site.register(models.ProgramDefault, SingletonModelAdmin)

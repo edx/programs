@@ -7,10 +7,12 @@ TODO:
     and could ultimately be moved (with related modules) into a shared utility package.
 """
 from contextlib import contextmanager
+from cStringIO import StringIO
 import os
 from tempfile import NamedTemporaryFile
 
-from django.core.files.uploadedfile import UploadedFile
+from django.core.files.uploadedfile import UploadedFile, SimpleUploadedFile
+
 import piexif
 from PIL import Image
 
@@ -60,3 +62,13 @@ def make_uploaded_file(content_type, *a, **kw):
             content_type=content_type,
             size=os.path.getsize(image_file.name),
         )
+
+
+def make_banner_image_file(name):
+    """
+    Helper to generate values for program banner_image
+    """
+    image = Image.new('RGB', (1440, 900), 'green')
+    sio = StringIO()
+    image.save(sio, format='JPEG')
+    return SimpleUploadedFile(name, sio.getvalue(), content_type='image/jpeg')

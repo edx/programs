@@ -18,7 +18,7 @@ help:
 	@echo "  pull_translations          pull translations from Transifex"
 	@echo "  push_translations          push source translation files (.po) from Transifex"
 	@echo "  quality                    run PEP8 and Pylint"
-	@echo "  make accept                run acceptance tests"
+	@echo "  accept                     run acceptance tests"
 	@echo "  requirements               install requirements for local development"
 	@echo "  requirements.js            install JavaScript requirements for local development"
 	@echo "  serve                      serve Programs at 0.0.0.0:8004"
