@@ -1,7 +1,11 @@
 """
 Custom fields used in models in the programs django app.
 """
+from collections import OrderedDict
 from contextlib import closing
+import logging
+import os
+import re
 
 from django.db import models
 from django.db.models.fields.files import ImageFieldFile
@@ -15,6 +19,8 @@ from .image_helpers import (
     validate_image_size,
     validate_image_type,
 )
+
+LOG = logging.getLogger(__name__)
 
 
 class ResizingImageFieldFile(ImageFieldFile):
@@ -83,6 +89,53 @@ class ResizingImageFieldFile(ImageFieldFile):
             with closing(create_image_file(scaled)) as scaled_image_file:
                 self.storage.save(name, scaled_image_file)
 
+        self.clean_stale_images()
+
+    def clean_stale_images(self, keep_previous=True):
+        """
+        Search and clean historical images left in the storage,
+        using django storage API
+
+        Returns:
+            None
+        """
+        if self.name is None:
+            # this method isn't currently used for, and does not support,
+            # cleaning up stale copies when the value of the field is currently
+            # empty.
+            return
+
+        dir_ = self.field.get_path(self.instance)
+
+        groups = {}
+        for name in self.storage.listdir(dir_)[1]:
+            source_name = re.sub(r'__([\d]+)x([\d]+)\.jpg', '', name)
+            groups.setdefault(source_name, []).append(name)
+
+        ordered_groups = OrderedDict(
+            sorted(
+                groups.items(),
+                key=lambda t: self.storage.created_time(os.path.join(dir_, t[0])),
+                reverse=True
+            )
+        )
+
+        current_name = os.path.basename(self.name)
+        found_current = found_previous = False
+        stale_names = []
+        for source_name, group in ordered_groups.items():
+            if not found_current:
+                found_current = current_name == source_name
+            elif keep_previous and not found_previous:
+                found_previous = True
+            else:
+                stale_names += group
+
+        for stale_name in stale_names:
+            stale_path = os.path.join(dir_, stale_name)
+            LOG.info('Deleting stale image file: %s', stale_path)
+            self.storage.delete(stale_path)
+
 
 class ResizingImageField(models.ImageField):
     """
@@ -141,6 +194,23 @@ class ResizingImageField(models.ImageField):
         self.path_template = path_template.rstrip('/')
         self.sizes = sizes
 
+    def get_path(self, model_instance):
+        """
+        Get the calculated path from the path template
+
+        Arguments:
+
+            model_instance (Model):
+                The model instance whose value is about to be saved.
+
+        Returns:
+
+            Path (string):
+                The path to the file
+
+        """
+        return self.path_template.format(**model_instance.__dict__)  # pylint: disable=no-member
+
     def generate_filename(self, model_instance, filename):  # pylint: disable=method-hidden
         """
         Join our path template with the filename assigned by django storage to
@@ -159,7 +229,7 @@ class ResizingImageField(models.ImageField):
             ResizingImageFieldFile
 
         """
-        pathname = self.path_template.format(**model_instance.__dict__)  # pylint: disable=no-member
+        pathname = self.get_path(model_instance)
         return '{}/{}'.format(pathname, filename)
 
     def pre_save(self, model_instance, add):
