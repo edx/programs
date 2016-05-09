@@ -4,6 +4,7 @@ django_compressor==1.5
 django-cors-headers==1.1.0
 django-extensions==1.5.5
 django-libsass==0.4
+django-solo==1.1.2
 django-storages==1.4
 django-waffle==0.10.1
 djangorestframework==3.2.3

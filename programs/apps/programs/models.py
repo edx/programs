@@ -8,9 +8,13 @@ from django.utils.translation import ugettext_lazy as _
 from django_extensions.db.models import TimeStampedModel
 from opaque_keys import InvalidKeyError
 from opaque_keys.edx.keys import CourseKey
+from solo.models import SingletonModel
 
 from programs.apps.programs import constants
 from programs.apps.programs.fields import ResizingImageField
+
+
+RESIZABLE_IMAGE_SIZES = [(1440, 480), (726, 242), (435, 145), (348, 116)]
 
 
 def _choices(*values):
@@ -74,7 +78,7 @@ class Program(TimeStampedModel):
 
     banner_image = ResizingImageField(
         path_template='program/banner/{uuid}',
-        sizes=[(1440, 480), (726, 242), (435, 145), (348, 116)],
+        sizes=RESIZABLE_IMAGE_SIZES,
         null=True,
         blank=True,
         max_length=1000,
@@ -275,3 +279,19 @@ class ProgramCourseRunMode(TimeStampedModel):
             raise ValidationError(_("Invalid course key."))
 
         return super(ProgramCourseRunMode, self).save()
+
+
+class ProgramDefault(SingletonModel):
+    """
+    Model used to store default program configuration.
+    This includes a default, resizable banner image which is
+    used if a given program has not specified its own banner image.
+    This model is a singleton - only one instance exists.
+    """
+    banner_image = ResizingImageField(
+        path_template='program/banner/default',
+        sizes=RESIZABLE_IMAGE_SIZES,
+        null=True,
+        blank=True,
+        max_length=1000,
+    )

@@ -269,11 +269,26 @@ class ProgramSerializer(serializers.ModelSerializer):
     organizations = ProgramOrganizationSerializer(many=True, source='programorganization_set')
     course_codes = ProgramCourseCodeSerializer(many=True, source='programcoursecode_set', required=False)
 
+    def _get_default_banner_images(self):
+        """Get default banner image URLs.
+
+        Returns:
+            list of tuples if default banner image has been configured. Empty list otherwise.
+        """
+        try:
+            program_default = models.ProgramDefault.objects.get()
+            return program_default.banner_image.resized_urls.items()
+        except models.ProgramDefault.DoesNotExist:
+            return []
+
     def get_banner_image_urls(self, instance):
         """
         Render public-facing URLs for the available banner images.
         """
         url_items = instance.banner_image.resized_urls.items()
+        if not url_items:
+            url_items = self._get_default_banner_images()
+
         # in case MEDIA_URL does not include scheme+host, ensure that the URLs are absolute and not relative
         url_items = [[size, self.context['request'].build_absolute_uri(url)] for size, url in url_items]
         return {'w{}h{}'.format(*size): url for size, url in url_items}

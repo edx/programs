@@ -6,12 +6,14 @@ import datetime
 import ddt
 import pytz
 from django.core.exceptions import ValidationError
+from django.db import IntegrityError
 from django.test import TestCase
 
 from programs.apps.programs import models
 from programs.apps.programs.constants import ProgramStatus, ProgramCategory
-from programs.apps.programs.models import Program
+from programs.apps.programs.models import Program, RESIZABLE_IMAGE_SIZES
 from programs.apps.programs.tests import factories
+from programs.apps.programs.tests.helpers import make_banner_image_file
 
 
 class TestProgram(TestCase):
@@ -247,3 +249,29 @@ class TestProgramCourseRunMode(TestCase):
             'Invalid course key.',
             context.exception.message
         )
+
+
+class TestProgramDefault(TestCase):
+    """
+    Test case to validate the ProgramDefault model
+    """
+
+    def _create_model_instance(self):
+        """
+        Helper to create the ProgramDefault model instance
+        """
+        program_default_instance = factories.ProgramDefaultFactory.create()
+        program_default_instance.banner_image = make_banner_image_file('test.jpg')
+        program_default_instance.save()
+        self.assertEqual(program_default_instance.banner_image.field.sizes, RESIZABLE_IMAGE_SIZES)
+        return program_default_instance
+
+    def test_create_first(self):
+        """ Verify the first model instance create succeeds """
+        self._create_model_instance()
+
+    def test_create_another(self):
+        """ Verify validation error if we attempt to create more than 1 ProgramDefault model instance """
+        self._create_model_instance()
+        with self.assertRaises(IntegrityError):
+            factories.ProgramDefaultFactory.create()
