@@ -139,7 +139,7 @@ class ResizingImageFieldFileTestCase(TestCase):
         with mock.patch.object(field_value, 'storage') as mock_storage:
             mock_storage.listdir = mock.Mock(return_value=([], listdir_results))
             mock_storage.delete = mock.Mock(return_value=None)
-            mock_storage.created_time = mock.Mock(side_effect=lambda n: historical_ctimes[n])
+            mock_storage.modified_time = mock.Mock(side_effect=lambda n: historical_ctimes[n])
             field_value.clean_stale_images(keep_previous=keep_previous)
 
         expected_deleted_paths = ['{}/{}'.format(self.field.path_template, name) for name in expected_deleted_names]

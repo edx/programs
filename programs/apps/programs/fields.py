@@ -115,7 +115,7 @@ class ResizingImageFieldFile(ImageFieldFile):
         ordered_groups = OrderedDict(
             sorted(
                 groups.items(),
-                key=lambda t: self.storage.created_time(os.path.join(dir_, t[0])),
+                key=lambda t: self.storage.modified_time(os.path.join(dir_, t[0])),
                 reverse=True
             )
         )
