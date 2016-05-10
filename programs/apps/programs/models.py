@@ -119,7 +119,6 @@ class Organization(TimeStampedModel):
     )
     display_name = models.CharField(
         help_text=_('The display name of this organization.'),
-        unique=True,
         max_length=128,
     )
     programs = models.ManyToManyField(Program, related_name='organizations', through='ProgramOrganization')

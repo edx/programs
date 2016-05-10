@@ -24,7 +24,7 @@ class SyncOrgsTests(TestCase):
     DISPLAY_NAME = 'Organization {} Display Name'
     KEY = 'Organization{}X'
 
-    def _get_body(self, page):
+    def _get_body(self, page, name_override=None):
         next_page = page + 1 if page < self.PAGE_COUNT else None
         previous_page = page - 1 if page > 1 else None
 
@@ -44,7 +44,7 @@ class SyncOrgsTests(TestCase):
                     'id': i,
                     'logo': None,
                     'modified': '2016-02-01T20:09:51.575053Z',
-                    'name': self.DISPLAY_NAME.format(i),
+                    'name': name_override or self.DISPLAY_NAME.format(i),
                     'short_name': self.KEY.format(i)
                 }
                 for i in range(low_id, high_id + 1)
@@ -53,14 +53,16 @@ class SyncOrgsTests(TestCase):
 
         return json.dumps(body)
 
-    def _mock_organizations_api(self):
+    def _mock_organizations_api(self, org_name_override=None):
         self.assertTrue(httpretty.is_enabled(), 'httpretty must be enabled to mock API calls.')
 
         httpretty.register_uri(
             httpretty.GET,
             self.ORGANIZATIONS_API_URL,
             responses=[
-                httpretty.Response(body=self._get_body(page), content_type='application/json')
+                httpretty.Response(
+                    body=self._get_body(page, name_override=org_name_override),
+                    content_type='application/json')
                 for page in range(1, self.PAGE_COUNT + 1)
             ]
         )
@@ -131,3 +133,15 @@ class SyncOrgsTests(TestCase):
 
         # Verify that no new orgs were created.
         self.assertEqual(initial_count, Organization.objects.count())
+
+    def test_handle_duplicated_display_name(self):
+        display_name = 'TestDupeName'
+        self._mock_oauth2_provider()
+        self._mock_organizations_api(org_name_override=display_name)
+        call_command('sync_orgs', commit=True)
+        # Verify that new orgs were created.
+        expected = math.ceil(self.RESULT_COUNT / 2.0)
+        self.assertEqual(Organization.objects.count(), expected)
+        # And make sure all orgs are created with same display_name
+        for org in Organization.objects.all():
+            self.assertEqual(org.display_name, display_name)
