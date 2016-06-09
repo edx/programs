@@ -1,6 +1,8 @@
 """
 Programs API views (v1).
 """
+import warnings
+
 from django.db.models import Prefetch
 from django.db.models.functions import Lower
 from rest_framework import (
@@ -123,6 +125,8 @@ class ProgramsViewSet(
     )
     def complete(self, request):
         """Identify completed programs."""
+        warnings.warn('This endpoint is deprecated and will be removed.', DeprecationWarning)
+
         programs = self.filter_queryset(self.get_queryset())
         complete_run_modes = request.data.get('completed_courses')
         completion_checker = utils.ProgramCompletionChecker(programs, complete_run_modes)
