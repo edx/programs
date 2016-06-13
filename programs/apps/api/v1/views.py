@@ -3,8 +3,10 @@ Programs API views (v1).
 """
 import warnings
 
+from django.db import transaction
 from django.db.models import Prefetch
 from django.db.models.functions import Lower
+from django.utils.decorators import method_decorator
 from rest_framework import (
     decorators,
     mixins,
@@ -94,6 +96,10 @@ class ProgramsViewSet(
     )
     serializer_class = serializers.ProgramSerializer
     parser_classes = (edx_parsers.MergePatchParser, drf_parsers.JSONParser)
+
+    @method_decorator(transaction.non_atomic_requests)
+    def dispatch(self, request, *args, **kwargs):
+        return super(ProgramsViewSet, self).dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
         """Perform eager loading of data to prevent a cascade of performance-degrading queries."""
