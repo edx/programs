@@ -1,8 +1,8 @@
 """
 Authentication logic for REST API.
 """
-
 import logging
+import time
 
 from django.contrib.auth.models import Group
 from django.db import IntegrityError
@@ -14,6 +14,10 @@ from programs.apps.core.models import User
 
 
 logger = logging.getLogger(__name__)
+
+# TODO: Use a config model.
+MAX_RETRIES = 3
+COEFFICIENT = .15
 
 
 def _set_user_roles(user, payload):
@@ -59,17 +63,27 @@ class JwtAuthentication(JSONWebTokenAuthentication):
             raise AuthenticationFailed(msg)
         username = payload['preferred_username']
 
-        try:
-            # get_or_create is vulnerable to a race condition which can cause
-            # IntegrityErrors to be raised here.
-            # See: https://code.djangoproject.com/ticket/13906 and https://code.djangoproject.com/ticket/18557.
-            user, __ = User.objects.get_or_create(username=username)  # pylint: disable=no-member
-        except IntegrityError:
-            logger.warning('User retrieval or creation failed. Retrying.')
+        # Even with MySQL set to use the READ COMMITTED isolation level, get_or_create sometimes
+        # raises an IntegrityError and the object in question doesn't appear in a subsequent get()
+        # call. Paired with non_atomic_requests, the retry logic here is meant to prevent IntegrityErrors
+        # from causing authenticated requests to fail.
+        retry = 0
+        while True:
+            # Exponential backoff. Keep sleep time short to prevent running out of available workers.
+            countdown = 2 ** retry * COEFFICIENT
 
-            # get_or_create should not fail twice. The object responsible for the
-            # previously raised IntegrityError should be retrieved.
-            user, __ = User.objects.get_or_create(username=username)  # pylint: disable=no-member
+            try:
+                logger.info('Attempting to get or create user [%s]. This is retry [%d].', username, retry)
+                user, __ = User.objects.get_or_create(username=username)  # pylint: disable=no-member
+            except IntegrityError:
+                retry += 1
+                if retry <= MAX_RETRIES:
+                    logger.warning('Failed to get or create [%s]. Sleeping for [%.2f] seconds.', username, countdown)
+                    time.sleep(countdown)
+                else:
+                    raise
+            else:
+                break
 
         _set_user_roles(user, payload)
         return user

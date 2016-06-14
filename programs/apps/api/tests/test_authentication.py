@@ -12,11 +12,14 @@ import mock
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.test import APIRequestFactory
 
-from programs.apps.api.authentication import JwtAuthentication, pipeline_set_user_roles
+from programs.apps.api.authentication import JwtAuthentication, MAX_RETRIES, pipeline_set_user_roles
 from programs.apps.api.v1.tests.mixins import JwtMixin
 from programs.apps.core.constants import Role
 from programs.apps.core.models import User
 from programs.apps.core.tests.factories import UserFactory
+
+
+AUTH_MODULE = 'programs.apps.api.authentication'
 
 
 @ddt.ddt
@@ -40,23 +43,35 @@ class TestJWTAuthentication(JwtMixin, TestCase):
         with self.assertRaises(AuthenticationFailed):
             authentication.authenticate_credentials({})
 
-    def test_user_creation_failure(self):
+    @ddt.data(*range(MAX_RETRIES + 1))
+    @mock.patch(AUTH_MODULE + '.User.objects.get_or_create')
+    def test_robust_user_creation(self, retries, mock_get_or_create):
         """
-        Verify that the service is robust to failures during user creation.
+        Verify that the service is robust to IntegrityErrors during user creation.
         """
         authentication = JwtAuthentication()
 
-        with mock.patch.object(User.objects, 'get_or_create') as mocked:
-            # If side_effect is an iterable, each call to the mock will return
-            # the next value from the iterable.
-            # See: https://docs.python.org/3/library/unittest.mock.html#unittest.mock.Mock.side_effect.
-            mocked.side_effect = [
-                IntegrityError,
-                (User.objects.create(username=self.USERNAME), False)
-            ]
+        # If side_effect is an iterable, each call to the mock will return
+        # the next value from the iterable.
+        # See: https://docs.python.org/3/library/unittest.mock.html#unittest.mock.Mock.side_effect.
+        errors = [IntegrityError] * retries
+        mock_get_or_create.side_effect = errors + [(User.objects.create(username=self.USERNAME), False)]
 
-            user = authentication.authenticate_credentials({'preferred_username': self.USERNAME})
-            self.assertEqual(user.username, self.USERNAME)
+        user = authentication.authenticate_credentials({'preferred_username': self.USERNAME})
+        self.assertEqual(user.username, self.USERNAME)
+
+    @mock.patch(AUTH_MODULE + '.User.objects.get_or_create')
+    def test_user_creation_failure(self, mock_get_or_create):
+        """
+        Verify that IntegrityErrors beyond the configured retry limit are raised.
+        """
+        authentication = JwtAuthentication()
+
+        errors = [IntegrityError] * (MAX_RETRIES + 1)
+        mock_get_or_create.side_effect = errors + [(User.objects.create(username=self.USERNAME), False)]
+
+        with self.assertRaises(IntegrityError):
+            authentication.authenticate_credentials({'preferred_username': self.USERNAME})
 
     @ddt.data(('exp', -1), ('iat', 1))
     @ddt.unpack
