@@ -1,22 +1,17 @@
 """
 Programs API views (v1).
 """
-import warnings
-
 from django.db import transaction
 from django.db.models import Prefetch
 from django.db.models.functions import Lower
 from django.utils.decorators import method_decorator
 from rest_framework import (
-    decorators,
     mixins,
     parsers as drf_parsers,
-    permissions as drf_permissions,
-    response,
     viewsets,
 )
 
-from programs.apps.programs import models, utils
+from programs.apps.programs import models
 from programs.apps.api import (
     filters,
     parsers as edx_parsers,
@@ -123,21 +118,6 @@ class ProgramsViewSet(
             ),
             'programcoursecode_set__run_modes',
         )
-
-    @decorators.list_route(
-        methods=['post'],
-        permission_classes=[drf_permissions.IsAuthenticated],
-        filter_backends=[filters.ProgramCompletionFilterBackend],
-    )
-    def complete(self, request):
-        """Identify completed programs."""
-        warnings.warn('This endpoint is deprecated and will be removed.', DeprecationWarning)
-
-        programs = self.filter_queryset(self.get_queryset())
-        complete_run_modes = request.data.get('completed_courses')
-        completion_checker = utils.ProgramCompletionChecker(programs, complete_run_modes)
-
-        return response.Response({'program_ids': completion_checker.completed_programs})
 
 
 class CourseCodesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
