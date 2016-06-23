@@ -55,21 +55,6 @@ class ProgramsViewSet(
         Only users with global administrative rights may update programs. PATCH requests from non-
         admins will result in status 403.
 
-        # Find completed programs.
-        POST /api/v1/programs/complete/
-
-        Request body must include a serialized representation of completed course runs, including
-        the modes in which the runs were completed. Expected to be of the form:
-
-        {'completed_courses': [
-            {'course_id': 'foo', 'mode': 'bar'},
-            ...
-            {'course_id': 'baz', 'mode': 'qux'}
-        ]}
-
-        If the request is successful, the HTTP status will be 200 and the response body will
-        include JSON containing the IDs of the completed programs.
-
     **Response Values**
 
         * id: The ID of the program.
