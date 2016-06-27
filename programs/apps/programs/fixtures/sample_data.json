@@ -28,12 +28,12 @@
 {
     "fields": {
         "category": "xseries",
-        "status": "unpublished",
+        "status": "active",
         "subtitle": "An XSeries used for demo purposes.",
         "name": "Demo Program",
         "created": "2015-10-27T15:58:05.499Z",
         "modified": "2015-10-27T15:58:31.286Z",
-        "marketing_slug": ""
+        "marketing_slug": "demo"
     },
     "model": "programs.program",
     "pk": 3
@@ -326,12 +326,20 @@
         "mode_slug": "verified",
         "created": "2015-10-27T16:05:11.099Z",
         "program_course_code": 5,
-        "course_key": "edX/DemoX/Demo_Course",
+        "course_key": "course-v1:edX+DemoX+Demo_Course",
         "modified": "2015-10-27T16:05:11.102Z",
+        "run_key": "Demo_Course",
         "lms_url": "",
         "start_date": "2015-10-27T16:05:11.102Z"
     },
     "model": "programs.programcourserunmode",
     "pk": 9
+},
+{
+    "fields": {
+        "banner_image": ""
+    },
+    "model": "programs.programdefault",
+    "pk": 1
 }
 ]
