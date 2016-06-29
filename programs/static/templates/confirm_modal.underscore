@@ -12,10 +12,10 @@
             </div>
             <div class="modal-actions">
                 <h3 class="sr-only"><%= gettext('Actions') %></h3>
-                <button class="js-confirm btn btn-primary btn-base">
+                <button class="js-confirm btn btn-brand btn-base">
                     <span><%- cta.confirm %></span>
                 </button>
-                <button class="js-cancel btn btn-secondary btn-base">
+                <button class="js-cancel btn btn-neutral btn-base">
                     <span><%- cta.cancel %></span>
                 </button>
             </div>

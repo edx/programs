@@ -45,7 +45,7 @@
         color: palette(grayscale, white-t);
     }
 
-    .btn-primary {
+    .btn-brand {
         background: palette(warning, base);
         border-color: palette(warning, base);
 
@@ -54,6 +54,16 @@
         &:active {
             background: palette(warning, dark);
             border-color: palette(warning, dark);;
+        }
+    }
+
+    .btn-neutral {
+        background: transparent;
+        border-color: transparent;
+        &:hover,
+        &:focus,
+        &:active {
+          border-color: palette(grayscale-cool, light)
         }
     }
 }
