@@ -26,6 +26,7 @@ help:
 	@echo "  test                       run tests and generate coverage report"
 	@echo "  validate                   run tests and quality checks"
 	@echo "  validate_js                run JavaScript unit tests and linting"
+	@echo "  html_docs                  build html documents from rst docs and open in (default) browser"
 	@echo ""
 
 clean:
@@ -91,3 +92,6 @@ pull_translations:
 
 push_translations:
 	tx push -s
+
+html_docs:
+	cd docs && make html && open _build/html/index.html

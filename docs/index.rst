@@ -11,6 +11,7 @@ These are the developer docs for the edX Programs Service.
 .. toctree::
    :maxdepth: 2
 
+   prerequisites
    getting_started
    programs
    testing
