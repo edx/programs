@@ -12,8 +12,7 @@
     "gulp": "^3.9.0",
     "gulp-jscs": "^3.0.1",
     "gulp-jshint": "^1.11.2",
-    "gulp-sass": "^2.3.2",
-    "node-sass": "3.4.2",
+    "gulp-sass": "*",
     "karma": "^0.13.2"
   },
   "devDependencies": {
