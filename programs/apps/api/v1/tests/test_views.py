@@ -177,6 +177,8 @@ class ProgramsViewTests(JwtMixin, TestCase):
         response = self._make_request(method='post', data=data, admin=True)
 
         self.assertEqual(response.status_code, 201)
+
+        program = Program.objects.all().last()
         self.assertEqual(
             response.data,
             {
@@ -191,6 +193,7 @@ class ProgramsViewTests(JwtMixin, TestCase):
                 'modified': ANY,
                 'marketing_slug': '',
                 'banner_image_urls': {},
+                'uuid': str(program.uuid),
             }
         )
 
@@ -291,6 +294,7 @@ class ProgramsViewTests(JwtMixin, TestCase):
                     'modified': program.modified.strftime(DRF_DATE_FORMAT),
                     'marketing_slug': program.marketing_slug,
                     'banner_image_urls': {},
+                    'uuid': str(program.uuid),
                 }
             )
 
@@ -321,6 +325,7 @@ class ProgramsViewTests(JwtMixin, TestCase):
                     'modified': program.modified.strftime(DRF_DATE_FORMAT),
                     'marketing_slug': program.marketing_slug,
                     'banner_image_urls': {},
+                    'uuid': str(program.uuid),
                 }
             )
 
@@ -477,6 +482,7 @@ class ProgramsViewTests(JwtMixin, TestCase):
                 'modified': program.modified.strftime(DRF_DATE_FORMAT),
                 'marketing_slug': program.marketing_slug,
                 'banner_image_urls': {},
+                'uuid': unicode(program.uuid),
             }
         )
 
