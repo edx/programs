@@ -65,9 +65,13 @@ LOGGING = get_logger_config(debug=DEBUG, dev_env=True, local_loglevel='DEBUG')
 if os.path.isfile(join(dirname(abspath(__file__)), 'private.py')):
     from .private import *
 
-# do this after private.py, ensuring this section picks up credential overrides.
+# Update JWT_AUTH after private.py, ensuring this section picks up credential overrides.
 JWT_AUTH.update({
-    'JWT_SECRET_KEY': SOCIAL_AUTH_EDX_OIDC_SECRET,
-    'JWT_ISSUER': OAUTH2_PROVIDER_URL,
-    'JWT_AUDIENCE': SOCIAL_AUTH_EDX_OIDC_KEY,
+    'JWT_ISSUERS': [
+        {
+            'SECRET_KEY': SOCIAL_AUTH_EDX_OIDC_SECRET,
+            'ISSUER': OAUTH2_PROVIDER_URL,
+            'AUDIENCE': SOCIAL_AUTH_EDX_OIDC_KEY,
+        }
+    ],
 })

@@ -17,9 +17,9 @@ JWT_AUTH = 'JWT_AUTH'
 class JwtMixin(object):
     """ Mixin with JWT-related helper functions. """
 
-    JWT_SECRET_KEY = getattr(settings, JWT_AUTH)['JWT_SECRET_KEY']
-    JWT_ISSUER = getattr(settings, JWT_AUTH)['JWT_ISSUER']
-    JWT_AUDIENCE = getattr(settings, JWT_AUTH)['JWT_AUDIENCE']
+    JWT_SECRET_KEY = getattr(settings, JWT_AUTH)['JWT_ISSUERS'][0]['SECRET_KEY']
+    JWT_ISSUER = getattr(settings, JWT_AUTH)['JWT_ISSUERS'][0]['ISSUER']
+    JWT_AUDIENCE = getattr(settings, JWT_AUTH)['JWT_ISSUERS'][0]['AUDIENCE']
 
     def generate_token(self, payload, secret=None):
         """Generate a JWT token with the provided payload."""

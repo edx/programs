@@ -240,7 +240,14 @@ JWT_AUTH = {
     'JWT_SECRET_KEY': None,
     'JWT_ALGORITHM': 'HS256',
     'JWT_VERIFY_EXPIRATION': True,
-    'JWT_ISSUER': None,
+    'JWT_VERIFY_AUDIENCE': False,
+    'JWT_ISSUERS': [
+        {
+            'SECRET_KEY': SOCIAL_AUTH_EDX_OIDC_SECRET,
+            'ISSUER': SOCIAL_AUTH_EDX_OIDC_URL_ROOT,
+            'AUDIENCE': SOCIAL_AUTH_EDX_OIDC_KEY,
+        }
+    ],
     'JWT_PAYLOAD_GET_USERNAME_HANDLER': lambda d: d.get('preferred_username'),
     'JWT_AUDIENCE': None,
     'JWT_LEEWAY': 1,
