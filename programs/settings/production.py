@@ -46,7 +46,16 @@ for override, value in DB_OVERRIDES.iteritems():
     DATABASES['default'][override] = value
 
 JWT_AUTH.update({
-    'JWT_SECRET_KEY': SOCIAL_AUTH_EDX_OIDC_SECRET,
-    'JWT_ISSUER': SOCIAL_AUTH_EDX_OIDC_URL_ROOT,
-    'JWT_AUDIENCE': SOCIAL_AUTH_EDX_OIDC_KEY,
+    'JWT_ISSUERS': [
+        {
+            'SECRET_KEY': SOCIAL_AUTH_EDX_OIDC_SECRET,
+            'ISSUER': SOCIAL_AUTH_EDX_OIDC_URL_ROOT,
+            'AUDIENCE': SOCIAL_AUTH_EDX_OIDC_KEY,
+        },
+        {
+            'SECRET_KEY': LMS_JWT_SECRET_KEY,
+            'ISSUER': LMS_JWT_ISSUER,
+            'AUDIENCE': LMS_JWT_AUDIENCE,
+        },
+    ]
 })

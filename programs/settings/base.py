@@ -231,6 +231,10 @@ SOCIAL_AUTH_EDX_OIDC_SECRET = 'replace-me'
 SOCIAL_AUTH_EDX_OIDC_URL_ROOT = 'replace-me'
 SOCIAL_AUTH_EDX_OIDC_ID_TOKEN_DECRYPTION_KEY = SOCIAL_AUTH_EDX_OIDC_SECRET
 
+LMS_JWT_AUDIENCE = 'replace-me'
+LMS_JWT_SECRET_KEY = 'replace-me'
+LMS_JWT_ISSUER = 'replace-me'
+
 # Request the user's permissions in the ID token
 EXTRA_SCOPE = ['permissions']
 
@@ -243,13 +247,14 @@ JWT_AUTH = {
     'JWT_ISSUER': None,
     'JWT_PAYLOAD_GET_USERNAME_HANDLER': lambda d: d.get('preferred_username'),
     'JWT_AUDIENCE': None,
+    'JWT_VERIFY_AUDIENCE': None,
     'JWT_LEEWAY': 1,
     'JWT_DECODE_HANDLER': 'edx_rest_framework_extensions.utils.jwt_decode_handler',
 }
 # END AUTHENTICATION CONFIGURATION
 
 
-# OPENEDX-SPECIFIC CONFIGURATION 
+# OPENEDX-SPECIFIC CONFIGURATION
 PLATFORM_NAME = 'Your Platform Name Here'
 # END OPENEDX-SPECIFIC CONFIGURATION
 
