@@ -1,17 +1,14 @@
 Software Prerequisites
 ======================
 
+- Clone of `edx/programs <https://github.com/edx/programs>`_
 - Python 2.7.x (and pip)
-.. (Empty comment for new line...)
-- Clone of `edx/programs`_ (github repository)
-.. _edx/programs: https://github.com/edx/programs
-
 - `Node.js 4.4.x`_ (and npm) (download or use nvm - explained below)
 .. _Node.js 4.4.x: https://nodejs.org/download/release/v4.4.7/
 
 
-nvm (Optional)
---------------
+nvm
+---
 
 One easy way to manage the different node versions you may have installed on your machine is to use `nvm`_.
 
@@ -32,8 +29,8 @@ If you already have Node.js version 4.4.x installed, nvm will switch to using it
 
     $ nvm install
 
-Virtualenvwrapper/pip Installation
-----------------------------------
+Virtualenvwrapper
+-----------------
 
 For some general background and basic virtualenvwrapper usage, please consult the
 Hitchhiker's guide to Python's `section on virtualenv`_.
