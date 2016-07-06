@@ -1,6 +1,7 @@
 """
 Tests for Programs API views (v1).
 """
+from __future__ import unicode_literals
 import datetime
 import json
 
@@ -31,7 +32,7 @@ USERNAME = 'preferred_username'
 POST_FIELDS = ("name", "subtitle", "category", "status")
 CATEGORIES = (ProgramCategory.XSERIES, )
 STATUSES = (ProgramStatus.UNPUBLISHED, ProgramStatus.ACTIVE, ProgramStatus.RETIRED, ProgramStatus.DELETED)
-DRF_DATE_FORMAT = u'%Y-%m-%dT%H:%M:%S.%fZ'
+DRF_DATE_FORMAT = '%Y-%m-%dT%H:%M:%S.%fZ'
 
 
 @ddt.ddt
@@ -176,20 +177,23 @@ class ProgramsViewTests(JwtMixin, TestCase):
         response = self._make_request(method='post', data=data, admin=True)
 
         self.assertEqual(response.status_code, 201)
+
+        program = Program.objects.all().last()
         self.assertEqual(
             response.data,
             {
-                u"name": data["name"],
-                u"subtitle": data["subtitle"],
-                u"category": data["category"],
-                u"status": data["status"],
-                u"organizations": [{"key": "test-org-key", "display_name": "test-org-display_name"}],
-                u"course_codes": [],
-                u"id": ANY,
-                u"created": ANY,
-                u"modified": ANY,
-                u'marketing_slug': '',
-                u'banner_image_urls': {}
+                'name': data['name'],
+                'subtitle': data['subtitle'],
+                'category': data['category'],
+                'status': data['status'],
+                'organizations': [{'key': 'test-org-key', 'display_name': 'test-org-display_name'}],
+                'course_codes': [],
+                'id': ANY,
+                'created': ANY,
+                'modified': ANY,
+                'marketing_slug': '',
+                'banner_image_urls': {},
+                'uuid': str(program.uuid),
             }
         )
 
@@ -200,12 +204,12 @@ class ProgramsViewTests(JwtMixin, TestCase):
         """
         # validate without providing parameter 'organization' in request data
         data = self._build_post_data()
-        error_msg = u'This field is required.'
+        error_msg = 'This field is required.'
         self._validate_org_data_errors(request_data=data, validation_error=error_msg)
 
         # validate with empty list as value for the parameter 'organization' in
         # request data
-        error_msg = u'Provide exactly one valid/existing Organization while creating a Program.'
+        error_msg = 'Provide exactly one valid/existing Organization while creating a Program.'
         self._validate_org_data_errors(
             request_data=data, validation_error=error_msg, organizations_data=[]
         )
@@ -213,7 +217,7 @@ class ProgramsViewTests(JwtMixin, TestCase):
         # validate with non existing organization key as value for the parameter
         # 'organization' in request data
         org_key = "non-existing-org-key"
-        error_msg = u"Provided Organization with key '{org_key}' doesn't exist.".format(org_key=org_key)
+        error_msg = "Provided Organization with key '{org_key}' doesn't exist.".format(org_key=org_key)
         self._validate_org_data_errors(
             request_data=data, validation_error=error_msg, organizations_data=[{"key": org_key}]
         )
@@ -224,7 +228,7 @@ class ProgramsViewTests(JwtMixin, TestCase):
         # now add these multiple valid organizations in POST data while creating
         # a Program and test that the user get validation error for providing
         # multiple organizations
-        error_msg = u'Provide exactly one valid/existing Organization while creating a Program.'
+        error_msg = 'Provide exactly one valid/existing Organization while creating a Program.'
         self._validate_org_data_errors(
             request_data=data,
             validation_error=error_msg,
@@ -279,17 +283,18 @@ class ProgramsViewTests(JwtMixin, TestCase):
             self.assertEqual(
                 response.data,
                 {
-                    u"name": program.name,
-                    u"subtitle": program.subtitle,
-                    u"category": program.category,
-                    u"status": status,
-                    u"organizations": [],
-                    u"course_codes": [],
-                    u"id": program.id,
-                    u"created": program.created.strftime(DRF_DATE_FORMAT),
-                    u"modified": program.modified.strftime(DRF_DATE_FORMAT),
-                    u'marketing_slug': program.marketing_slug,
-                    u'banner_image_urls': {}
+                    'name': program.name,
+                    'subtitle': program.subtitle,
+                    'category': program.category,
+                    'status': status,
+                    'organizations': [],
+                    'course_codes': [],
+                    'id': program.id,
+                    'created': program.created.strftime(DRF_DATE_FORMAT),
+                    'modified': program.modified.strftime(DRF_DATE_FORMAT),
+                    'marketing_slug': program.marketing_slug,
+                    'banner_image_urls': {},
+                    'uuid': str(program.uuid),
                 }
             )
 
@@ -302,22 +307,25 @@ class ProgramsViewTests(JwtMixin, TestCase):
         filtered_statuses = (ProgramStatus.DELETED, ProgramStatus.UNPUBLISHED)
         program = ProgramFactory.create(status=status)
         response = self._make_request(program_id=program.id)
+
         self.assertEqual(response.status_code, 404 if status in filtered_statuses else 200)
+
         if status not in filtered_statuses:
             self.assertEqual(
                 response.data,
                 {
-                    u"name": program.name,
-                    u"subtitle": program.subtitle,
-                    u"category": program.category,
-                    u"status": status,
-                    u"organizations": [],
-                    u"course_codes": [],
-                    u"id": program.id,
-                    u"created": program.created.strftime(DRF_DATE_FORMAT),
-                    u"modified": program.modified.strftime(DRF_DATE_FORMAT),
-                    u'marketing_slug': program.marketing_slug,
-                    u'banner_image_urls': {}
+                    'name': program.name,
+                    'subtitle': program.subtitle,
+                    'category': program.category,
+                    'status': status,
+                    'organizations': [],
+                    'course_codes': [],
+                    'id': program.id,
+                    'created': program.created.strftime(DRF_DATE_FORMAT),
+                    'modified': program.modified.strftime(DRF_DATE_FORMAT),
+                    'marketing_slug': program.marketing_slug,
+                    'banner_image_urls': {},
+                    'uuid': str(program.uuid),
                 }
             )
 
@@ -337,7 +345,7 @@ class ProgramsViewTests(JwtMixin, TestCase):
             'w{}h{}'.format(*size): '{}{}__{}x{}.jpg'.format(url_prepend, program.banner_image.url, *size)
             for size in program.banner_image.field.sizes
         }
-        self.assertEqual(response.data[u'banner_image_urls'], expected_urls)
+        self.assertEqual(response.data['banner_image_urls'], expected_urls)
 
     def assert_correct_default_banner_image_urls(self, url_prepend='', set_program_banner=False):
         """
@@ -369,7 +377,7 @@ class ProgramsViewTests(JwtMixin, TestCase):
                 *size)
             for size in banner_image_instance.field.sizes
         }
-        self.assertEqual(response.data[u'banner_image_urls'], expected_urls)
+        self.assertEqual(response.data['banner_image_urls'], expected_urls)
 
     @override_settings(MEDIA_URL='/test/media/url/')
     def test_banner_image_urls(self):
@@ -440,40 +448,41 @@ class ProgramsViewTests(JwtMixin, TestCase):
         self.assertEqual(
             response.data,
             {
-                u"name": program.name,
-                u"subtitle": program.subtitle,
-                u"category": program.category,
-                u"status": ProgramStatus.UNPUBLISHED,
-                u"organizations": [
+                'name': program.name,
+                'subtitle': program.subtitle,
+                'category': program.category,
+                'status': ProgramStatus.UNPUBLISHED,
+                'organizations': [
                     {
-                        u"key": "test-org-key",
-                        u"display_name": "test-org-display_name",
+                        'key': 'test-org-key',
+                        'display_name': 'test-org-display_name',
                     }
                 ],
-                u"course_codes": [
+                'course_codes': [
                     {
-                        u"key": "test-course-key",
-                        u"display_name": "test-course-display_name",
-                        u"organization": {
-                            u"key": "test-org-key",
-                            u"display_name": "test-org-display_name",
+                        'key': 'test-course-key',
+                        'display_name': 'test-course-display_name',
+                        'organization': {
+                            'key': 'test-org-key',
+                            'display_name': 'test-org-display_name',
                         },
-                        u"run_modes": [
+                        'run_modes': [
                             {
-                                u"course_key": course_key,
-                                u"run_key": run_key,
-                                u"mode_slug": "verified",
-                                u"sku": '',
-                                u"start_date": start_date.strftime(DRF_DATE_FORMAT)
+                                'course_key': course_key,
+                                'run_key': run_key,
+                                'mode_slug': 'verified',
+                                'sku': '',
+                                'start_date': start_date.strftime(DRF_DATE_FORMAT)
                             }
                         ],
                     }
                 ],
-                u"id": program.id,
-                u"created": program.created.strftime(DRF_DATE_FORMAT),
-                u"modified": program.modified.strftime(DRF_DATE_FORMAT),
-                u'marketing_slug': program.marketing_slug,
-                u'banner_image_urls': {}
+                'id': program.id,
+                'created': program.created.strftime(DRF_DATE_FORMAT),
+                'modified': program.modified.strftime(DRF_DATE_FORMAT),
+                'marketing_slug': program.marketing_slug,
+                'banner_image_urls': {},
+                'uuid': unicode(program.uuid),
             }
         )
 
@@ -496,17 +505,17 @@ class ProgramsViewTests(JwtMixin, TestCase):
 
         # PATCH the course codes: send one already associated, and another not yet associated
         patch_data = {
-            u'course_codes': [
+            'course_codes': [
                 {
-                    u'key': 'test-course-key-0',
-                    u'organization': {
-                        u'key': 'test-org-key',
+                    'key': 'test-course-key-0',
+                    'organization': {
+                        'key': 'test-org-key',
                     },
                 },
                 {
-                    u'key': 'test-course-key-2',
-                    u'organization': {
-                        u'key': 'test-org-key',
+                    'key': 'test-course-key-2',
+                    'organization': {
+                        'key': 'test-org-key',
                     },
                 },
             ],
@@ -517,14 +526,14 @@ class ProgramsViewTests(JwtMixin, TestCase):
         # check response data
         patched_course_codes = response.data['course_codes']
         self.assertEqual(
-            [u'test-course-key-0', u'test-course-key-2'],
-            sorted([cc[u'key'] for cc in patched_course_codes])
+            ['test-course-key-0', 'test-course-key-2'],
+            sorted([cc['key'] for cc in patched_course_codes])
         )
 
         # check models (ensure things were saved properly)
         db_course_codes = ProgramCourseCode.objects.filter(program__id=program.id)
         self.assertEqual(
-            [u'test-course-key-0', u'test-course-key-2'],
+            ['test-course-key-0', 'test-course-key-2'],
             sorted([pcc.course_code.key for pcc in db_course_codes])
         )
 
@@ -538,12 +547,12 @@ class ProgramsViewTests(JwtMixin, TestCase):
         ProgramOrganizationFactory.create(program=program, organization=org)
 
         patch_data = {
-            u'course_codes': [
+            'course_codes': [
                 {
-                    u'key': 'test-course-code-key',
-                    u'display_name': 'test-course-code-name',
-                    u'organization': {
-                        u'key': 'test-org-key',
+                    'key': 'test-course-code-key',
+                    'display_name': 'test-course-code-name',
+                    'organization': {
+                        'key': 'test-org-key',
                     },
                 },
             ],
@@ -581,12 +590,12 @@ class ProgramsViewTests(JwtMixin, TestCase):
         )
 
         patch_data = {
-            u'course_codes': [
+            'course_codes': [
                 {
-                    u'key': 'test-course-code-key',
-                    u'display_name': 'changed-display-name',
-                    u'organization': {
-                        u'key': 'test-org-key',
+                    'key': 'test-course-code-key',
+                    'display_name': 'changed-display-name',
+                    'organization': {
+                        'key': 'test-org-key',
                     },
                 },
             ],
@@ -623,21 +632,21 @@ class ProgramsViewTests(JwtMixin, TestCase):
 
         # PATCH the course code's run modes: send one matching an existing record and a second new one
         patch_data = {
-            u'course_codes': [
+            'course_codes': [
                 {
-                    u'key': course_code.key,
-                    u'organization': {
-                        u'key': course_code.organization.key,
+                    'key': course_code.key,
+                    'organization': {
+                        'key': course_code.organization.key,
                     },
-                    u'run_modes': [
+                    'run_modes': [
                         {
-                            u'course_key': u'course-v1:org+course+run-0',
-                            u'mode_slug': u'verified',
+                            'course_key': 'course-v1:org+course+run-0',
+                            'mode_slug': 'verified',
                         },
                         {
-                            u'course_key': u'course-v1:org+course+run-2',
-                            u'mode_slug': u'verified',
-                            u'start_date': u'2015-12-09T21:20:26.491639Z',
+                            'course_key': 'course-v1:org+course+run-2',
+                            'mode_slug': 'verified',
+                            'start_date': '2015-12-09T21:20:26.491639Z',
                         },
                     ],
                 },
@@ -649,14 +658,14 @@ class ProgramsViewTests(JwtMixin, TestCase):
         # check response data
         patched_run_modes = response.data['course_codes'][0]['run_modes']
         self.assertEqual(
-            [u'course-v1:org+course+run-0', u'course-v1:org+course+run-2'],
-            sorted([rm[u'course_key'] for rm in patched_run_modes])
+            ['course-v1:org+course+run-0', 'course-v1:org+course+run-2'],
+            sorted([rm['course_key'] for rm in patched_run_modes])
         )
 
         # check models (ensure things were saved properly)
         db_run_modes = ProgramCourseRunMode.objects.filter(program_course_code=program_course_code)
         self.assertEqual(
-            [u'course-v1:org+course+run-0', u'course-v1:org+course+run-2'],
+            ['course-v1:org+course+run-0', 'course-v1:org+course+run-2'],
             sorted([rm.course_key for rm in db_run_modes])
         )
 
@@ -673,40 +682,40 @@ class ProgramsViewTests(JwtMixin, TestCase):
 
         # associate two course codes with two run modes each, in one PATCH request.
         patch_data = {
-            u'course_codes': [
+            'course_codes': [
                 {
-                    u'key': course_codes[0].key,
-                    u'organization': {
-                        u'key': course_codes[0].organization.key,
+                    'key': course_codes[0].key,
+                    'organization': {
+                        'key': course_codes[0].organization.key,
                     },
-                    u'run_modes': [
+                    'run_modes': [
                         {
-                            u'course_key': u'course-v1:org+{}+run-0'.format(course_codes[0].key),
-                            u'mode_slug': u'verified',
-                            u'start_date': u'2015-12-09T21:20:26.491639Z',
+                            'course_key': 'course-v1:org+{}+run-0'.format(course_codes[0].key),
+                            'mode_slug': 'verified',
+                            'start_date': '2015-12-09T21:20:26.491639Z',
                         },
                         {
-                            u'course_key': u'course-v1:org+{}+run-1'.format(course_codes[0].key),
-                            u'mode_slug': u'verified',
-                            u'start_date': u'2015-12-09T21:20:26.491639Z',
+                            'course_key': 'course-v1:org+{}+run-1'.format(course_codes[0].key),
+                            'mode_slug': 'verified',
+                            'start_date': '2015-12-09T21:20:26.491639Z',
                         },
                     ],
                 },
                 {
-                    u'key': course_codes[1].key,
-                    u'organization': {
-                        u'key': course_codes[1].organization.key,
+                    'key': course_codes[1].key,
+                    'organization': {
+                        'key': course_codes[1].organization.key,
                     },
-                    u'run_modes': [
+                    'run_modes': [
                         {
-                            u'course_key': u'course-v1:org+{}+run-0'.format(course_codes[1].key),
-                            u'mode_slug': u'verified',
-                            u'start_date': u'2015-12-09T21:20:26.491639Z',
+                            'course_key': 'course-v1:org+{}+run-0'.format(course_codes[1].key),
+                            'mode_slug': 'verified',
+                            'start_date': '2015-12-09T21:20:26.491639Z',
                         },
                         {
-                            u'course_key': u'course-v1:org+{}+run-1'.format(course_codes[1].key),
-                            u'mode_slug': u'verified',
-                            u'start_date': u'2015-12-09T21:20:26.491639Z',
+                            'course_key': 'course-v1:org+{}+run-1'.format(course_codes[1].key),
+                            'mode_slug': 'verified',
+                            'start_date': '2015-12-09T21:20:26.491639Z',
                         },
                     ],
                 },
@@ -731,22 +740,22 @@ class ProgramsViewTests(JwtMixin, TestCase):
 
     @ddt.data(
         {
-            u'organization': {
-                u'key': 'test-org-key',
+            'organization': {
+                'key': 'test-org-key',
             },
         },
         {
-            u'key': 'test-course-key',
-            u'organization': {
-                u'key': 'unknown-org-key',
+            'key': 'test-course-key',
+            'organization': {
+                'key': 'unknown-org-key',
             },
         },
         {
-            u'key': 'test-course-key',
-            u'organization': {},
+            'key': 'test-course-key',
+            'organization': {},
         },
         {
-            u'key': 'test-course-key',
+            'key': 'test-course-key',
         },
     )
     def test_invalid_nested_course_codes(self, invalid_code):
@@ -759,29 +768,29 @@ class ProgramsViewTests(JwtMixin, TestCase):
         CourseCodeFactory.create(key='test-course-key', organization=org)
 
         patch_data = {
-            u'course_codes': [invalid_code],
+            'course_codes': [invalid_code],
         }
         response = self._make_request(program_id=program.id, admin=True, method='patch', data=patch_data)
         self.assertEqual(response.status_code, 400)
 
     @ddt.data(
         {
-            u'course_key': u'not-a-valid-course-key',
-            u'mode_slug': u'verified',
-            u'start_date': u'2015-12-09T21:20:26.491639Z',
+            'course_key': 'not-a-valid-course-key',
+            'mode_slug': 'verified',
+            'start_date': '2015-12-09T21:20:26.491639Z',
         },
         {
-            u'course_key': u'course-v1:org+code+run',
-            u'start_date': u'2015-12-09T21:20:26.491639Z',
+            'course_key': 'course-v1:org+code+run',
+            'start_date': '2015-12-09T21:20:26.491639Z',
         },
         {
-            u'mode_slug': u'verified',
-            u'start_date': u'2015-12-09T21:20:26.491639Z',
+            'mode_slug': 'verified',
+            'start_date': '2015-12-09T21:20:26.491639Z',
         },
         {
-            u'course_key': u'course-v1:org+code+run',
-            u'mode_slug': u'verified',
-            u'start_date': u'not a valid date',
+            'course_key': 'course-v1:org+code+run',
+            'mode_slug': 'verified',
+            'start_date': 'not a valid date',
         },
         {},
     )
@@ -795,13 +804,13 @@ class ProgramsViewTests(JwtMixin, TestCase):
         course_code = CourseCodeFactory.create(organization=org)
 
         patch_data = {
-            u'course_codes': [
+            'course_codes': [
                 {
-                    u'key': course_code.key,
-                    u'organization': {
-                        u'key': course_code.organization.key,
+                    'key': course_code.key,
+                    'organization': {
+                        'key': course_code.organization.key,
                     },
-                    u'run_modes': [invalid_mode],
+                    'run_modes': [invalid_mode],
                 },
             ],
         }
@@ -884,8 +893,8 @@ class OrganizationViewTests(AuthClientMixin, TestCase):
         self.assertEqual(
             response.data,  # pylint: disable=no-member
             {
-                u"key": data["key"],
-                u"display_name": data["display_name"],
+                "key": data["key"],
+                "display_name": data["display_name"],
             }
         )
 
@@ -948,7 +957,7 @@ class CourseCodesViewTests(AuthClientMixin, TestCase):
     def test_org_list_filter(self):
         """
         """
-        org_keys = (u'org1', u'org2')
+        org_keys = ('org1', 'org2')
         for org_key in org_keys:
             org = OrganizationFactory.create(key=org_key)
             CourseCodeFactory.create(organization=org)
