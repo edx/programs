@@ -7,14 +7,12 @@
     ) %></span>
     <% if ( programStatus === 'unpublished' ) { %>
         <button class="js-remove-run btn btn-delete right" data-tooltip="<%= gettext('Delete course run') %>">
-            <span class="icon-fallback icon-fallback-text">
-                <span class="icon icon-trash-o" aria-hidden="true"></span>
-                <span class="text"><%= interpolate(
-                    gettext('Remove run %(key)s from the program'),
-                    { key: course_key },
-                    true
-                ) %></span>
-            </span>
+            <span class="icon fa fa-trash-o" aria-hidden="true"></span>
+            <span class="sr-only"><%= interpolate(
+                gettext('Remove run %(key)s from the program'),
+                { key: course_key },
+                true
+            ) %></span>
         </button>
     <% } %>
     <div class="copy copy-base subtitle"><%= interpolate(

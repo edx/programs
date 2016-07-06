@@ -7,32 +7,21 @@
 // #CONFIG + UTILITIES
 // ------------------------------
 
-@import '../bower_components/edx-pattern-library/pattern-library/sass/utilities/functions';
+@import '../bower_components/edx-pattern-library/pattern-library/sass/global/functions';
 
-// set RTL/LTR specific variables
-@if $layout-direction == rtl {
-    @import '../bower_components/edx-pattern-library/pattern-library/sass/utilities/variables-rtl';
-} @else {
-    @import '../bower_components/edx-pattern-library/pattern-library/sass/utilities/variables-ltr';
-}
+@import '../bower_components/edx-pattern-library/pattern-library/sass/global/settings';
 
 // Manually copied version of pattern library's variables to remove fonts
 @import 'uxpl-variables-sans-fonts';
 
-@import '../bower_components/edx-pattern-library/pattern-library/sass/utilities/mixins';
-@import '../bower_components/edx-pattern-library/pattern-library/sass/utilities/helpers';
+@import '../bower_components/edx-pattern-library/pattern-library/sass/global/mixins';
+@import '../bower_components/edx-pattern-library/pattern-library/sass/global/helpers';
 
 .#{$scope-class} {
-    @import '../bower_components/edx-pattern-library/pattern-library/sass/utilities/normalize';
+    @import '../bower_components/edx-pattern-library/pattern-library/sass/normalize';
 }
 
-@import '../bower_components/edx-pattern-library/pattern-library/sass/utilities/reset';
-
-.#{$scope-class} {
-    @import '../bower_components/edx-pattern-library/pattern-library/sass/utilities/typography';
-}
-
-@import '../bower_components/edx-pattern-library/pattern-library/sass/utilities/afontgarde';
+@import '../bower_components/edx-pattern-library/pattern-library/sass/global/reset';
 
 
 // ------------------------------
@@ -48,6 +37,3 @@
 @import '../bower_components/edx-pattern-library/pattern-library/sass/patterns/grid';
 @import '../bower_components/edx-pattern-library/pattern-library/sass/patterns/layouts';
 @import '../bower_components/edx-pattern-library/pattern-library/sass/patterns/depth';
-
-// Updated to use .uxpl-icons class to avoid conflicts with current edx-icons class in studio
-@import 'uxpl-icons';

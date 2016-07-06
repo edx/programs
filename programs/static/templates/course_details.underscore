@@ -3,21 +3,19 @@
     <span class="copy copy-large emphasized"><%- display_name %></span>
   <% if ( status === 'unpublished' ) { %>
     <button class="js-remove-course btn btn-delete right" data-tooltip="<%= gettext('Delete course') %>">
-        <span class="icon-fallback icon-fallback-text">
-            <span class="icon icon-trash-o" aria-hidden="true"></span>
-            <span class="text"><%= interpolate(
-                gettext('Remove %(name)s from the program'),
-                { name: display_name },
-                true
-            ) %></span>
-        </span>
+        <span class="icon fa fa-trash-o" aria-hidden="true"></span>
+        <span class="sr-only"><%= interpolate(
+            gettext('Remove %(name)s from the program'),
+            { name: display_name },
+            true
+        ) %></span>
     </button>
   <% } %>
     <p class="copy copy-base subtitle"><%- organization.display_name %> / <%- key %>
     <div class="js-course-runs"></div>
   <% if ( courseRuns.length > -1 ) { %>
-    <button class="js-add-course-run btn btn-default btn-base full">
-        <span class="icon icon-plus" aria-hidden="true"></span>
+    <button class="js-add-course-run btn btn-neutral btn-base full">
+        <span class="icon fa fa-plus" aria-hidden="true"></span>
         <span class="text"><%= gettext('Add another run') %></span>
     </button>
   <% } %>
