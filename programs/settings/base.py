@@ -33,6 +33,7 @@ THIRD_PARTY_APPS = (
     'social.apps.django_app.default',
     'rest_framework_swagger',
     'compressor',
+    'release_util',
 )
 
 PROJECT_APPS = (
@@ -256,7 +257,7 @@ JWT_AUTH = {
 # END AUTHENTICATION CONFIGURATION
 
 
-# OPENEDX-SPECIFIC CONFIGURATION 
+# OPENEDX-SPECIFIC CONFIGURATION
 PLATFORM_NAME = 'Your Platform Name Here'
 # END OPENEDX-SPECIFIC CONFIGURATION
 
