@@ -23,7 +23,7 @@ LOGGING = get_logger_config()
 
 # Keep track of the names of settings that represent dicts. Instead of overriding the values in base.py,
 # the values read from disk should UPDATE the pre-configured dicts.
-DICT_UPDATE_KEYS = ('JWT_AUTH', 'MEDIA_STORAGE_BACKEND',)
+DICT_UPDATE_KEYS = ('JWT_AUTH',)
 
 # This may be overridden by the YAML in PROGRAMS_CFG, but it should be here as a default.
 MEDIA_STORAGE_BACKEND = {}
@@ -41,6 +41,9 @@ with open(CONFIG_FILE) as f:
             vars()[key].update(value)
 
     vars().update(config_from_yaml)
+
+    # Unpack media storage settings.
+    vars().update(MEDIA_STORAGE_BACKEND)
 
 DB_OVERRIDES = dict(
     PASSWORD=environ.get('DB_MIGRATION_PASS', DATABASES['default']['PASSWORD']),
