@@ -105,24 +105,34 @@ class TestProgramCourseCode(TestCase):
         factories.ProgramOrganizationFactory.create(program=self.program, organization=self.org)
         super(TestProgramCourseCode, self).setUp()
 
-    def test_one_program_max(self):
+    def test_multi_program_course_association(self):
         """
-        Ensure that a CourseCode cannot be associated with more than one program
-        (the relationship is modeled as m2m, but initially, we will only allow
-        one organization to be associated).
+        Ensure that a CourseCode can be associated with more than one program
+        (the relationship is modeled as m2m).
         """
-        course_code = factories.CourseCodeFactory.create(organization=self.org)
-        orig_pgm_course = factories.ProgramCourseCodeFactory.create(program=self.program, course_code=course_code)
 
+        # Create an initial course code and attach it to a program
+        course_code = factories.CourseCodeFactory.create(organization=self.org)
+        factories.ProgramCourseCodeFactory.create(program=self.program, course_code=course_code)
+
+        # Ensure that the course code can not be used for different organizations...
         program2 = factories.ProgramFactory.create()
+        organization2 = factories.OrganizationFactory.create()
+        factories.ProgramOrganizationFactory.create(
+            program=program2, organization=organization2
+        )
         pgm_course = factories.ProgramCourseCodeFactory.build(program=program2, course_code=course_code)
         with self.assertRaises(ValidationError) as context:
             pgm_course.save()
-        self.assertEqual('Cannot associate multiple programs with a course code.', context.exception.message)
+        self.assertEqual(
+            'Course code must be offered by the same organization offering the program.',
+            context.exception.message
+        )
 
-        # make sure it works to reassign the existing association to the other program
-        orig_pgm_course.program = program2
-        orig_pgm_course.save()
+        # But can be used for multiple programs offered by the same organization
+        program3 = factories.ProgramFactory.create()
+        factories.ProgramOrganizationFactory.create(program=program3, organization=self.org)
+        factories.ProgramCourseCodeFactory.create(program=program3, course_code=course_code)
 
     def test_position(self):
         """

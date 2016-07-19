@@ -1,6 +1,20 @@
 Testing
 =======
 
+To run the unit tests and get a code coverage report:
+
+.. code-block:: bash
+
+    $ make test
+
+To run a single test, remove the compiled python files picked up by the test launcher and provide the path to the
+single test:
+
+.. code-block:: bash
+
+    $ make clean
+    $ ./manage.py test programs/path/to/your/python_test.py --settings=programs.settings.test
+
 The command below runs the Python tests and code quality validation—Pylint and PEP8.
 
 .. code-block:: bash

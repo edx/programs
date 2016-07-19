@@ -51,7 +51,10 @@ class Program(TimeStampedModel):
     category = models.CharField(
         help_text=_('The category / type of Program.'),
         max_length=32,
-        choices=_choices(constants.ProgramCategory.XSERIES),
+        choices=_choices(
+            constants.ProgramCategory.XSERIES,
+            constants.ProgramCategory.MICROMASTERS,
+        ),
     )
 
     status = models.CharField(
@@ -201,9 +204,6 @@ class ProgramCourseCode(TimeStampedModel):
         Override save() to validate m2m cardinality and automatically set the position for a new row.
         """
         if self.position is None:
-            # before creating, check course code is not associated with another program
-            if ProgramCourseCode.objects.filter(course_code=self.course_code).exists():
-                raise ValidationError(_('Cannot associate multiple programs with a course code.'))
             # before creating, ensure that the program has an association with the same org as this course code
             if not ProgramOrganization.objects.filter(
                     program=self.program, organization=self.course_code.organization).exists():

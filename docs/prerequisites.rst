@@ -2,8 +2,11 @@ Software Prerequisites
 ======================
 
 - Clone of `edx/programs <https://github.com/edx/programs>`_
+
 - Python 2.7.x (and pip)
+
 - `Node.js 4.4.x`_ (and npm) (download or use nvm - explained below)
+
 .. _Node.js 4.4.x: https://nodejs.org/download/release/v4.4.7/
 
 
