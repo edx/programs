@@ -8,6 +8,7 @@ class ProgramCategory(object):
     """Allowed values for Program.category"""
 
     XSERIES = "xseries"
+    MICROMASTERS = "micromasters"
 
 
 class ProgramStatus(object):
