@@ -124,12 +124,6 @@ STATIC_ROOT = root('assets')
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#static-url
 STATIC_URL = '/static/'
 
-# See: https://docs.djangoproject.com/en/dev/ref/settings/#std:setting-STATICFILES_DIRS
-STATICFILES_DIRS = (
-    root('static', 'build'),  # Check the r.js output directory first
-    root('static'),
-)
-
 # See: https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#staticfiles-finders
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
@@ -137,38 +131,8 @@ STATICFILES_FINDERS = (
     'compressor.finders.CompressorFinder',
 )
 
-COMPRESS_PRECOMPILERS = (
-    ('text/x-scss', 'django_libsass.SassCompiler'),
-)
 COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssAbsoluteFilter']
 # END STATIC FILE CONFIGURATION
-
-
-# TEMPLATE CONFIGURATION
-# See: https://docs.djangoproject.com/en/1.8/ref/settings/#templates
-TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'APP_DIRS': True,
-        'DIRS': (
-            root('templates'),
-        ),
-        'OPTIONS': {
-            'context_processors': (
-                'django.contrib.auth.context_processors.auth',
-                'django.template.context_processors.debug',
-                'django.template.context_processors.i18n',
-                'django.template.context_processors.media',
-                'django.template.context_processors.static',
-                'django.template.context_processors.tz',
-                'django.contrib.messages.context_processors.messages',
-                'programs.apps.core.context_processors.core',
-            ),
-            'debug': True,  # Django will only display debug pages if the global DEBUG setting is set to True.
-        }
-    },
-]
-# END TEMPLATE CONFIGURATION
 
 
 # COOKIE CONFIGURATION
