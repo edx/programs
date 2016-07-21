@@ -102,20 +102,6 @@ If you change the Programs schema, please update the fixture. You can do so by i
 
 .. _Django's migrate command: https://docs.djangoproject.com/en/1.8/ref/django-admin/#django-admin-migrate
 
-Asset Pipeline
----------------
-
-Static files for Programs are managed using gulp-sass, RequireJS and r.js, Django's collectstatic, and django-compressor. gulp-sass compiles Sass to CSS. RequireJS and r.js are used to manage JavaScript dependencies and optimize CSS. django-compressor handles naming files to facilitate cache busting during deployment.
-
-When deploying to production, call make static to compile all static assets and move them to the proper location to be served. All tools should operate seamlessly in a local development environment.
-
-Execute the following command to run the asset pipeline locally:
-
-.. code-block:: bash
-
-    $ DJANGO_SETTINGS_MODULE=programs.settings.test make static
-
-You can control JavaScript optimization from the project's `build.js` file by modifying the value of the `optimize` key.
 
 Run the server
 --------------

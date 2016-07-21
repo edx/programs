@@ -9,5 +9,3 @@ omit =
     *migrations*
     *admin.py
     *test*
-    *static*
-    *templates*

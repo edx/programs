@@ -5,32 +5,8 @@ Software Prerequisites
 
 - Python 2.7.x (and pip)
 
-- `Node.js 4.4.x`_ (and npm) (download or use nvm - explained below)
+=======
 
-.. _Node.js 4.4.x: https://nodejs.org/download/release/v4.4.7/
-
-
-nvm
----
-
-One easy way to manage the different node versions you may have installed on your machine is to use `nvm`_.
-
-.. _nvm: https://github.com/creationix/nvm
-
-With nvm, you can easily switch from one node version to another, and even declare the version of node that
-a project needs to work with in a hidden file that is read in by nvm in the working directory. If using nvm,
-simply change directories to the programs directory from the github checkout and use this command:
-
-.. code-block:: bash
-
-    $ nvm use
-
-If you already have Node.js version 4.4.x installed, nvm will switch to using it.  If not, use this command to install
-(and switch to) it:
-
-.. code-block:: bash
-
-    $ nvm install
 
 Virtualenvwrapper
 -----------------
