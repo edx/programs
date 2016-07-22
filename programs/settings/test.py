@@ -49,12 +49,3 @@ JWT_AUTH.update({
 # END AUTHENTICATION
 
 ORGANIZATIONS_API_URL_ROOT = 'http://test-lms.com/api/organizations/v0/'
-
-# Enable offline compression of CSS/JS
-COMPRESS_ENABLED = True
-COMPRESS_OFFLINE = True
-
-# Minify CSS
-COMPRESS_CSS_FILTERS += [
-    'compressor.filters.cssmin.CSSMinFilter',
-]

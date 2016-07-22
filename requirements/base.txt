@@ -1,9 +1,7 @@
 boto==2.39.0
 django==1.8.14
-django_compressor==1.5
 django-cors-headers==1.1.0
 django-extensions==1.5.5
-django-libsass==0.4
 django-solo==1.1.2
 django-storages==1.4
 djangorestframework==3.2.3
@@ -14,9 +12,6 @@ edx-django-release-util==0.0.3
 edx-drf-extensions==1.1.1
 edx-opaque-keys==0.2.1
 edx-rest-api-client==1.5.0
-# The package django-libsass requires libsass and libsass >= 0.10.1 validates too aggressively.
-# Pinning to 0.10.0 is a temporary workaround, but the underlying violation(s) should be fixed.
-libsass==0.10.0
 Markdown==2.6.2
 piexif==1.0.3
 Pillow==3.1.1

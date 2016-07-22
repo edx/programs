@@ -30,7 +30,7 @@ clean:
 	coverage erase
 
 requirements:
-	pip install -qr requirements/local.txt --exists-action w
+	pip install -r requirements/local.txt
 
 test: clean
 	REUSE_DB=1 coverage run ./manage.py test programs --settings=programs.settings.test
@@ -42,7 +42,6 @@ quality:
 
 serve:
 	python manage.py runserver 0.0.0.0:8004
-
 
 accept:
 	nosetests --with-ignore-docstrings -v acceptance_tests --with-xunit --xunit-file=acceptance_tests/xunit.xml
