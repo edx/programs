@@ -10,15 +10,6 @@ TEMPLATE_DEBUG = DEBUG
 
 ALLOWED_HOSTS = ['*']
 
-# Enable offline compression of CSS/JS
-COMPRESS_ENABLED = True
-COMPRESS_OFFLINE = True
-
-# Minify CSS
-COMPRESS_CSS_FILTERS += [
-    'compressor.filters.cssmin.CSSMinFilter',
-]
-
 LOGGING = get_logger_config()
 
 # Keep track of the names of settings that represent dicts. Instead of overriding the values in base.py,

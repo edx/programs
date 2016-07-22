@@ -32,7 +32,6 @@ THIRD_PARTY_APPS = (
     'rest_framework',
     'social.apps.django_app.default',
     'rest_framework_swagger',
-    'compressor',
     'release_util',
 )
 
@@ -128,10 +127,7 @@ STATIC_URL = '/static/'
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'compressor.finders.CompressorFinder',
 )
-
-COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssAbsoluteFilter']
 # END STATIC FILE CONFIGURATION
 
 
