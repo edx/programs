@@ -48,6 +48,7 @@ class Program(TimeStampedModel):
         blank=True,
     )
 
+    # TODO: Replace with ForeignKey to ProgramCategory model.
     category = models.CharField(
         help_text=_('The category / type of Program.'),
         max_length=32,
