@@ -62,4 +62,4 @@ Continuing Installation
 8. Refer to the programs `Getting Started`_ document for setting up the programs service now that the prereqs
 (node, pip, virtualenv) are met.
 
-.. _Getting Started: getting_started.rst
+.. _Getting Started: getting_started.html
