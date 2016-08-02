@@ -12,6 +12,7 @@
 # serve to show the default.
 
 import os
+import datetime
 
 # on_rtd is whether we are on readthedocs.org
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
@@ -48,8 +49,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Programs'
-copyright = u'2015, edX'
+project = 'Programs'
+copyright = '{year}, edX'.format(year=datetime.datetime.now().year)
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
