@@ -1,5 +1,5 @@
 boto==2.39.0
-django==1.8.14
+django==1.8.15
 django-cors-headers==1.1.0
 django-extensions==1.5.5
 django-solo==1.1.2
