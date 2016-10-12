@@ -23,6 +23,8 @@ help:
 	@echo "  test                       run tests and generate coverage report"
 	@echo "  validate                   run tests and quality checks"
 	@echo "  html_docs                  build html documents from rst docs and open in (default) browser"
+	@echo "  detect_changed_source_translations       check if translation files are up-to-date"
+	@echo "  validate_translations      install fake translations and check if translation files are up-to-date"
 	@echo ""
 
 clean:
@@ -74,3 +76,8 @@ push_translations:
 
 html_docs:
 	cd docs && make html && open _build/html/index.html
+
+detect_changed_source_translations:
+	cd programs && i18n_tool changed
+
+validate_translations: fake_translations detect_changed_source_translations
