@@ -1,0 +1,16 @@
+# This is only currently used by Travis for testing
+version: "2"
+
+services:
+  programs:
+    image: edxops/programs:latest
+
+    container_name: programs_testing
+    volumes:
+      - .:/edx/app/programs/programs
+      - $HOME/.cache/pip:/edx/app/programs/.cache/pip
+    # The docker container produced from configuration.git does not currently
+    # run and expose a port for programs.  This means that we need to run some
+    # command that keeps the programs container alive while we run tests on it.
+    # We have not yet standardized on an init replacement which could be used instead.
+    command: tail -f /dev/null
