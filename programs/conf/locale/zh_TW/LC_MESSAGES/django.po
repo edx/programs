@@ -1,0 +1,166 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-09-09 14:08+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Renzo Lucioni <rlucioni@edx.org>, 2016\n"
+"Language-Team: Chinese (Taiwan) (https://www.transifex.com/open-edx/teams/6205/zh_TW/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_TW\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: programs/apps/api/serializers.py:330
+#, python-brace-format
+msgid "When creating a Program, '{status}' is not a valid choice."
+msgstr "創建課程時，“{status}”不是有效的選擇。"
+
+#: programs/apps/api/serializers.py:339
+msgid ""
+"Provide exactly one valid/existing Organization while creating a Program."
+msgstr "在創建課程時，請提供一個有效/已存在的組織。"
+
+#: programs/apps/api/serializers.py:351
+#, python-brace-format
+msgid "Provided Organization with key '{org_key}' doesn't exist."
+msgstr "提供的組織關鍵字 '{org_key}' 不存在。"
+
+#: programs/apps/core/admin.py:15
+msgid "Personal info"
+msgstr "個人資訊"
+
+#: programs/apps/core/admin.py:16
+msgid "Permissions"
+msgstr "權限"
+
+#: programs/apps/core/admin.py:18
+msgid "Important dates"
+msgstr "重要日期"
+
+#: programs/apps/core/models.py:10
+msgid "Full Name"
+msgstr "全名"
+
+#: programs/apps/programs/image_helpers.py:76
+#, python-brace-format
+msgid "The file must be one of the following types: {valid_file_types}."
+msgstr "檔案必須為以下其中一項樣式：{valid_file_types}。"
+
+#: programs/apps/programs/image_helpers.py:84
+msgid ""
+"The Content-Type header for this file does not match the file data. The file"
+" may be corrupted."
+msgstr "此檔案內容類型標題不匹配檔案數據。該檔案可能已損壞。"
+
+#: programs/apps/programs/image_helpers.py:93
+msgid ""
+"The file name extension for this file does not match the file data. The file"
+" may be corrupted."
+msgstr "擴展之檔案名稱不匹配檔案數據。該檔案可能已損壞。"
+
+#: programs/apps/programs/image_helpers.py:121
+#, python-brace-format
+msgid ""
+"The file must be at least {minimum_width} pixels wide and {minimum_height} "
+"pixels high."
+msgstr "該文件必須至少為{minimum_width}像素寬和{minimum_height}像素高。"
+
+#: programs/apps/programs/models.py:40
+msgid "The user-facing display name for this Program."
+msgstr "使用端顯示此課程名稱。"
+
+#: programs/apps/programs/models.py:46
+msgid "A brief, descriptive subtitle for the Program."
+msgstr "該計畫一段簡要、描述性的副標題。"
+
+#: programs/apps/programs/models.py:53
+msgid "The category / type of Program."
+msgstr "課程的類別/類型。"
+
+#: programs/apps/programs/models.py:62
+msgid "The lifecycle status of this Program."
+msgstr "本計畫的生命週期狀態。"
+
+#: programs/apps/programs/models.py:78
+msgid "Slug used to generate links to the marketing site"
+msgstr "Slug將用於產生至營銷網站的連結。"
+
+#: programs/apps/programs/models.py:99
+msgid "Active XSeries Programs must have a valid marketing slug."
+msgstr "啟用系列課程，需要一個有效的行銷網址辨識碼。"
+
+#: programs/apps/programs/models.py:119
+msgid ""
+"The string value of an org key identifying this organization in the LMS."
+msgstr "在LMS中標識此組織關鍵字的字符串值。"
+
+#: programs/apps/programs/models.py:125
+msgid "The display name of this organization."
+msgstr "顯示此組織的名稱。"
+
+#: programs/apps/programs/models.py:154
+msgid "Cannot associate multiple organizations with a program."
+msgstr "無法將課程與多個組織產生關聯鍵結。"
+
+#: programs/apps/programs/models.py:170
+msgid ""
+"The 'course' part of course_keys associated with this course code, for "
+"example 'DemoX' in 'edX/DemoX/Demo_Course'."
+msgstr "課程代碼與課程關鍵字中的'course'互相關聯，例如'edX / DemoX / Demo Course'中的'Demo'。"
+
+#: programs/apps/programs/models.py:176
+msgid "The display name of this course code."
+msgstr "顯示此課程代碼。"
+
+#: programs/apps/programs/models.py:211
+msgid ""
+"Course code must be offered by the same organization offering the program."
+msgstr "課程代碼必須由提供該課程的組織提供。"
+
+#: programs/apps/programs/models.py:224
+msgid "The URL of the LMS where this course run / mode is being offered."
+msgstr "提供此課程運行/模式的LMS的URL。"
+
+#: programs/apps/programs/models.py:229
+msgid ""
+"A string referencing the course key identifying this run / mode in the "
+"target LMS."
+msgstr "引用課程關鍵字在目標LMS中標識此課程運行/模式的字符串。"
+
+#: programs/apps/programs/models.py:233
+msgid ""
+"The mode_slug value which uniquely identifies the mode in the target LMS."
+msgstr "在目標LMS中唯一辨識模式的mode_slug值。"
+
+#: programs/apps/programs/models.py:237
+msgid ""
+"The sku associated with this run/mode in the ecommerce system working with "
+"the target LMS."
+msgstr "在與目標LMS一起運作的電子商務系統中與此運行/模式相關聯的sku。"
+
+#: programs/apps/programs/models.py:243
+msgid "The start date of this course run in the target LMS."
+msgstr "在目標LMS中的課程開課日期。"
+
+#: programs/apps/programs/models.py:247
+msgid ""
+"A string referencing the last part of course key identifying this course run"
+" in the target LMS."
+msgstr "引用課程關鍵字最後一個部份去標識在目標LMS中課程的運行的字符串。"
+
+#: programs/apps/programs/models.py:273
+msgid ""
+"Duplicate course run modes are not allowed for course codes in a program."
+msgstr "課程中的課程代碼不允許重複的課程運作模式。"
+
+#: programs/apps/programs/models.py:279
+msgid "Invalid course key."
+msgstr "無效的課程關鍵字"

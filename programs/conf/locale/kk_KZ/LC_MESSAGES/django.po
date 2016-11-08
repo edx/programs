@@ -1,0 +1,166 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-09-09 14:08+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Yermek Alimzhanov <aermek81@gmail.com>, 2016\n"
+"Language-Team: Kazakh (Kazakhstan) (https://www.transifex.com/open-edx/teams/6205/kk_KZ/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: kk_KZ\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: programs/apps/api/serializers.py:330
+#, python-brace-format
+msgid "When creating a Program, '{status}' is not a valid choice."
+msgstr ""
+
+#: programs/apps/api/serializers.py:339
+msgid ""
+"Provide exactly one valid/existing Organization while creating a Program."
+msgstr ""
+
+#: programs/apps/api/serializers.py:351
+#, python-brace-format
+msgid "Provided Organization with key '{org_key}' doesn't exist."
+msgstr ""
+
+#: programs/apps/core/admin.py:15
+msgid "Personal info"
+msgstr "Жеке дерек"
+
+#: programs/apps/core/admin.py:16
+msgid "Permissions"
+msgstr "Қол жеткізу құқығы"
+
+#: programs/apps/core/admin.py:18
+msgid "Important dates"
+msgstr "Маңызды деректер"
+
+#: programs/apps/core/models.py:10
+msgid "Full Name"
+msgstr "Толық аты"
+
+#: programs/apps/programs/image_helpers.py:76
+#, python-brace-format
+msgid "The file must be one of the following types: {valid_file_types}."
+msgstr ""
+
+#: programs/apps/programs/image_helpers.py:84
+msgid ""
+"The Content-Type header for this file does not match the file data. The file"
+" may be corrupted."
+msgstr ""
+
+#: programs/apps/programs/image_helpers.py:93
+msgid ""
+"The file name extension for this file does not match the file data. The file"
+" may be corrupted."
+msgstr ""
+
+#: programs/apps/programs/image_helpers.py:121
+#, python-brace-format
+msgid ""
+"The file must be at least {minimum_width} pixels wide and {minimum_height} "
+"pixels high."
+msgstr ""
+
+#: programs/apps/programs/models.py:40
+msgid "The user-facing display name for this Program."
+msgstr ""
+
+#: programs/apps/programs/models.py:46
+msgid "A brief, descriptive subtitle for the Program."
+msgstr ""
+
+#: programs/apps/programs/models.py:53
+msgid "The category / type of Program."
+msgstr ""
+
+#: programs/apps/programs/models.py:62
+msgid "The lifecycle status of this Program."
+msgstr ""
+
+#: programs/apps/programs/models.py:78
+msgid "Slug used to generate links to the marketing site"
+msgstr ""
+
+#: programs/apps/programs/models.py:99
+msgid "Active XSeries Programs must have a valid marketing slug."
+msgstr ""
+
+#: programs/apps/programs/models.py:119
+msgid ""
+"The string value of an org key identifying this organization in the LMS."
+msgstr ""
+
+#: programs/apps/programs/models.py:125
+msgid "The display name of this organization."
+msgstr ""
+
+#: programs/apps/programs/models.py:154
+msgid "Cannot associate multiple organizations with a program."
+msgstr ""
+
+#: programs/apps/programs/models.py:170
+msgid ""
+"The 'course' part of course_keys associated with this course code, for "
+"example 'DemoX' in 'edX/DemoX/Demo_Course'."
+msgstr ""
+
+#: programs/apps/programs/models.py:176
+msgid "The display name of this course code."
+msgstr ""
+
+#: programs/apps/programs/models.py:211
+msgid ""
+"Course code must be offered by the same organization offering the program."
+msgstr ""
+
+#: programs/apps/programs/models.py:224
+msgid "The URL of the LMS where this course run / mode is being offered."
+msgstr ""
+
+#: programs/apps/programs/models.py:229
+msgid ""
+"A string referencing the course key identifying this run / mode in the "
+"target LMS."
+msgstr ""
+
+#: programs/apps/programs/models.py:233
+msgid ""
+"The mode_slug value which uniquely identifies the mode in the target LMS."
+msgstr ""
+
+#: programs/apps/programs/models.py:237
+msgid ""
+"The sku associated with this run/mode in the ecommerce system working with "
+"the target LMS."
+msgstr ""
+
+#: programs/apps/programs/models.py:243
+msgid "The start date of this course run in the target LMS."
+msgstr ""
+
+#: programs/apps/programs/models.py:247
+msgid ""
+"A string referencing the last part of course key identifying this course run"
+" in the target LMS."
+msgstr ""
+
+#: programs/apps/programs/models.py:273
+msgid ""
+"Duplicate course run modes are not allowed for course codes in a program."
+msgstr ""
+
+#: programs/apps/programs/models.py:279
+msgid "Invalid course key."
+msgstr ""
