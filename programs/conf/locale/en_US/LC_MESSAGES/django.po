@@ -1,0 +1,184 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-09-09 14:08+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
+
+#: programs/apps/api/serializers.py:330
+#, python-brace-format
+msgid "When creating a Program, '{status}' is not a valid choice."
+msgstr "When creating a Program, '{status}' is not a valid choice."
+
+#: programs/apps/api/serializers.py:339
+msgid ""
+"Provide exactly one valid/existing Organization while creating a Program."
+msgstr ""
+"Provide exactly one valid/existing Organization while creating a Program."
+
+#: programs/apps/api/serializers.py:351
+#, python-brace-format
+msgid "Provided Organization with key '{org_key}' doesn't exist."
+msgstr "Provided Organization with key '{org_key}' doesn't exist."
+
+#: programs/apps/core/admin.py:15
+msgid "Personal info"
+msgstr "Personal info"
+
+#: programs/apps/core/admin.py:16
+msgid "Permissions"
+msgstr "Permissions"
+
+#: programs/apps/core/admin.py:18
+msgid "Important dates"
+msgstr "Important dates"
+
+#: programs/apps/core/models.py:10
+msgid "Full Name"
+msgstr "Full Name"
+
+#: programs/apps/programs/image_helpers.py:76
+#, python-brace-format
+msgid "The file must be one of the following types: {valid_file_types}."
+msgstr "The file must be one of the following types: {valid_file_types}."
+
+#: programs/apps/programs/image_helpers.py:84
+msgid ""
+"The Content-Type header for this file does not match the file data. The file"
+" may be corrupted."
+msgstr ""
+"The Content-Type header for this file does not match the file data. The file"
+" may be corrupted."
+
+#: programs/apps/programs/image_helpers.py:93
+msgid ""
+"The file name extension for this file does not match the file data. The file"
+" may be corrupted."
+msgstr ""
+"The file name extension for this file does not match the file data. The file"
+" may be corrupted."
+
+#: programs/apps/programs/image_helpers.py:121
+#, python-brace-format
+msgid ""
+"The file must be at least {minimum_width} pixels wide and {minimum_height} "
+"pixels high."
+msgstr ""
+"The file must be at least {minimum_width} pixels wide and {minimum_height} "
+"pixels high."
+
+#: programs/apps/programs/models.py:40
+msgid "The user-facing display name for this Program."
+msgstr "The user-facing display name for this Program."
+
+#: programs/apps/programs/models.py:46
+msgid "A brief, descriptive subtitle for the Program."
+msgstr "A brief, descriptive subtitle for the Program."
+
+#: programs/apps/programs/models.py:53
+msgid "The category / type of Program."
+msgstr "The category / type of Program."
+
+#: programs/apps/programs/models.py:62
+msgid "The lifecycle status of this Program."
+msgstr "The lifecycle status of this Program."
+
+#: programs/apps/programs/models.py:78
+msgid "Slug used to generate links to the marketing site"
+msgstr "Slug used to generate links to the marketing site"
+
+#: programs/apps/programs/models.py:99
+msgid "Active XSeries Programs must have a valid marketing slug."
+msgstr "Active XSeries Programs must have a valid marketing slug."
+
+#: programs/apps/programs/models.py:119
+msgid ""
+"The string value of an org key identifying this organization in the LMS."
+msgstr ""
+"The string value of an org key identifying this organization in the LMS."
+
+#: programs/apps/programs/models.py:125
+msgid "The display name of this organization."
+msgstr "The display name of this organization."
+
+#: programs/apps/programs/models.py:154
+msgid "Cannot associate multiple organizations with a program."
+msgstr "Cannot associate multiple organizations with a program."
+
+#: programs/apps/programs/models.py:170
+msgid ""
+"The 'course' part of course_keys associated with this course code, for "
+"example 'DemoX' in 'edX/DemoX/Demo_Course'."
+msgstr ""
+"The 'course' part of course_keys associated with this course code, for "
+"example 'DemoX' in 'edX/DemoX/Demo_Course'."
+
+#: programs/apps/programs/models.py:176
+msgid "The display name of this course code."
+msgstr "The display name of this course code."
+
+#: programs/apps/programs/models.py:211
+msgid ""
+"Course code must be offered by the same organization offering the program."
+msgstr ""
+"Course code must be offered by the same organization offering the program."
+
+#: programs/apps/programs/models.py:224
+msgid "The URL of the LMS where this course run / mode is being offered."
+msgstr "The URL of the LMS where this course run / mode is being offered."
+
+#: programs/apps/programs/models.py:229
+msgid ""
+"A string referencing the course key identifying this run / mode in the "
+"target LMS."
+msgstr ""
+"A string referencing the course key identifying this run / mode in the "
+"target LMS."
+
+#: programs/apps/programs/models.py:233
+msgid ""
+"The mode_slug value which uniquely identifies the mode in the target LMS."
+msgstr ""
+"The mode_slug value which uniquely identifies the mode in the target LMS."
+
+#: programs/apps/programs/models.py:237
+msgid ""
+"The sku associated with this run/mode in the ecommerce system working with "
+"the target LMS."
+msgstr ""
+"The sku associated with this run/mode in the ecommerce system working with "
+"the target LMS."
+
+#: programs/apps/programs/models.py:243
+msgid "The start date of this course run in the target LMS."
+msgstr "The start date of this course run in the target LMS."
+
+#: programs/apps/programs/models.py:247
+msgid ""
+"A string referencing the last part of course key identifying this course run"
+" in the target LMS."
+msgstr ""
+"A string referencing the last part of course key identifying this course run"
+" in the target LMS."
+
+#: programs/apps/programs/models.py:273
+msgid ""
+"Duplicate course run modes are not allowed for course codes in a program."
+msgstr ""
+"Duplicate course run modes are not allowed for course codes in a program."
+
+#: programs/apps/programs/models.py:279
+msgid "Invalid course key."
+msgstr "Invalid course key."
