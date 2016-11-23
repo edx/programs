@@ -9,7 +9,7 @@ cache:
   - pip
 
 before_install:
-  - docker-compose -f docker-compose-travis.yml up -d
+  - docker-compose -f .travis/docker-compose-travis.yml up -d
 
 script:
   - docker exec programs_testing /edx/app/programs/programs/.travis/run_tests.sh
