@@ -52,19 +52,19 @@ msgstr "실명"
 #: programs/apps/programs/image_helpers.py:76
 #, python-brace-format
 msgid "The file must be one of the following types: {valid_file_types}."
-msgstr ""
+msgstr "파일은 다음과 같은 형식을 가져야 합니다: {valid_file_types}."
 
 #: programs/apps/programs/image_helpers.py:84
 msgid ""
 "The Content-Type header for this file does not match the file data. The file"
 " may be corrupted."
-msgstr ""
+msgstr "이 파일의 Content-Type 제목이 파일 데이터와 일치하지 않습니다. 파일이 손상됬을 수 있습니다."
 
 #: programs/apps/programs/image_helpers.py:93
 msgid ""
 "The file name extension for this file does not match the file data. The file"
 " may be corrupted."
-msgstr ""
+msgstr "파일 이름 확장자가 파일 데이터와 일치하지 않습니다. 파일이 손상됬을 수 있습니다."
 
 #: programs/apps/programs/image_helpers.py:121
 #, python-brace-format
@@ -163,4 +163,4 @@ msgstr ""
 
 #: programs/apps/programs/models.py:279
 msgid "Invalid course key."
-msgstr ""
+msgstr "유효하지 않은 강좌키"
