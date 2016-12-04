@@ -10,7 +10,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-09-09 14:08+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Sebastien Vigneau <sebastien.vigneau@gmail.com>, 2016\n"
+"Last-Translator: Maxime Ribera <ribera.maxime@gmail.com>, 2016\n"
 "Language-Team: French (https://www.transifex.com/open-edx/teams/6205/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -87,7 +87,7 @@ msgstr "Bref sous-titre décrivant le Programme."
 
 #: programs/apps/programs/models.py:53
 msgid "The category / type of Program."
-msgstr ""
+msgstr "La catégorie / type du Programme."
 
 #: programs/apps/programs/models.py:62
 msgid "The lifecycle status of this Program."
