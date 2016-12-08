@@ -1,8 +1,4 @@
-import os
-
 from programs.settings.base import *
-from programs.settings.utils import get_logger_config
-
 
 # TEST SETTINGS
 INSTALLED_APPS += (
@@ -16,7 +12,7 @@ NOSE_ARGS = [
     '--logging-level=DEBUG',
 ]
 
-LOGGING = get_logger_config(debug=False, dev_env=True, local_loglevel='DEBUG')
+LOGGING['handlers']['local'] = {'class': 'logging.NullHandler'}
 # END TEST SETTINGS
 
 

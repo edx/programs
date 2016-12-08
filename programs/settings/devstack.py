@@ -2,7 +2,10 @@
 
 from programs.settings.production import *
 
-LOGGING = get_logger_config(debug=True, dev_env=True, local_loglevel='DEBUG')
+# Docker does not support the syslog socket at /dev/log. Rely on the console.
+LOGGING['handlers']['local'] = {
+    'class': 'logging.NullHandler',
+}
 
 DEBUG = True
 ENABLE_AUTO_AUTH = True

@@ -2,7 +2,7 @@ from os import environ
 import yaml
 
 from programs.settings.base import *
-from programs.settings.utils import get_env_setting, get_logger_config
+from programs.settings.utils import get_env_setting
 
 
 DEBUG = False
@@ -10,7 +10,7 @@ TEMPLATE_DEBUG = DEBUG
 
 ALLOWED_HOSTS = ['*']
 
-LOGGING = get_logger_config()
+LOGGING['handlers']['local']['level'] = 'INFO'
 
 # Keep track of the names of settings that represent dicts. Instead of overriding the values in base.py,
 # the values read from disk should UPDATE the pre-configured dicts.

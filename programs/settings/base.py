@@ -1,4 +1,6 @@
 import os
+import platform
+from logging.handlers import SysLogHandler
 from os.path import join, abspath, dirname
 
 # PATH vars
@@ -251,3 +253,76 @@ CORS_ALLOW_CREDENTIALS = True
 ORGANIZATIONS_API_URL_ROOT = None
 ORGANIZATIONS_API_PAGE_SIZE = 50
 # END ORGANIZATIONS API CONFIGURATION
+
+
+# Set up logging for development use (logging to stdout)
+level = 'DEBUG' if DEBUG else 'INFO'
+hostname = platform.node().split(".")[0]
+
+# Use a different address for Mac OS X
+syslog_address = '/var/run/syslog' if platform.system().lower() == 'darwin' else '/dev/log'
+syslog_format = '[service_variant=programs][%(name)s] %(levelname)s [{hostname}  %(process)d] ' \
+                '[%(pathname)s:%(lineno)d] - %(message)s'.format(hostname=hostname)
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'standard': {
+            'format': '%(asctime)s %(levelname)s %(process)d [%(name)s] %(pathname)s:%(lineno)d - %(message)s',
+        },
+        'syslog_format': {'format': syslog_format},
+    },
+    'handlers': {
+        'console': {
+            'level': level,
+            'class': 'logging.StreamHandler',
+            'formatter': 'standard',
+            'stream': 'ext://sys.stdout',
+        },
+        'local': {
+            'level': level,
+            'class': 'logging.handlers.SysLogHandler',
+            'address': syslog_address,
+            'formatter': 'syslog_format',
+            'facility': SysLogHandler.LOG_LOCAL0,
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console', 'local'],
+            'propagate': True,
+            'level': 'INFO'
+        },
+        'requests': {
+            'handlers': ['console', 'local'],
+            'propagate': True,
+            'level': 'WARNING'
+        },
+        'factory': {
+            'handlers': ['console', 'local'],
+            'propagate': True,
+            'level': 'WARNING'
+        },
+        'elasticsearch': {
+            'handlers': ['console', 'local'],
+            'propagate': True,
+            'level': 'WARNING'
+        },
+        'urllib3': {
+            'handlers': ['console', 'local'],
+            'propagate': True,
+            'level': 'WARNING'
+        },
+        'django.request': {
+            'handlers': ['console', 'local'],
+            'propagate': True,
+            'level': 'WARNING'
+        },
+        '': {
+            'handlers': ['console', 'local'],
+            'level': 'DEBUG',
+            'propagate': False
+        },
+    }
+}
