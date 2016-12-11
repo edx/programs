@@ -22,16 +22,19 @@ msgstr ""
 #, python-brace-format
 msgid "When creating a Program, '{status}' is not a valid choice."
 msgstr ""
+"Lors de la création d'un Programme, '{status}' n'est pas un choix valide."
 
 #: programs/apps/api/serializers.py:339
 msgid ""
 "Provide exactly one valid/existing Organization while creating a Program."
 msgstr ""
+"Fournir exactement une organisation valide / existante lors de la création "
+"d'un programme."
 
 #: programs/apps/api/serializers.py:351
 #, python-brace-format
 msgid "Provided Organization with key '{org_key}' doesn't exist."
-msgstr ""
+msgstr "L'organisation fournie avec la clé '{org_key}' n'existe pas."
 
 #: programs/apps/core/admin.py:15
 msgid "Personal info"
@@ -76,94 +79,113 @@ msgid ""
 "The file must be at least {minimum_width} pixels wide and {minimum_height} "
 "pixels high."
 msgstr ""
+"Le fichier doit être au moins de {minimum_width} pixels large et "
+"{minimum_height} pixels haut."
 
 #: programs/apps/programs/models.py:40
 msgid "The user-facing display name for this Program."
-msgstr ""
+msgstr "Le nom d'affichage public de ce programme."
 
 #: programs/apps/programs/models.py:46
 msgid "A brief, descriptive subtitle for the Program."
-msgstr ""
+msgstr "Un bref sous-titre descriptif pour le Programme."
 
 #: programs/apps/programs/models.py:53
 msgid "The category / type of Program."
-msgstr ""
+msgstr "La catégorie / type du Programme."
 
 #: programs/apps/programs/models.py:62
 msgid "The lifecycle status of this Program."
-msgstr ""
+msgstr "L'état du cycle de vie de ce programme."
 
 #: programs/apps/programs/models.py:78
 msgid "Slug used to generate links to the marketing site"
-msgstr ""
+msgstr "Ligne-bloc utilisé pour générer des liens vers le site de marketing"
 
 #: programs/apps/programs/models.py:99
 msgid "Active XSeries Programs must have a valid marketing slug."
 msgstr ""
+"Les programmes XSeries actifs doivent disposer d'une ligne-bloc marketing "
+"valide."
 
 #: programs/apps/programs/models.py:119
 msgid ""
 "The string value of an org key identifying this organization in the LMS."
 msgstr ""
+"La valeur de la chaîne d'une clé d'organisation identifiant cette "
+"organisation dans le LMS."
 
 #: programs/apps/programs/models.py:125
 msgid "The display name of this organization."
-msgstr ""
+msgstr "Le nom d'affichage de cette organisation."
 
 #: programs/apps/programs/models.py:154
 msgid "Cannot associate multiple organizations with a program."
-msgstr ""
+msgstr "Impossible d'associer plusieurs organisations à un programme."
 
 #: programs/apps/programs/models.py:170
 msgid ""
 "The 'course' part of course_keys associated with this course code, for "
 "example 'DemoX' in 'edX/DemoX/Demo_Course'."
 msgstr ""
+"La partie 'cours' des clés de cours associées avec ce code de cours, par "
+"exemple 'DemoX' dans 'edX/DemoX/Demo_Course'."
 
 #: programs/apps/programs/models.py:176
 msgid "The display name of this course code."
-msgstr ""
+msgstr "Le nom d'affichage de ce code de cours."
 
 #: programs/apps/programs/models.py:211
 msgid ""
 "Course code must be offered by the same organization offering the program."
 msgstr ""
+"Le code de cours doit être offert par la même organisation offrant le "
+"programme."
 
 #: programs/apps/programs/models.py:224
 msgid "The URL of the LMS where this course run / mode is being offered."
-msgstr ""
+msgstr "Le URL du LMS où cette instance / mode de cours est offert."
 
 #: programs/apps/programs/models.py:229
 msgid ""
 "A string referencing the course key identifying this run / mode in the "
 "target LMS."
 msgstr ""
+"Chaîne référençant la clé de cours identifiant cette instance / mode dans le"
+" LMS cible."
 
 #: programs/apps/programs/models.py:233
 msgid ""
 "The mode_slug value which uniquely identifies the mode in the target LMS."
 msgstr ""
+"Valeur mode_slug qui identifie de manière unique le mode dans le LMS cible."
 
 #: programs/apps/programs/models.py:237
 msgid ""
 "The sku associated with this run/mode in the ecommerce system working with "
 "the target LMS."
 msgstr ""
+"Le sku associé à cette instance / mode dans le système de commerce "
+"électronique fonctionnant avec le LMS cible."
 
 #: programs/apps/programs/models.py:243
 msgid "The start date of this course run in the target LMS."
-msgstr ""
+msgstr "La date de début de cette instance de cours dans le LMS cible."
 
 #: programs/apps/programs/models.py:247
 msgid ""
 "A string referencing the last part of course key identifying this course run"
 " in the target LMS."
 msgstr ""
+"Une chaîne référençant la dernière partie de la clé de cours identifiant "
+"cette instance de cours dans le LMS cible."
 
 #: programs/apps/programs/models.py:273
 msgid ""
 "Duplicate course run modes are not allowed for course codes in a program."
 msgstr ""
+"Les modes d'instances de cours en double ne sont pas autorisés pour les "
+"instances de cours dans un programme."
 
 #: programs/apps/programs/models.py:279
 msgid "Invalid course key."
