@@ -10,7 +10,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-09-09 14:08+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: George Goderdzishvili <biggeorgian@gmail.com>, 2016\n"
+"Last-Translator: Salome Gegeshidze <geges0@bp.com>, 2016\n"
 "Language-Team: Georgian (https://www.transifex.com/open-edx/teams/6205/ka/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -21,17 +21,17 @@ msgstr ""
 #: programs/apps/api/serializers.py:330
 #, python-brace-format
 msgid "When creating a Program, '{status}' is not a valid choice."
-msgstr ""
+msgstr "პროგრამის შექმნისას '{status}' დაუშვებელი არჩევანია."
 
 #: programs/apps/api/serializers.py:339
 msgid ""
 "Provide exactly one valid/existing Organization while creating a Program."
-msgstr ""
+msgstr "პროგრამის შექმნისას, მიუთითეთ ერთი ნამდვილი/არსებული ორგანიზაცია."
 
 #: programs/apps/api/serializers.py:351
 #, python-brace-format
 msgid "Provided Organization with key '{org_key}' doesn't exist."
-msgstr ""
+msgstr "მითითებული ორგანიზაცია '{org_key}' გასაღებით არ ასებობს."
 
 #: programs/apps/core/admin.py:15
 msgid "Personal info"
@@ -52,19 +52,23 @@ msgstr "სრული სახელი"
 #: programs/apps/programs/image_helpers.py:76
 #, python-brace-format
 msgid "The file must be one of the following types: {valid_file_types}."
-msgstr ""
+msgstr "დაშვებულია მხოლოდ შემდეგი გაფართოების ფაილები: {valid_file_types}."
 
 #: programs/apps/programs/image_helpers.py:84
 msgid ""
 "The Content-Type header for this file does not match the file data. The file"
 " may be corrupted."
 msgstr ""
+"ფაილის Content-Type ჰედერი არ ემთხვევა ფაილის მონაცემებს. შესაძლოა ფაილი "
+"დაზიანებულია."
 
 #: programs/apps/programs/image_helpers.py:93
 msgid ""
 "The file name extension for this file does not match the file data. The file"
 " may be corrupted."
 msgstr ""
+"ამ ფაილის სახელის გაფართოება არ ემთხვევა მის მონაცემებს. შესაძლოა ფაილი "
+"დაზიანებულია."
 
 #: programs/apps/programs/image_helpers.py:121
 #, python-brace-format
@@ -72,10 +76,12 @@ msgid ""
 "The file must be at least {minimum_width} pixels wide and {minimum_height} "
 "pixels high."
 msgstr ""
+"ფაილი უნდა იყოს სულ მცირე {minimum_width} პიქსელის სიგანისა და "
+"{minimum_height} პიქსელი სიმაღლის."
 
 #: programs/apps/programs/models.py:40
 msgid "The user-facing display name for this Program."
-msgstr ""
+msgstr "პროგრამის მომხმარებელთან ასახული სახელი."
 
 #: programs/apps/programs/models.py:46
 msgid "A brief, descriptive subtitle for the Program."
@@ -83,32 +89,35 @@ msgstr "პროგრამის მოკლე, აღწერითი  �
 
 #: programs/apps/programs/models.py:53
 msgid "The category / type of Program."
-msgstr ""
+msgstr "პროგრამის კატეგორია/ტიპი."
 
 #: programs/apps/programs/models.py:62
 msgid "The lifecycle status of this Program."
-msgstr ""
+msgstr "პროგრამის სიცოცხლის ციკლის სტატუსი."
 
 #: programs/apps/programs/models.py:78
 msgid "Slug used to generate links to the marketing site"
-msgstr ""
+msgstr "სლოგანი გამოიყენება მარკეტინგულ გვერდზე ბმულების გენერაციითვის"
 
 #: programs/apps/programs/models.py:99
 msgid "Active XSeries Programs must have a valid marketing slug."
 msgstr ""
+"Active XSeries პროგრამებს უნდა ჰქონდეთ მართებული მარკეტინგული სლოგანი."
 
 #: programs/apps/programs/models.py:119
 msgid ""
 "The string value of an org key identifying this organization in the LMS."
 msgstr ""
+"სტრიქონის მნიშვნელობა org გასაღებისთვის, რომელიც LMS-ში ორგანიზაციის "
+"იდენტიფიკაციისთვის გამოიყენება."
 
 #: programs/apps/programs/models.py:125
 msgid "The display name of this organization."
-msgstr ""
+msgstr "ორგანიზაციის ხილვადი სახელი."
 
 #: programs/apps/programs/models.py:154
 msgid "Cannot associate multiple organizations with a program."
-msgstr ""
+msgstr "პროგრამასთან მრავალი ორგანიზაციის დაკავშირება ვერ ხერხდება."
 
 #: programs/apps/programs/models.py:170
 msgid ""
@@ -118,16 +127,17 @@ msgstr ""
 
 #: programs/apps/programs/models.py:176
 msgid "The display name of this course code."
-msgstr ""
+msgstr "კურსის კოდის ხილვადი სახელი."
 
 #: programs/apps/programs/models.py:211
 msgid ""
 "Course code must be offered by the same organization offering the program."
 msgstr ""
+"კურსის კოდი წარმოდგენილი უნდა იყოს პროგრამის წარმდგენი ორგანიზაციის მიერ."
 
 #: programs/apps/programs/models.py:224
 msgid "The URL of the LMS where this course run / mode is being offered."
-msgstr ""
+msgstr "LMS-ის URL მისამართი, სადაც ამ კურსის გაშვების რეჟიმია შეთავაზებული."
 
 #: programs/apps/programs/models.py:229
 msgid ""
@@ -148,7 +158,7 @@ msgstr ""
 
 #: programs/apps/programs/models.py:243
 msgid "The start date of this course run in the target LMS."
-msgstr ""
+msgstr "სამიზნე LMS-ში კურსის გაშვების საწყისი თარიღი."
 
 #: programs/apps/programs/models.py:247
 msgid ""
@@ -160,7 +170,8 @@ msgstr ""
 msgid ""
 "Duplicate course run modes are not allowed for course codes in a program."
 msgstr ""
+"პროგრამაში კურსის გაშვების დუბლირება კურსის კოდისთვის ნებადართული არ არის."
 
 #: programs/apps/programs/models.py:279
 msgid "Invalid course key."
-msgstr ""
+msgstr "კურსის არასწორი გასაღები"

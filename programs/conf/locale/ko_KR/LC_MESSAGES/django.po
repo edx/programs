@@ -26,12 +26,12 @@ msgstr "프로그램 생성 시, '{status}'는 유효하지 않은 선택입니�
 #: programs/apps/api/serializers.py:339
 msgid ""
 "Provide exactly one valid/existing Organization while creating a Program."
-msgstr ""
+msgstr "프로그램 생성 시 하나의 유효한/존재하는 기관을 입력하세요."
 
 #: programs/apps/api/serializers.py:351
 #, python-brace-format
 msgid "Provided Organization with key '{org_key}' doesn't exist."
-msgstr ""
+msgstr "입력한 '{org_key}' 키의 기관은 존재하지 않습니다."
 
 #: programs/apps/core/admin.py:15
 msgid "Personal info"
@@ -71,95 +71,97 @@ msgstr "파일 이름 확장자가 파일 데이터와 일치하지 않습니다
 msgid ""
 "The file must be at least {minimum_width} pixels wide and {minimum_height} "
 "pixels high."
-msgstr ""
+msgstr "파일의 폭은 {minimum_width} 픽셀 이상, 높이는 {minimum_height} 픽셀 이상이어야 합니다."
 
 #: programs/apps/programs/models.py:40
 msgid "The user-facing display name for this Program."
-msgstr ""
+msgstr "사용자가 보는 프로그램 표시명."
 
 #: programs/apps/programs/models.py:46
 msgid "A brief, descriptive subtitle for the Program."
-msgstr ""
+msgstr "프로그램에 대한 소개를 나타내는 부제."
 
 #: programs/apps/programs/models.py:53
 msgid "The category / type of Program."
-msgstr ""
+msgstr "프로그램 종류/형식."
 
 #: programs/apps/programs/models.py:62
 msgid "The lifecycle status of this Program."
-msgstr ""
+msgstr "프로그램의 주기 상태."
 
 #: programs/apps/programs/models.py:78
 msgid "Slug used to generate links to the marketing site"
-msgstr ""
+msgstr "마케팅 사이트 링크 생성을 위해 사용되는 slug"
 
 #: programs/apps/programs/models.py:99
 msgid "Active XSeries Programs must have a valid marketing slug."
-msgstr ""
+msgstr "액티브 엑스 프로그램은 유효한 마케팅 slug가 있어야 합니다"
 
 #: programs/apps/programs/models.py:119
 msgid ""
 "The string value of an org key identifying this organization in the LMS."
-msgstr ""
+msgstr "학습 관리 시스템에서 이 기관을 나타내는 기관 키의 스트링 값."
 
 #: programs/apps/programs/models.py:125
 msgid "The display name of this organization."
-msgstr ""
+msgstr "이 기관의 표시명."
 
 #: programs/apps/programs/models.py:154
 msgid "Cannot associate multiple organizations with a program."
-msgstr ""
+msgstr "프로그램에 여러 기관을 연동시킬 수 없습니다."
 
 #: programs/apps/programs/models.py:170
 msgid ""
 "The 'course' part of course_keys associated with this course code, for "
 "example 'DemoX' in 'edX/DemoX/Demo_Course'."
 msgstr ""
+"이 강좌 코드와 연동된 course_keys 의 'course' 부분. 예를 들어 'edX/DemoX/Demo_Course' 의 "
+"'DemoX'."
 
 #: programs/apps/programs/models.py:176
 msgid "The display name of this course code."
-msgstr ""
+msgstr "이 강좌 코드의 표시명."
 
 #: programs/apps/programs/models.py:211
 msgid ""
 "Course code must be offered by the same organization offering the program."
-msgstr ""
+msgstr "강좌 코드는 프로그램을 제공하는 기관과 동일한 기관이 제공해야 합니다."
 
 #: programs/apps/programs/models.py:224
 msgid "The URL of the LMS where this course run / mode is being offered."
-msgstr ""
+msgstr "이 강좌 실행/모드가 제공되는 학습 관리 시스템의 URL."
 
 #: programs/apps/programs/models.py:229
 msgid ""
 "A string referencing the course key identifying this run / mode in the "
 "target LMS."
-msgstr ""
+msgstr "목표 학습 관리 시스템에서 이 강좌 실행/모드를 나타내는 강좌 키의 스트링."
 
 #: programs/apps/programs/models.py:233
 msgid ""
 "The mode_slug value which uniquely identifies the mode in the target LMS."
-msgstr ""
+msgstr "목표 학습 관리 시스템에서 모드를 특정하는 mode_slug 값."
 
 #: programs/apps/programs/models.py:237
 msgid ""
 "The sku associated with this run/mode in the ecommerce system working with "
 "the target LMS."
-msgstr ""
+msgstr "목표 학습 관리 시스템에서 작동하는 전자 상거래 시스템 내 이 실행/모드와 연동된 sku."
 
 #: programs/apps/programs/models.py:243
 msgid "The start date of this course run in the target LMS."
-msgstr ""
+msgstr "목표 학습 관리 시스템 내 강좌 실행 개시일."
 
 #: programs/apps/programs/models.py:247
 msgid ""
 "A string referencing the last part of course key identifying this course run"
 " in the target LMS."
-msgstr ""
+msgstr "목표 학습 관리 시스템에서 이 강좌 실행을 나타내는 강좌 키의 마지막 부분을 표시하는 스트링."
 
 #: programs/apps/programs/models.py:273
 msgid ""
 "Duplicate course run modes are not allowed for course codes in a program."
-msgstr ""
+msgstr "프로그램에서 강좌 코드에 대해 중복된 강좌 실행 모드는 허용되지 않습니다."
 
 #: programs/apps/programs/models.py:279
 msgid "Invalid course key."
