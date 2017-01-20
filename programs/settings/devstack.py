@@ -9,6 +9,7 @@ LOGGING['handlers']['local'] = {
 
 DEBUG = True
 ENABLE_AUTO_AUTH = True
+SOCIAL_AUTH_REDIRECT_IS_HTTPS = False
 
 #####################################################################
 # Lastly, see if the developer has any local overrides.

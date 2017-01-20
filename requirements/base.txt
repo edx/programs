@@ -7,7 +7,7 @@ django-storages==1.4
 djangorestframework==3.2.3
 djangorestframework-jwt==1.8.0
 django-rest-swagger==0.3.4
-edx-auth-backends==0.5.3
+edx-auth-backends==0.6.0
 edx-django-release-util==0.2.0
 edx-drf-extensions==1.1.1
 edx-opaque-keys==0.2.1
