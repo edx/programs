@@ -11,5 +11,5 @@ router.register(r'course_codes', views.CourseCodesViewSet, base_name='course_cod
 router.register(r'organizations', views.OrganizationsViewSet, base_name='organizations')
 
 urlpatterns = [
-    url(r'^', include(router.urls)),
+    url(r'', include(router.urls)),
 ]

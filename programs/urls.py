@@ -40,8 +40,7 @@ AUTH_URLS = [
     url(r'^logout/$', logout, name='logout'),
 ]
 
-urlpatterns = [
-    url(r'^accounts/', include(AUTH_URLS)),
+urlpatterns = AUTH_URLS + [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^api/', include('programs.apps.api.urls', namespace='api')),
     url(r'^api-auth/', include(AUTH_URLS, namespace='rest_framework')),
