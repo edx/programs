@@ -3,7 +3,7 @@ NODE_BIN=./node_modules/.bin
 
 .PHONY: clean compile_translations dummy_translations extract_translations fake_translations help html_coverage \
 	migrate pull_translations push_translations quality requirements test update_translations validate \
-	production-requirements
+	production-requirements static
 
 help:
 	@echo "Please use \`make <target>\` where <target> is one of"
@@ -22,6 +22,7 @@ help:
 	@echo "  accept                     run acceptance tests"
 	@echo "  requirements               install requirements for local development"
 	@echo "  serve                      serve Programs at 0.0.0.0:8004"
+	@echo "  static                     gather all static assets for production"
 	@echo "  test                       run tests and generate coverage report"
 	@echo "  validate                   run tests and quality checks"
 	@echo "  html_docs                  build html documents from rst docs and open in (default) browser"
@@ -86,3 +87,6 @@ detect_changed_source_translations:
 	cd programs && i18n_tool changed
 
 validate_translations: fake_translations detect_changed_source_translations
+
+static: ## Gather all static assets for production
+	python manage.py collectstatic --noinput
