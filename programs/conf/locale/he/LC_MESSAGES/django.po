@@ -10,7 +10,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-09-09 14:08+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: e2f_HE c1 <e2f_HE_c1@outlook.com>, 2016\n"
+"Last-Translator: qualityalltext <quality@alltext.co.il>, 2017\n"
 "Language-Team: Hebrew (https://www.transifex.com/open-edx/teams/6205/he/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -21,17 +21,17 @@ msgstr ""
 #: programs/apps/api/serializers.py:330
 #, python-brace-format
 msgid "When creating a Program, '{status}' is not a valid choice."
-msgstr ""
+msgstr "בזמן יצירת תכנית,  '{status}' אינו אפשרות זמינה."
 
 #: programs/apps/api/serializers.py:339
 msgid ""
 "Provide exactly one valid/existing Organization while creating a Program."
-msgstr ""
+msgstr "ציין ארגון אחד קיים/תקף בזמן יצירת תכנית."
 
 #: programs/apps/api/serializers.py:351
 #, python-brace-format
 msgid "Provided Organization with key '{org_key}' doesn't exist."
-msgstr ""
+msgstr "הארגון שצוין, בעל המפתח '{org_key}', אינו קיים."
 
 #: programs/apps/core/admin.py:15
 msgid "Personal info"
@@ -74,10 +74,12 @@ msgid ""
 "The file must be at least {minimum_width} pixels wide and {minimum_height} "
 "pixels high."
 msgstr ""
+"הקובץ חייב להיות ברוחב {minimum_width} פיקסלים לפחות ובגובה {minimum_height}"
+" פיקסלים."
 
 #: programs/apps/programs/models.py:40
 msgid "The user-facing display name for this Program."
-msgstr ""
+msgstr "כותרת שם הקמפוס של המשתמש לתכנית זו."
 
 #: programs/apps/programs/models.py:46
 msgid "A brief, descriptive subtitle for the Program."
@@ -97,71 +99,79 @@ msgstr "שימוש בסלאג ליצירת קישורים לאתר השיווק"
 
 #: programs/apps/programs/models.py:99
 msgid "Active XSeries Programs must have a valid marketing slug."
-msgstr ""
+msgstr "תכניות XSeries פעילות חייבות להיות בעלות סלאג שיווקי תקף."
 
 #: programs/apps/programs/models.py:119
 msgid ""
 "The string value of an org key identifying this organization in the LMS."
-msgstr ""
+msgstr "ערך המחרוזת מפתח הארגון המזהה את הארגון הזה במערכת ניהול למידה."
 
 #: programs/apps/programs/models.py:125
 msgid "The display name of this organization."
-msgstr ""
+msgstr "שם הקמפוס של הארגון הזה."
 
 #: programs/apps/programs/models.py:154
 msgid "Cannot associate multiple organizations with a program."
-msgstr ""
+msgstr "לא ניתן לחבר ארגונים רבים לתכנית זו."
 
 #: programs/apps/programs/models.py:170
 msgid ""
 "The 'course' part of course_keys associated with this course code, for "
 "example 'DemoX' in 'edX/DemoX/Demo_Course'."
 msgstr ""
+"חלק הקורס מתוך מפתחות קורס השייכת לקוד קורס זה, לדוגמה  'DemoX'  "
+"שב-'edX/DemoX/Demo_Course'."
 
 #: programs/apps/programs/models.py:176
 msgid "The display name of this course code."
-msgstr ""
+msgstr "שם הקמפוס של קוד קורס זה."
 
 #: programs/apps/programs/models.py:211
 msgid ""
 "Course code must be offered by the same organization offering the program."
-msgstr ""
+msgstr "הארגון המציע את התכנית הזו חייב להציע גם קוד קורס."
 
 #: programs/apps/programs/models.py:224
 msgid "The URL of the LMS where this course run / mode is being offered."
-msgstr ""
+msgstr "כתובת ה-URL של מערכת ניהול למידה בה מוצע מצב/ הרצת קורס."
 
 #: programs/apps/programs/models.py:229
 msgid ""
 "A string referencing the course key identifying this run / mode in the "
 "target LMS."
 msgstr ""
+"מחרוזת, המפנה למפתח קורס, מזהה הרצה/מצב זה במערכת לניהול הלמידה הייעודית."
 
 #: programs/apps/programs/models.py:233
 msgid ""
 "The mode_slug value which uniquely identifies the mode in the target LMS."
 msgstr ""
+"ערך מצב הסלאג המזהה באופן ייחודי את המצב במערכת ניהול הלמידה הייעודית."
 
 #: programs/apps/programs/models.py:237
 msgid ""
 "The sku associated with this run/mode in the ecommerce system working with "
 "the target LMS."
 msgstr ""
+"יחידת SKU השייכת למצב/הרצה בעבודת מערכת  ecommerce יחד עם המערכת לניהול "
+"למידה."
 
 #: programs/apps/programs/models.py:243
 msgid "The start date of this course run in the target LMS."
-msgstr ""
+msgstr "תאריך ההתחלה של הרצת הקורס הזה ביעד המערכת לניהול למידה, LMS."
 
 #: programs/apps/programs/models.py:247
 msgid ""
 "A string referencing the last part of course key identifying this course run"
 " in the target LMS."
 msgstr ""
+"מחרוזת, המפנה לחלק האחרון של מפתח קורס, מזהה הרצה/מצב זה במערכת לניהול "
+"הלמידה הייעודית."
 
 #: programs/apps/programs/models.py:273
 msgid ""
 "Duplicate course run modes are not allowed for course codes in a program."
-msgstr ""
+msgstr "אין אפשרות למצבי הרצת קורס כפולים בקודי קורס שבתכנית זו."
 
 #: programs/apps/programs/models.py:279
 msgid "Invalid course key."

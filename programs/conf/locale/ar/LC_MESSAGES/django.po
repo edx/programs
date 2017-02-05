@@ -10,7 +10,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-09-09 14:08+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Nora Kane <nana97age@gmail.com>, 2016\n"
+"Last-Translator: Sarah Abdelwahab <sarahelwahab@hotmail.com>, 2016\n"
 "Language-Team: Arabic (https://www.transifex.com/open-edx/teams/6205/ar/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -21,17 +21,17 @@ msgstr ""
 #: programs/apps/api/serializers.py:330
 #, python-brace-format
 msgid "When creating a Program, '{status}' is not a valid choice."
-msgstr "عند إنشاء البرنامج، لا تعد '{status}' اختيار صالح."
+msgstr "عند إنشاء برنامج، لا يُعد '{status}' خيار صالح."
 
 #: programs/apps/api/serializers.py:339
 msgid ""
 "Provide exactly one valid/existing Organization while creating a Program."
-msgstr "زود تماما منظمة واحدة صالحة/موجودة اثناء انشاء البرنامج"
+msgstr "اذكر منظمة واحدة صالحة/قائمة اثناء انشاء البرنامج."
 
 #: programs/apps/api/serializers.py:351
 #, python-brace-format
 msgid "Provided Organization with key '{org_key}' doesn't exist."
-msgstr "المنظمة المزودة ذات المفتاح '{org_key}' غير موجودة"
+msgstr "المنظمة المذكورة ذات المفتاح '{org_key}' غير موجودة"
 
 #: programs/apps/core/admin.py:15
 msgid "Personal info"
@@ -39,7 +39,7 @@ msgstr "المعلومات الشخصية"
 
 #: programs/apps/core/admin.py:16
 msgid "Permissions"
-msgstr "الصلاحيات"
+msgstr "صلاحيات"
 
 #: programs/apps/core/admin.py:18
 msgid "Important dates"
@@ -52,7 +52,7 @@ msgstr "الاسم الكامل"
 #: programs/apps/programs/image_helpers.py:76
 #, python-brace-format
 msgid "The file must be one of the following types: {valid_file_types}."
-msgstr "يجب أن يكون نوع الملف واحدًا من الأنواع التالية: {valid_file_types}"
+msgstr "يجب أن يكون نوع الملف من أحد الأنواع التالية: {valid_file_types}."
 
 #: programs/apps/programs/image_helpers.py:84
 msgid ""
@@ -60,13 +60,13 @@ msgid ""
 " may be corrupted."
 msgstr ""
 "إن ترويسة نوع-المحتوى الخاصة بهذا الملف غير مطابقة لبياناته. قد يكون الملف "
-"معيبًا."
+"تالف."
 
 #: programs/apps/programs/image_helpers.py:93
 msgid ""
 "The file name extension for this file does not match the file data. The file"
 " may be corrupted."
-msgstr "لا يتطابق امتداد هذا الملف مع بياناته. قد يكون الملف معيبًا."
+msgstr "لا يتطابق امتداد اسم هذا الملف مع بياناته. قد يكون الملف تالف."
 
 #: programs/apps/programs/image_helpers.py:121
 #, python-brace-format
@@ -74,13 +74,13 @@ msgid ""
 "The file must be at least {minimum_width} pixels wide and {minimum_height} "
 "pixels high."
 msgstr ""
-"يجب ان يكون الملف على الأقل {minimum_width} بيكسل عرضا و {minimum_height} "
-"بيكسل ارتفاعا."
+"يجب أن يكون الملف بعرض {minimum_width} بيكسل على الأقل وبارتفاع  "
+"{minimum_height} بيكسل على الأقل."
 
 #: programs/apps/programs/models.py:40
 msgid "The user-facing display name for this Program."
 msgstr ""
-"اسم هذا البرنامج المواجه للمستخدم\n"
+"اسم هذا البرنامج المعروض للمستخدم\n"
 "."
 
 #: programs/apps/programs/models.py:46
@@ -101,12 +101,12 @@ msgstr "الشارة المستخدمة لإنشاء روابط إلى المو�
 
 #: programs/apps/programs/models.py:99
 msgid "Active XSeries Programs must have a valid marketing slug."
-msgstr "برامج سلاسل اكس النشطة يجب ان تملك ختما تجاريا صالحا"
+msgstr "يجب أن تملك برامج XSeries النشطة ختم تجاري صالح."
 
 #: programs/apps/programs/models.py:119
 msgid ""
 "The string value of an org key identifying this organization in the LMS."
-msgstr ""
+msgstr "قيمة السلسلة في مفتاح org الذي يحدد المنظمة في LMS."
 
 #: programs/apps/programs/models.py:125
 msgid "The display name of this organization."
@@ -114,58 +114,67 @@ msgstr "اسم العرض لهذه المنظمة "
 
 #: programs/apps/programs/models.py:154
 msgid "Cannot associate multiple organizations with a program."
-msgstr "لا يمكن اشتراك منظمات متعددة مع هذا البرنامج"
+msgstr "لا يمكن ربط منظمات متعددة مع هذا البرنامج"
 
 #: programs/apps/programs/models.py:170
 msgid ""
 "The 'course' part of course_keys associated with this course code, for "
 "example 'DemoX' in 'edX/DemoX/Demo_Course'."
 msgstr ""
+"جزء \"الدورة التعليمية\" في course_keys المرتبطة مع رمز هذه الدورة "
+"التعليمية، على سبيل المثال 'DemoX' في 'EDX / DemoX / Demo_Course'."
 
 #: programs/apps/programs/models.py:176
 msgid "The display name of this course code."
-msgstr "الاسم المعروض لشيفرة هذه الدورة"
+msgstr "اسم العرض لرمز هذه الدورة التعليمية."
 
 #: programs/apps/programs/models.py:211
 msgid ""
 "Course code must be offered by the same organization offering the program."
-msgstr "يجب عرض كود المساق من قبل نفس المنظمة العارضة للبرنامج"
+msgstr "يجب عرض رمز الدورة التعليمية من قبل نفس المنظمة التي تقدم البرنامج."
 
 #: programs/apps/programs/models.py:224
 msgid "The URL of the LMS where this course run / mode is being offered."
-msgstr ""
+msgstr "عنوان URL الخاص ب LMS حيث يتم تقديم مجرى / وضع هذه الدورة التعليمية."
 
 #: programs/apps/programs/models.py:229
 msgid ""
 "A string referencing the course key identifying this run / mode in the "
 "target LMS."
 msgstr ""
+"سلسلة التي تشير إلى مفتاح الدورة التعليمية التي تحدد هذا المجرى / الوضع في "
+"LMS الهدف."
 
 #: programs/apps/programs/models.py:233
 msgid ""
 "The mode_slug value which uniquely identifies the mode in the target LMS."
-msgstr ""
+msgstr "قيمة mode_slug التي تعرف بشكل فريد الوضع في LMS الهدف."
 
 #: programs/apps/programs/models.py:237
 msgid ""
 "The sku associated with this run/mode in the ecommerce system working with "
 "the target LMS."
 msgstr ""
+"وحدة التخزين المرتبطة بهذا المجرى/الوضع في نظام التجارة الإلكترونية الذي "
+"يعمل مع LMS الهدف."
 
 #: programs/apps/programs/models.py:243
 msgid "The start date of this course run in the target LMS."
-msgstr ""
+msgstr "تاريخ بدء مجرى الدورة التعليمية في  LMS الهدف."
 
 #: programs/apps/programs/models.py:247
 msgid ""
 "A string referencing the last part of course key identifying this course run"
 " in the target LMS."
 msgstr ""
+"سلسلة التي تشير إلى الجزء الأخير من الدورة التعليمية التي مجرى الدورة "
+"التعليمية في LMS الهدف."
 
 #: programs/apps/programs/models.py:273
 msgid ""
 "Duplicate course run modes are not allowed for course codes in a program."
 msgstr ""
+"لا يسمح بمجريات الدورات التعليمية المتطابقة في رموز الدورات في البرنامج."
 
 #: programs/apps/programs/models.py:279
 msgid "Invalid course key."
