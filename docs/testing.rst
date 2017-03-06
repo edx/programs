@@ -1,3 +1,5 @@
+.. include:: archived.rst
+
 Testing
 =======
 

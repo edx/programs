@@ -1,3 +1,5 @@
+.. include:: archived.rst
+
 Internationalization
 ====================
 All user-facing text content should be marked for translation. Even if this application is only run in English, our

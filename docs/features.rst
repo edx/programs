@@ -1,3 +1,5 @@
+.. include:: archived.rst
+
 Feature Toggling
 ================
 All new features/functionality should be released behind a feature gate. This allows us to easily disable features
