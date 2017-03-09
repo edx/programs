@@ -4,5 +4,5 @@
 nick: prog
 oeps: {}
 openedx-release: {ref: master}
-owner: edx/ecommerce
 track-pulls: true
+archived: true
