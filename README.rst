@@ -1,10 +1,6 @@
-This repository has been archived and is no longer supported—use it at your own risk. This repository may depend on
+This repository has been ARCHIVED and is no longer supported. Use it at your own risk. This repository may depend on
 out-of-date libraries with security issues, and security updates will not be provided. Pull requests against this
 repository will also not be merged.
-
-Part of `edX code`__.
-
-__ http://code.edx.org/
 
 edX Programs Service  |Travis|_ |Codecov|_
 ==========================================
@@ -14,14 +10,7 @@ edX Programs Service  |Travis|_ |Codecov|_
 .. |Codecov| image:: http://codecov.io/github/edx/programs/coverage.svg?branch=master
 .. _Codecov: http://codecov.io/github/edx/programs?branch=master
 
-This repository contains the edX Programs Service, used as the backend to support Programs-based product lines such as edX's XSeries offering.
-
-Documentation |ReadtheDocs|_
-----------------------------
-.. |ReadtheDocs| image:: https://readthedocs.org/projects/open-edx-programs-guide/badge/?version=latest
-.. _ReadtheDocs: https://open-edx-programs-guide.readthedocs.org/en/latest/
-
-`Documentation <https://open-edx-programs-guide.readthedocs.org/en/latest/>`_ is hosted on Read the Docs.
+This repository contains the edX Programs Service, a service formerly used to support programs-based products.
 
 License
 -------
