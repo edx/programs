@@ -3,6 +3,4 @@
 
 nick: prog
 oeps: {}
-openedx-release: {ref: master}
-track-pulls: true
 archived: true
